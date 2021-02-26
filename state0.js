@@ -1,5 +1,5 @@
 // State0 will be the titlescreen
-var game = {};
+var slime = {};
 
 // define all the states here
 slime.state0 = function() {};
@@ -9,7 +9,7 @@ slime.state0.prototype = {
   },
 
   create: function() {
-    game.stage.backgorundcolor = "#dddddd";
+    game.stage.backgroundColor = "#dddddd";
 
   },
 
