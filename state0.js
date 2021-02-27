@@ -1,6 +1,5 @@
 // State0 will be the titlescreen
 
-var cooldown;
 let player_slime;
 var slime = {};
 let player = {};
