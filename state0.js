@@ -3,10 +3,14 @@
 let player_slime;
 var slime = {};
 let player = {};
+let base_game = {}; // will provide methods for quick creation of a new state
 
 // attempting slime movement to be handled more nicely
 player.accel = 400
 player.jump_height = 300;
+player.gravity = 500;
+player.drag = 400
+
 player.movement = function() {};
 // can add attribute here to adjust the jump timer, or acceleration of the slime
 player.movement.prototype = {
@@ -22,6 +26,17 @@ player.movement.prototype = {
     if (input.isDown(Phaser.Keyboard.UP)) {
       player_slime.body.velocity.y = -player.jump_height;
     }
+  }
+}
+
+base_game = function() {};
+base_game.prototype = {
+  // Call base_game.prototype.physics(player_slime); to enable physics and collisions
+  physics: function(player_ent) {
+    game.physics.enable(player_ent);
+    player_ent.body.collideWorldBounds = true;
+    player_ent.body.gravity.y = player.gravity;
+    player_ent.body.drag.x = player.drag;
   }
 }
 
@@ -41,12 +56,11 @@ slime.state0.prototype = {
     portal_slime = game.add.sprite(1000, 700, "slime");
     game.physics.enable(portal_slime);
 
-    game.physics.enable(player_slime);
+    // custom call, shortens work and declutters the code. 
+    base_game.prototype.physics(player_slime);
+
     game.world.setBounds(0, 0, 2000, 1000);
-    player_slime.body.collideWorldBounds = true;
-    player_slime.body.gravity.y = 500;
-    player_slime.body.drag.x = 400;
-    //
+
     //camera
     game.camera.follow(player_slime);
   },
