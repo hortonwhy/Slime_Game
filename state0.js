@@ -1,5 +1,6 @@
 // State0 will be the titlescreen
 
+var cooldown;
 let player_slime;
 var slime = {};
 let player = {};
@@ -7,24 +8,30 @@ let base_game = {}; // will provide methods for quick creation of a new state
 
 // attempting slime movement to be handled more nicely
 player.accel = 400
-player.jump_height = 300;
-player.gravity = 500;
-player.drag = 400
+player.jump_height = 400;
+player.gravity = 800;
+player.drag = 100
 
 player.movement = function() {};
 // can add attribute here to adjust the jump timer, or acceleration of the slime
 player.movement.prototype = {
   move: function(input) {
+    // I think velocity feels better for x movement, than accel
     if (input.isDown(Phaser.Keyboard.LEFT)) {
-      player_slime.body.acceleration.x = -player.accel;
+      //player_slime.body.acceleration.x = -player.accel;
+      player_slime.body.velocity.x = -player.accel;
     } else if (input.isDown(Phaser.Keyboard.RIGHT)) {
-      player_slime.body.acceleration.x = player.accel;
+      player_slime.body.velocity.x = player.accel;
+      //player_slime.body.acceleration.x = player.accel;
     } else {
       player_slime.body.acceleration.x = 0;
+      player_slime.body.velocity.x = 0;
       player_slime.frame = 0; // this is for animations to return to first frame
     }
     if (input.isDown(Phaser.Keyboard.UP)) {
-      player_slime.body.velocity.y = -player.jump_height;
+      if (player_slime.body.velocity.y == 0) {
+        player_slime.body.velocity.y = -player.jump_height;
+      }
     }
   }
 }
