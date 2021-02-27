@@ -1,8 +1,8 @@
 // State0 will be the titlescreen
 
-var player_slime;
+let player_slime;
 var slime = {};
-var player = {};
+let player = {};
 
 
 // attempting slime movement to be handled more nicely
@@ -36,12 +36,17 @@ slime.state0.prototype = {
 
     game.stage.backgroundColor = "#dddddd";
     game.physics.startSystem(Phaser.Physics.ARCADE);
+
     player_slime = game.add.sprite(100, 100, "slime");
+    portal_slime = game.add.sprite(1000, 700, "slime");
+    game.physics.enable(portal_slime);
+  
+
     game.physics.enable(player_slime);
     game.world.setBounds(0, 0, 2000, 1000);
     player_slime.body.collideWorldBounds = true;
     player_slime.body.gravity.y = 500;
-    player_slime.drag.x = 400;
+    player_slime.body.drag.x = 400;
 
     //camera
     game.camera.follow(player_slime);
@@ -51,5 +56,17 @@ slime.state0.prototype = {
   update: function() {
     player.movement.prototype.move(game.input.keyboard);
 
+    game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
+
   },
+
+  hitPortal: function() {
+    console.log("hit portal");
+    changeState(1);
+  },
+}
+
+function changeState (stateNum) {
+  console.log("state" + stateNum);
+  game.state.start("state" + stateNum);
 }
