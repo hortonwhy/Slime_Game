@@ -66,6 +66,7 @@ base_game.prototype = {
     player_ent.body.drag.x = player.drag;
     player_ent.anchor.x = 0.5;
     player_ent.anchor.y = 0.5
+    player_ent.scale.setTo(0.7, 0.7);
   },
   projectile: function() {
       bullets = game.add.group();
