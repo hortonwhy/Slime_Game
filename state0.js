@@ -3,10 +3,13 @@
 let player_slime;
 var slime = {};
 var bullets;
+var platform;
+var platformGroup;
 var bullet, fireRate = 200, nextFire = 0;
 let player = {};
+let enemy = {};
 let base_game = {}; // will provide methods for quick creation of a new state
-
+let platforms = {};
 // attempting slime movement to be handled more nicely
 player.accel = 400
 player.jump_height = 400;
@@ -14,7 +17,11 @@ player.gravity = 800;
 player.drag = 100
 player.fireRate = 200;
 
+// enemy attributes
+enemy.speed = 400
+
 player.movement = function() {};
+enemy.pacing = function() {};
 // can add attribute here to adjust the jump timer, or acceleration of the slime
 player.movement.prototype = {
   move: function(input) {
@@ -56,6 +63,21 @@ player.movement.prototype = {
   },
 }
 
+enemy.pacing.prototype = {
+    pace: function(object) {
+        if (object.body.velocity.x == 0) {
+            console.log('pacing')
+            enemy.speed *= -1
+            object.body.velocity.x = enemy.speed
+            
+        }
+        console.log('after')
+    }
+}
+
+
+
+
 base_game = function() {};
 base_game.prototype = {
   // Call base_game.prototype.physics(player_slime); to enable physics and collisions
@@ -79,6 +101,15 @@ base_game.prototype = {
       bullets.setAll('scale.x', 0.85);
       bullets.setAll('scale.y', 0.85);
   },
+  platform_physics: function(platform){
+      platformGroup = game.add.group();     
+      platform.body.immovable = true;
+      platformGroup.setAll('body.immovable', true)  
+  },    
+  enemy_physics: function(object) {
+      game.physics.enable(object);
+      player_ent.body.collideWorldBounds = true;
+  }
 }
 
 slime.state0 = function() {};
@@ -86,6 +117,8 @@ slime.state0.prototype = {
   preload: function() {
     game.load.image('slime', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
+    game.load.image('enemy', 'assets/sprites/enemy.png');
+    game.load.image('platform', 'assets/sprites/platform.png');  
   },
 
   create: function() {
@@ -95,24 +128,49 @@ slime.state0.prototype = {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
     player_slime = game.add.sprite(100, 100, "slime");
+    enemy1 = game.add.sprite(1500, 800, 'enemy');
     player_slime.scale.setTo(0.7, 0.7);
-    portal_slime = game.add.sprite(1000, 700, "slime");
+    portal_slime = game.add.sprite(1000, 600, "slime");
     game.physics.enable(portal_slime);
+      
+    // add the platforms
+    platform = game.add.sprite(0, 950, 'platform');
+    platformGroup = game.add.group();
+    platformGroup.create(310, 850, 'platform');
+    platformGroup.create(620, 800, 'platform');
+    platformGroup.create(960, 720, 'platform');
+      
+    // add collide with the platforms
+    game.physics.enable([player_slime, platform, platformGroup]);
+    player_slime.body.collideWorldBounds = true;
+    platform.body.immovable = true;
+    platformGroup.setAll('body.immovable', true);
 
     // custom call, shortens work and declutters the code. 
     base_game.prototype.physics(player_slime);
+    base_game.prototype.physics(enemy1)
+   // base_game.prototype.physics(enemy);
     base_game.prototype.projectile();
 
     game.world.setBounds(0, 0, 5000, 1000);
+      
+    //enemies
+    
 
     //camera
     game.camera.follow(player_slime);
   },
   update: function() {
+    game.physics.arcade.collide(player_slime, [platform, platformGroup]);
     player.movement.prototype.move(game.input.keyboard);
     game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
 
     player.movement.prototype.attack(game.input.keyboard);
+    
+    enemy.pacing.prototype.pace(enemy1)
+    
+    
+    
   },
 
   hitPortal: function() {
@@ -125,3 +183,4 @@ function changeState (stateNum) {
   console.log("state" + stateNum);
   game.state.start("state" + stateNum);
 }
+
