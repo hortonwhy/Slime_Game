@@ -34,6 +34,7 @@ slime.title.prototype = {
   },
 
   create: function() {
+    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     game.stage.backgroundColor = "#ff00ff";
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.world.setBounds(0, 0, 600, 800);
