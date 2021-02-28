@@ -52,14 +52,19 @@ player.movement.prototype = {
       var direction = player_slime.scale.x
       console.log(player_slime.scale.x)
       nextFire = game.time.now + player.fireRate;
-      //bullets.create(player_slime.x, player_slime.y, 'bullet');
+      //bullets.create(player_slime.x, player_slime.y, 'bullet');    
       bullet = bullets.getFirstDead();
       bullet.reset(player_slime.x, player_slime.y);
       console.log(bullet.x, bullet.y, player_slime.x, player_slime.y);
       bullet.rotation = game.physics.arcade.angleToXY(bullet, player_slime.x + (1000 * direction * -1) , player_slime.y)
       game.physics.arcade.moveToXY(bullet, player_slime.x + (direction * 1000 * -1), player_slime.y, 1000);
 
+
     }
+    if (game.physics.arcade.collide(enemy1, bullet)){
+        enemy1.kill()
+        bullet.kill()
+    }  
   },
 }
 
@@ -71,6 +76,12 @@ enemy.pacing.prototype = {
             object.body.velocity.x = enemy.speed
             
         }
+   //     if (game.physics.arcade.collide(object, bullets)){
+    //        object.kill()
+    //        bullet.kill()
+     //   }
+        
+        
         console.log('after')
     }
 }
@@ -167,7 +178,8 @@ slime.state0.prototype = {
 
     player.movement.prototype.attack(game.input.keyboard);
     
-    enemy.pacing.prototype.pace(enemy1)
+    enemy.pacing.prototype.pace(enemy1);
+    
     
     
     
@@ -183,4 +195,6 @@ function changeState (stateNum) {
   console.log("state" + stateNum);
   game.state.start("state" + stateNum);
 }
+
+
 
