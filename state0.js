@@ -103,7 +103,7 @@ slime.state0.prototype = {
     base_game.prototype.physics(player_slime);
     base_game.prototype.projectile();
 
-    game.world.setBounds(0, 0, 2000, 1000);
+    game.world.setBounds(0, 0, 5000, 1000);
 
     //camera
     game.camera.follow(player_slime);
