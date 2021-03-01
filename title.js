@@ -5,8 +5,8 @@ let volume = {};
 
 volume.toggle = function() {};
       volume.toggle.prototype = {
-      mute: function (sound) {
-      volBtn = game.add.button(1500, 800, 'volume', function() {
+      mute: function (sound, xX, yY) {
+      volBtn = game.add.button(xX, yY, 'volume', function() {
       console.log('the button is toggled');
       if ( vol_state == 1) {
         sound.volume = 0;
@@ -19,12 +19,17 @@ volume.toggle = function() {};
       }
       console.log(sound.volume);
     });
-    volBtn.scale.setTo(5);
+    volBtn.scale.setTo(3);
     volBtn.anchor.x = 0.5;
     volBtn.anchor.y = 0.5;
     volBtn.animations.add('mute', [0, 1]);
+    return volBtn
       },
-    }
+    move: function(button) {
+      button.x = game.camera.x + 1900
+      button.y = 100
+    },
+      }
 slime.title = function() {};
 slime.title.prototype = {
   preload: function() {
@@ -45,7 +50,7 @@ slime.title.prototype = {
     });
     b1.anchor.setTo(0.5, 0.5);
 
-    volume.toggle.prototype.mute(sound);
+    volume.toggle.prototype.mute(sound, 1500, 880);
     },
   update: function() {
   },

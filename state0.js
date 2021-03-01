@@ -5,6 +5,7 @@ let bullets;
 var platform;
 var platformGroup;
 var fireRate = 200, nextFire = 0;
+var volumeBtn;
 let player = {};
 let enemy = {};
 let base_game = {}; // will provide methods for quick creation of a new state
@@ -127,7 +128,7 @@ slime.state0.prototype = {
   },
 
   create: function() {
-      
+
     // add laser sounds
     laser = game.add.audio("laser");
 
@@ -140,14 +141,14 @@ slime.state0.prototype = {
     player_slime.scale.setTo(0.7, 0.7);
     portal_slime = game.add.sprite(1000, 600, "slime");
     game.physics.enable(portal_slime);
-      
+
     // add the platforms
     platform = game.add.sprite(0, 950, 'platform');
     platformGroup = game.add.group();
     platformGroup.create(310, 850, 'platform');
     platformGroup.create(620, 800, 'platform');
     platformGroup.create(960, 720, 'platform');
-      
+
     // add collide with the platforms
     game.physics.enable([player_slime, platform, platformGroup]);
     player_slime.body.collideWorldBounds = true;
@@ -161,9 +162,13 @@ slime.state0.prototype = {
     base_game.prototype.projectile();
 
     game.world.setBounds(0, 0, 5000, 1000);
-      
+
     //enemies
-    
+
+    // Enable Volume Button
+    volumeBtn = volume.toggle.prototype.mute(sound, 800, 500);
+
+
 
     //camera
     game.camera.follow(player_slime);
@@ -176,6 +181,9 @@ slime.state0.prototype = {
     player.movement.prototype.attack(game.input.keyboard);
 
     enemy.pacing.prototype.pace(enemy1);
+
+    // allows buttons to follow the player
+    volume.toggle.prototype.move(volumeBtn);
 
   },
 

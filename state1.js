@@ -20,11 +20,17 @@ slime.state1.prototype = {
     //camera
     game.camera.follow(player_slime);
 
+    //button volume
+    volumeBtn = volume.toggle.prototype.mute(sound, 800, 500);
+
   },
 
   update: function() {
     console.log(player_slime.x, player_slime.y);
     player.movement.prototype.move(game.input.keyboard);
     player.movement.prototype.attack(game.input.keyboard);
+
+    //volume button
+    volume.toggle.prototype.move(volumeBtn);
   },
 }
