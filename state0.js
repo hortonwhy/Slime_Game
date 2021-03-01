@@ -48,6 +48,9 @@ player.movement.prototype = {
     if (input.isDown(Phaser.Keyboard.F) && game.time.now > nextFire) {
       // Fire projectile in direction of slime
       console.log("F");
+      if (vol_state == 1){
+          laser.play();
+      }
       var direction = player_slime.scale.x
       console.log(player_slime.scale.x)
       nextFire = game.time.now + player.fireRate;
@@ -116,10 +119,14 @@ slime.state0.prototype = {
     game.load.image('slime', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('enemy', 'assets/sprites/enemy.png');
-    game.load.image('platform', 'assets/sprites/platform.png');  
+    game.load.image('platform', 'assets/sprites/platform.png'); 
+    game.load.audio('laser','assets/sounds/laser.wav');
   },
 
   create: function() {
+      
+    // add laser sounds
+    laser = game.add.audio("laser");
 
     game.stage.backgroundColor = "#dddddd";
     game.physics.startSystem(Phaser.Physics.ARCADE);
