@@ -53,9 +53,7 @@ player.movement.prototype = {
       nextFire = game.time.now + player.fireRate;
       var bullet;
       bullet = bullets.getFirstDead();
-      console.log(bullet);
       bullet.reset(player_slime.x, player_slime.y);
-      console.log(bullet.x, bullet.y, player_slime.x, player_slime.y);
       bullet.rotation = game.physics.arcade.angleToXY(bullet, player_slime.x + (1000 * direction * -1) , player_slime.y)
       game.physics.arcade.moveToXY(bullet, player_slime.x + (direction * 1000 * -1), player_slime.y, 1000);
     }
