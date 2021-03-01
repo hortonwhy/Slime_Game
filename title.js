@@ -36,6 +36,7 @@ slime.title.prototype = {
     game.load.image('startBtn', 'assets/sprites/start_button.jpg');
     //game.load.audio('op-music', 'assets/audio/op.mp3');
     game.load.spritesheet('volume', 'assets/spritesheet/volume.png', 32, 32);
+    game.load.audio('op-music','assets/sounds/song.wav');
   },
 
   create: function() {
@@ -44,6 +45,9 @@ slime.title.prototype = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.world.setBounds(0, 0, 600, 800);
     sound = game.add.audio('op-music');
+    sound.autoplay = true;
+    sound.loop = true;
+    sound.play();
 
     b1 = game.add.button(CenterX, CenterY, 'startBtn', function() {
       changeState(0);
