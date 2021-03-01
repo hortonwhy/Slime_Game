@@ -26,12 +26,13 @@ player.movement.prototype = {
   move: function(input) {
     // I think velocity feels better for x movement, than accel
     if (input.isDown(Phaser.Keyboard.LEFT)) {
-      //player_slime.body.acceleration.x = -player.accel;
       player_slime.body.velocity.x = -player.accel;
       player_slime.scale.setTo(0.7, 0.7);
+      player_slime.animations.play('walk', 12, true);
     } else if (input.isDown(Phaser.Keyboard.RIGHT)) {
       player_slime.body.velocity.x = player.accel;
       player_slime.scale.setTo(-0.7,0.7);
+      player_slime.animations.play('walk', 12, true);
       //player_slime.body.acceleration.x = player.accel;
     } else {
       player_slime.body.acceleration.x = 0;
@@ -89,6 +90,7 @@ base_game.prototype = {
     player_ent.anchor.x = 0.5;
     player_ent.anchor.y = 0.5
     player_ent.scale.setTo(0.7, 0.7);
+    player_ent.animations.add('walk', [0, 1, 2]);
   },
   projectile: function() {
       bullets = game.add.group();
@@ -116,7 +118,8 @@ base_game.prototype = {
 slime.state0 = function() {};
 slime.state0.prototype = {
   preload: function() {
-    game.load.image('slime', 'assets/sprites/slime_static.png');
+    game.load.spritesheet('slime', 'assets/spritesheet/slime_backup.png', 205, 130);
+    game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('enemy', 'assets/sprites/enemy.png');
     game.load.image('platform', 'assets/sprites/platform.png'); 
