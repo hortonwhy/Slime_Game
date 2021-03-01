@@ -1,8 +1,7 @@
 // State0 will be the titlescreen
-
 let player_slime;
 var slime = {};
-var bullets;
+let bullets;
 var platform;
 var platformGroup;
 var fireRate = 200, nextFire = 0;
@@ -53,8 +52,8 @@ player.movement.prototype = {
       console.log(player_slime.scale.x)
       nextFire = game.time.now + player.fireRate;
       var bullet;
-      bullet = bullets.create(player_slime.x, player_slime.y, 'bullet');
       bullet = bullets.getFirstDead();
+      console.log(bullet);
       bullet.reset(player_slime.x, player_slime.y);
       console.log(bullet.x, bullet.y, player_slime.x, player_slime.y);
       bullet.rotation = game.physics.arcade.angleToXY(bullet, player_slime.x + (1000 * direction * -1) , player_slime.y)
@@ -67,7 +66,6 @@ player.movement.prototype = {
     bullet.kill()
   }
 }
-
 enemy.pacing.prototype = {
     pace: function(object) {
         if (object.body.velocity.x == 0) {
@@ -78,9 +76,6 @@ enemy.pacing.prototype = {
         console.log('after')
     }
 }
-
-
-
 
 base_game = function() {};
 base_game.prototype = {
