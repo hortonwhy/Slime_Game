@@ -14,12 +14,7 @@ slime.state1.prototype = {
     game.physics.enable(portal_slime);
     game.world.setBounds(0, 0, 2000, 1000);
 
-    /*
-    game.physics.enable(player_slime);
-    player_slime.body.collideWorldBounds = true;
-    player_slime.body.gravity.y = 500;
-    player_slime.body.drag.x = 400;
-    */
+    // physics 
     base_game.prototype.physics(player_slime);
     base_game.prototype.projectile();
 
