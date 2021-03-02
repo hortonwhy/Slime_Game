@@ -6,6 +6,7 @@ var platform;
 var platformGroup;
 var fireRate = 200, nextFire = 0;
 var volumeBtn;
+var background, foreground;
 let player = {};
 let enemy = {};
 let base_game = {}; // will provide methods for quick creation of a new state
@@ -123,7 +124,9 @@ slime.state0.prototype = {
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('enemy', 'assets/sprites/enemy.png');
-    game.load.image('platform', 'assets/sprites/platform.png'); 
+    game.load.image('platform', 'assets/sprites/platform.png');
+    game.load.image('background', 'assets/sprites/background.png');
+    game.load.image('foreground', 'assets/sprites/foreground.png');
     game.load.audio('laser','assets/sounds/laser.wav');
   },
 
@@ -168,7 +171,7 @@ slime.state0.prototype = {
     // Enable Volume Button
     volumeBtn = volume.toggle.prototype.mute(sound, 800, 500);
 
-
+    // trying out background parallax stuff
 
     //camera
     game.camera.follow(player_slime);
