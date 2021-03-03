@@ -142,6 +142,7 @@ slime.state0 = function() {};
 slime.state0.prototype = {
   preload: function() {
     game.load.spritesheet('slime', 'assets/spritesheet/slime_backup.png', 205, 130);
+    game.load.spritesheet('slime-idle', 'assets/spritesheet/slime_idle.png', 64, 64);
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('enemy', 'assets/sprites/enemy.png');
@@ -166,6 +167,10 @@ slime.state0.prototype = {
     player_slime.scale.setTo(0.7, 0.7);
     portal_slime = game.add.sprite(1000, 800, "slime");
     game.physics.enable(portal_slime);
+
+    // experimental new slime
+    new_slime = game.add.sprite(100, 100, 'slime-idle');
+    new_slime.scale.setTo (1.5);
 
     // add the platforms
     platform = game.add.sprite(0, 950, 'platform');
