@@ -128,7 +128,7 @@ base_game.prototype = {
      * so it would need to add the sprite three times, once every 2000 pixels
      */
     console.log(" background: " + background.width + " " + background.height);
-    var width = game.world.bounds.x; var height =  game.height;
+    var width = game.width; var height =  game.height;
     console.log("bound", game.world);
     background.scale.setTo(width / background.width, height / background.height);
     foreground.scale.setTo(width / foreground.width, height / foreground.height);
