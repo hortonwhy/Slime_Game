@@ -5,6 +5,7 @@ slime.state1.prototype = {
   },
 
   create: function() {
+    base_game.prototype.parallax();
     game.stage.backgroundColor = "#AAAAAA";
     game.physics.startSystem(Phaser.Physics.ARCADE);
 

@@ -114,7 +114,28 @@ base_game.prototype = {
   enemy_physics: function(object) {
       game.physics.enable(object);
       player_ent.body.collideWorldBounds = true;
-  }
+  },
+  parallax : function() {
+    // trying out background parallax stuff
+    background = game.add.sprite(0, 0, 'background');
+    foreground = game.add.sprite(0, 0, 'foreground');
+    /* need a repeating foreground, background
+     * likely on the basis of getting the game.world.bounds.x and y
+     * and using them to make sure they are filled with the width and height
+     * of the background and foreground sizes
+     * so loop and add the same sprites after every width of the image
+     * so the sprite for the background is 2000, the world bounds are 5000
+     * so it would need to add the sprite three times, once every 2000 pixels
+     */
+    console.log(" background: " + background.width + " " + background.height);
+    var width = game.world.bounds.x; var height =  game.height;
+    console.log("bound", game.world);
+    background.scale.setTo(width / background.width, height / background.height);
+    foreground.scale.setTo(width / foreground.width, height / foreground.height);
+    console.log(width, height);
+  },
+  parallaxMove : function () {
+  },
 }
 
 slime.state0 = function() {};
@@ -125,12 +146,13 @@ slime.state0.prototype = {
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('enemy', 'assets/sprites/enemy.png');
     game.load.image('platform', 'assets/sprites/platform.png');
-    game.load.image('background', 'assets/sprites/background.png');
-    game.load.image('foreground', 'assets/sprites/foreground.png');
+    game.load.image('background', 'assets/sprites/background-high-res.png');
+    game.load.image('foreground', 'assets/sprites/foreground-high-res.png');
     game.load.audio('laser','assets/sounds/laser.wav');
   },
 
   create: function() {
+    base_game.prototype.parallax();
 
     // add laser sounds
     laser = game.add.audio("laser");
@@ -142,7 +164,7 @@ slime.state0.prototype = {
     player_slime = game.add.sprite(100, 100, "slime");
     enemy1 = game.add.sprite(1500, 800, 'enemy');
     player_slime.scale.setTo(0.7, 0.7);
-    portal_slime = game.add.sprite(1000, 600, "slime");
+    portal_slime = game.add.sprite(1000, 800, "slime");
     game.physics.enable(portal_slime);
 
     // add the platforms
@@ -166,12 +188,8 @@ slime.state0.prototype = {
 
     game.world.setBounds(0, 0, 5000, 1000);
 
-    //enemies
-
     // Enable Volume Button
     volumeBtn = volume.toggle.prototype.mute(sound, 800, 500);
-
-    // trying out background parallax stuff
 
     //camera
     game.camera.follow(player_slime);
@@ -200,6 +218,3 @@ function changeState (stateNum) {
   console.log("state" + stateNum);
   game.state.start("state" + stateNum);
 }
-
-
-
