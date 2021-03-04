@@ -69,6 +69,7 @@ player.movement.prototype = {
       bullet.reset(player_slime.x, player_slime.y);
       bullet.rotation = game.physics.arcade.angleToXY(bullet, player_slime.x + (1000 * direction * 1) , player_slime.y)
       game.physics.arcade.moveToXY(bullet, player_slime.x + (direction * 1000 * 1), player_slime.y, 1000);
+      bullet.animations.play('fire', 3, true);
     }
     game.physics.arcade.overlap(bullets, enemy1, this.hitEnemy);
   },
@@ -106,12 +107,14 @@ base_game.prototype = {
       bullets = game.add.group();
       bullets.enableBody = true;
       bullets.physicsBodyType = Phaser.Physics.ARCADE;
-      bullets.createMultiple(50, 'bullet');
+      bullets.createMultiple(50, 'projectile');
       bullets.setAll('checkWorldBounds', true);
       bullets.setAll('outOfBoundsKill', true);
       bullets.setAll('anchor.y', 0.5);
-      bullets.setAll('scale.x', 0.85);
-      bullets.setAll('scale.y', 0.85);
+      bullets.setAll('scale.x', 1);
+      bullets.setAll('scale.y', 1);
+      bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
+      bullets.callAll('animations.play', 'animations', 'fire');
       // bullet
   },
   platform_physics: function(platform){
@@ -153,6 +156,7 @@ slime.state0.prototype = {
     game.load.spritesheet('slime-idle', 'assets/spritesheet/slime_idle.png', 64, 64);
     game.load.spritesheet('slime-new', 'assets/spritesheet/slime-new.png', 64, 64);
     game.load.spritesheet('slime-new2', 'assets/spritesheet/slime-new2.png', 64, 64);
+    game.load.spritesheet('projectile', 'assets/spritesheet/projectile.png', 64, 64);
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('enemy', 'assets/sprites/enemy.png');
