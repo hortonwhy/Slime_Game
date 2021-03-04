@@ -4,7 +4,7 @@ var slime = {};
 let bullets;
 var platform;
 var platformGroup;
-var fireRate = 200, nextFire = 0;
+var fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
 var volumeBtn;
 var background, foreground;
 let player = {};
@@ -29,20 +29,27 @@ player.movement.prototype = {
     // I think velocity feels better for x movement, than accel
     if (input.isDown(Phaser.Keyboard.LEFT)) {
       player_slime.body.velocity.x = -player.accel;
-      player_slime.scale.setTo(0.7, 0.7);
+      player_slime.scale.setTo(-1.5, 1.5);
       player_slime.animations.play('walk', 12, true);
+      nextIdle = game.time.now + idleTimer;
     } else if (input.isDown(Phaser.Keyboard.RIGHT)) {
       player_slime.body.velocity.x = player.accel;
-      player_slime.scale.setTo(-0.7,0.7);
+      player_slime.scale.setTo(1.5,1.5);
       player_slime.animations.play('walk', 12, true);
-      //player_slime.body.acceleration.x = player.accel;
+      nextIdle = game.time.now + idleTimer;
     } else {
       player_slime.body.acceleration.x = 0;
       player_slime.body.velocity.x = 0;
-      player_slime.frame = 0; // this is for animations to return to first frame
+      if (game.time.now > nextIdle) {
+        console.log ("Idling...");
+        player_slime.animations.play('idle', 3, true);
+      } else {
+      player_slime.frame = 2; // this is for animations to return to first frame
+      }
     }
     if (input.isDown(Phaser.Keyboard.UP)) {
       if (player_slime.body.velocity.y == 0) {
+        nextIdle = game.time.now + idleTimer;
         player_slime.body.velocity.y = -player.jump_height;
       }
     }
@@ -91,8 +98,9 @@ base_game.prototype = {
     player_ent.body.drag.x = player.drag;
     player_ent.anchor.x = 0.5;
     player_ent.anchor.y = 0.5
-    player_ent.scale.setTo(0.7, 0.7);
-    player_ent.animations.add('walk', [0, 1, 2]);
+    player_ent.scale.setTo(1.5, 1.5);
+    player_ent.animations.add('idle', [0, 1]);
+    player_ent.animations.add('walk', [2, 3, 4, 5, 6, 7]);
   },
   projectile: function() {
       bullets = game.add.group();
@@ -143,6 +151,7 @@ slime.state0.prototype = {
   preload: function() {
     game.load.spritesheet('slime', 'assets/spritesheet/slime_backup.png', 205, 130);
     game.load.spritesheet('slime-idle', 'assets/spritesheet/slime_idle.png', 64, 64);
+    game.load.spritesheet('slime-new', 'assets/spritesheet/slime-new.png', 64, 64);
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('enemy', 'assets/sprites/enemy.png');
@@ -162,7 +171,7 @@ slime.state0.prototype = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-    player_slime = game.add.sprite(100, 100, "slime");
+    player_slime = game.add.sprite(100, 100, "slime-new");
     enemy1 = game.add.sprite(1500, 800, 'enemy');
     player_slime.scale.setTo(0.7, 0.7);
     portal_slime = game.add.sprite(1000, 800, "slime");
