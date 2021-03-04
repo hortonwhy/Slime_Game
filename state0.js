@@ -67,8 +67,8 @@ player.movement.prototype = {
       var bullet;
       bullet = bullets.getFirstDead();
       bullet.reset(player_slime.x, player_slime.y);
-      bullet.rotation = game.physics.arcade.angleToXY(bullet, player_slime.x + (1000 * direction * -1) , player_slime.y)
-      game.physics.arcade.moveToXY(bullet, player_slime.x + (direction * 1000 * -1), player_slime.y, 1000);
+      bullet.rotation = game.physics.arcade.angleToXY(bullet, player_slime.x + (1000 * direction * 1) , player_slime.y)
+      game.physics.arcade.moveToXY(bullet, player_slime.x + (direction * 1000 * 1), player_slime.y, 1000);
     }
     game.physics.arcade.overlap(bullets, enemy1, this.hitEnemy);
   },
@@ -100,7 +100,7 @@ base_game.prototype = {
     player_ent.anchor.y = 0.5
     player_ent.scale.setTo(1.5, 1.5);
     player_ent.animations.add('idle', [0, 1]);
-    player_ent.animations.add('walk', [2, 3, 4, 5, 6, 7]);
+    player_ent.animations.add('walk', [3, 4, 5, 6, 7, 8, 9, 10]);
   },
   projectile: function() {
       bullets = game.add.group();
@@ -152,6 +152,7 @@ slime.state0.prototype = {
     game.load.spritesheet('slime', 'assets/spritesheet/slime_backup.png', 205, 130);
     game.load.spritesheet('slime-idle', 'assets/spritesheet/slime_idle.png', 64, 64);
     game.load.spritesheet('slime-new', 'assets/spritesheet/slime-new.png', 64, 64);
+    game.load.spritesheet('slime-new2', 'assets/spritesheet/slime-new2.png', 64, 64);
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('enemy', 'assets/sprites/enemy.png');
@@ -171,7 +172,7 @@ slime.state0.prototype = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-    player_slime = game.add.sprite(100, 100, "slime-new");
+    player_slime = game.add.sprite(100, 100, "slime-new2");
     enemy1 = game.add.sprite(1500, 800, 'enemy');
     player_slime.scale.setTo(0.7, 0.7);
     portal_slime = game.add.sprite(1000, 800, "slime");
