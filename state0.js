@@ -4,7 +4,7 @@ var slime = {};
 let bullets;
 var platform;
 var platformGroup;
-var fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
+var weapon1, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
 var volumeBtn;
 var background, foreground;
 let player = {};
@@ -26,6 +26,15 @@ enemy.pacing = function() {};
 // can add attribute here to adjust the jump timer, or acceleration of the slime
 player.movement.prototype = {
   move: function(input) {
+    // weapon for the slime
+    if (game.time.now < (nextFire + 2000)) {
+
+    weapon1.x = player_slime.x;
+    weapon1.y = player_slime.y;
+    weapon1.scale.setTo (player_slime.scale.x * 2.0, player_slime.scale.y * 2.0 )
+    } else {
+      weapon1.x = -100; weapon1.y = -100;
+    }
     // I think velocity feels better for x movement, than accel
     if (input.isDown(Phaser.Keyboard.LEFT)) {
       player_slime.body.velocity.x = -player.accel;
@@ -61,6 +70,8 @@ player.movement.prototype = {
       if (vol_state == 1){
           laser.play();
       }
+      weapon1.x = player_slime.x;
+      weapon1.y = player_slime.y;
       nextIdle = game.time.now + idleTimer;
       var direction = player_slime.scale.x
       console.log(player_slime.scale.x)
@@ -72,12 +83,13 @@ player.movement.prototype = {
       game.physics.arcade.moveToXY(bullet, player_slime.x + (direction * 1000 * 1), player_slime.y, 1000);
       bullet.animations.play('fire', 3, true);
     }
+
     game.physics.arcade.overlap(bullets, enemy1, this.hitEnemy);
   },
   hitEnemy: function(enemy, bullet) {
     console.log('enemy hit');
     bullet.kill()
-  }
+  },
 }
 enemy.pacing.prototype = {
     pace: function(object) {
@@ -117,6 +129,11 @@ base_game.prototype = {
       bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
       bullets.callAll('animations.play', 'animations', 'fire');
       // bullet
+      // create a weapon sprite to move as needed
+      weapon1 = game.add.sprite(500, 100, 'weapon1');
+      weapon1.scale.setTo(3);
+      weapon1.anchor.x = 0.5;
+      weapon1.anchor.y = 0.5;
   },
   platform_physics: function(platform){
       platformGroup = game.add.group();     
@@ -158,6 +175,7 @@ slime.state0.prototype = {
     game.load.spritesheet('slime-new', 'assets/spritesheet/slime-new.png', 64, 64);
     game.load.spritesheet('slime-new2', 'assets/spritesheet/slime-new2.png', 64, 64);
     game.load.spritesheet('projectile', 'assets/spritesheet/projectile.png', 64, 64);
+    game.load.image('weapon1', 'assets/sprites/basic-weapon.png');
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('enemy', 'assets/sprites/enemy.png');
