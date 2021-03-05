@@ -6,7 +6,7 @@ var platform;
 var platformGroup;
 var weapon1, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
 var volumeBtn;
-var background, foreground;
+var background, foreground, backgroundGroup, foregroundGroup;
 let player = {};
 let enemy = {};
 let base_game = {}; // will provide methods for quick creation of a new state
@@ -50,7 +50,6 @@ player.movement.prototype = {
       player_slime.body.acceleration.x = 0;
       player_slime.body.velocity.x = 0;
       if (game.time.now > nextIdle) {
-        console.log ("Idling...");
         player_slime.animations.play('idle', 3, true);
       } else {
       player_slime.frame = 2; // this is for animations to return to first frame
@@ -94,11 +93,9 @@ player.movement.prototype = {
 enemy.pacing.prototype = {
     pace: function(object) {
         if (object.body.velocity.x == 0) {
-            console.log('pacing')
             enemy.speed *= -1
             object.body.velocity.x = enemy.speed
         }
-        console.log('after')
     }
 }
 
@@ -148,22 +145,20 @@ base_game.prototype = {
     // trying out background parallax stuff
     background = game.add.sprite(0, 0, 'background');
     foreground = game.add.sprite(0, 0, 'foreground');
-    /* need a repeating foreground, background
-     * likely on the basis of getting the game.world.bounds.x and y
-     * and using them to make sure they are filled with the width and height
-     * of the background and foreground sizes
-     * so loop and add the same sprites after every width of the image
-     * so the sprite for the background is 2000, the world bounds are 5000
-     * so it would need to add the sprite three times, once every 2000 pixels
-     */
-    console.log(" background: " + background.width + " " + background.height);
-    var width = game.width; var height =  game.height;
-    console.log("bound", game.world);
-    background.scale.setTo(width / background.width, height / background.height);
-    foreground.scale.setTo(width / foreground.width, height / foreground.height);
-    console.log(width, height);
+    backgroundGroup = game.add.group()
+    foregroundGroup = game.add.group()
+    var width = game.world.width; var height = game.world.height;
+    var currentX = background.width, currentY = background.height; // assuming back and foreground are same
+    backgroundGroup.setAll('scale.setTo', width / background.width, height / background.height);
+    foregroundGroup.setAll('scale.setTo', width / foreground.width, height / foreground.height);
+    while (currentX < width) {
+      backgroundGroup.create(currentX, 0, 'background');
+      foregroundGroup.create(currentX, 0, 'foreground');
+      currentX += background.width
+    }
   },
   parallaxMove : function () {
+    console.log(backgroundGroup);
   },
 }
 
@@ -186,6 +181,8 @@ slime.state0.prototype = {
   },
 
   create: function() {
+
+    game.world.setBounds(0, 0, 5000, 1000); // important to be called early if not first
     base_game.prototype.parallax();
 
     // add laser sounds
@@ -224,7 +221,7 @@ slime.state0.prototype = {
    // base_game.prototype.physics(enemy);
     base_game.prototype.projectile();
 
-    game.world.setBounds(0, 0, 5000, 1000);
+    //game.world.setBounds(0, 0, 5000, 1000);
 
     // Enable Volume Button
     volumeBtn = volume.toggle.prototype.mute(sound, 800, 500);

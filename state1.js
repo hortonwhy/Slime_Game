@@ -9,8 +9,8 @@ slime.state1.prototype = {
     game.stage.backgroundColor = "#AAAAAA";
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    player_slime = game.add.sprite(100, 100, "slime");
-    portal_slime = game.add.sprite(1000, 700, "slime");
+    player_slime = game.add.sprite(100, 100, "slime-new");
+    portal_slime = game.add.sprite(1000, 700, "slime-new");
     game.physics.enable(portal_slime);
     game.world.setBounds(0, 0, 2000, 1000);
 
