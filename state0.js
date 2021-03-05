@@ -158,7 +158,8 @@ base_game.prototype = {
     }
   },
   parallaxMove : function () {
-    console.log(backgroundGroup);
+    console.log(backgroundGroup.children.length);
+    
   },
 }
 
@@ -198,10 +199,6 @@ slime.state0.prototype = {
     portal_slime = game.add.sprite(1000, 800, "slime");
     game.physics.enable(portal_slime);
 
-    // experimental new slime
-    new_slime = game.add.sprite(100, 100, 'slime-idle');
-    new_slime.scale.setTo (1.5);
-
     // add the platforms
     platform = game.add.sprite(0, 950, 'platform');
     platformGroup = game.add.group();
@@ -240,6 +237,8 @@ slime.state0.prototype = {
 
     // allows buttons to follow the player
     volume.toggle.prototype.move(volumeBtn);
+
+    //base_game.prototype.parallaxMove()
 
   },
 
