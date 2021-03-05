@@ -30,12 +30,12 @@ player.movement.prototype = {
     if (input.isDown(Phaser.Keyboard.LEFT)) {
       player_slime.body.velocity.x = -player.accel;
       player_slime.scale.setTo(-1.5, 1.5);
-      player_slime.animations.play('walk', 12, true);
+      player_slime.animations.play('walk', 6, true);
       nextIdle = game.time.now + idleTimer;
     } else if (input.isDown(Phaser.Keyboard.RIGHT)) {
       player_slime.body.velocity.x = player.accel;
       player_slime.scale.setTo(1.5,1.5);
-      player_slime.animations.play('walk', 12, true);
+      player_slime.animations.play('walk', 6, true);
       nextIdle = game.time.now + idleTimer;
     } else {
       player_slime.body.acceleration.x = 0;
@@ -61,6 +61,7 @@ player.movement.prototype = {
       if (vol_state == 1){
           laser.play();
       }
+      nextIdle = game.time.now + idleTimer;
       var direction = player_slime.scale.x
       console.log(player_slime.scale.x)
       nextFire = game.time.now + player.fireRate;
@@ -101,7 +102,7 @@ base_game.prototype = {
     player_ent.anchor.y = 0.5
     player_ent.scale.setTo(1.5, 1.5);
     player_ent.animations.add('idle', [0, 1]);
-    player_ent.animations.add('walk', [3, 4, 5, 6, 7, 8, 9, 10]);
+    player_ent.animations.add('walk', [3, 4]);
   },
   projectile: function() {
       bullets = game.add.group();
@@ -176,7 +177,7 @@ slime.state0.prototype = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-    player_slime = game.add.sprite(100, 100, "slime-new2");
+    player_slime = game.add.sprite(100, 100, "slime-new");
     enemy1 = game.add.sprite(1500, 800, 'enemy');
     player_slime.scale.setTo(0.7, 0.7);
     portal_slime = game.add.sprite(1000, 800, "slime");
