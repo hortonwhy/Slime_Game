@@ -5,7 +5,7 @@ let bullets;
 var platform;
 var platformGroup;
 var weapon1, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
-var volumeBtn;
+var volumeBtn, settingBtn;
 var background, foreground, backgroundGroup, foregroundGroup;
 let player = {};
 let enemy = {};
@@ -113,6 +113,13 @@ base_game.prototype = {
     player_ent.scale.setTo(1.5, 1.5);
     player_ent.animations.add('idle', [0, 1]);
     player_ent.animations.add('walk', [3, 4]);
+
+    // Enable Volume Button
+    volumeBtn = volume.toggle.prototype.mute(sound, -100, -100);
+    hud.funcs.prototype.set([volumeBtn]);
+    settingBtn = game.add.button(-900, 20, 'slime-idle', function() {
+      hud.funcs.prototype.toggle();
+    });
   },
   projectile: function() {
       bullets = game.add.group();
@@ -126,7 +133,6 @@ base_game.prototype = {
       bullets.setAll('scale.y', 1);
       bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
       bullets.callAll('animations.play', 'animations', 'fire');
-      // bullet
       // create a weapon sprite to move as needed
       weapon1 = game.add.sprite(500, 100, 'weapon1');
       weapon1.scale.setTo(3);
@@ -160,7 +166,6 @@ base_game.prototype = {
   },
   parallaxMove : function () {
     console.log(backgroundGroup.children.length);
-    
   },
 }
 
@@ -216,13 +221,7 @@ slime.state0.prototype = {
     // custom call, shortens work and declutters the code. 
     base_game.prototype.physics(player_slime);
     base_game.prototype.physics(enemy1)
-   // base_game.prototype.physics(enemy);
     base_game.prototype.projectile();
-
-    //game.world.setBounds(0, 0, 5000, 1000);
-
-    // Enable Volume Button
-    volumeBtn = volume.toggle.prototype.mute(sound, 800, 500);
 
     //camera
     game.camera.follow(player_slime);
@@ -233,14 +232,9 @@ slime.state0.prototype = {
     game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
 
     player.movement.prototype.attack(game.input.keyboard);
+    hud.funcs.prototype.move(settingBtn);
 
     enemy.pacing.prototype.pace(enemy1);
-
-    // allows buttons to follow the player
-//    volume.toggle.prototype.move(volumeBtn);
-
-    //base_game.prototype.parallaxMove()
-
   },
 
   hitPortal: function() {

@@ -1,7 +1,11 @@
 var CenterX = 2000 / 2, CenterY = 1000 / 2;
-var volBtn, b1, sound;
+var b1, sound;
 var vol_state = 1;
 let volume = {};
+
+// define all HUD elements below here
+let hud = {};
+var volBtn;
 
 volume.toggle = function() {};
       volume.toggle.prototype = {
@@ -30,6 +34,28 @@ volume.toggle = function() {};
       button.y = 100
     },
       }
+hud.funcs = function() {};
+  hud.objects = [];
+  hud.funcs.prototype = {
+    set: function(strArray) {
+      for (i = 0; i < strArray.length; i++) {
+        hud.objects.push(strArray[i]);
+      }
+    },
+    toggle: function () {
+      for (i = 0; i < hud.objects.length; i++) {
+        console.log(hud.objects[i].visible);
+      if (hud.objects[i].visible) {
+        hud.objects[i].visible = false
+      } else {
+        hud.objects[i].visible = true
+      }
+      }
+    },
+    move: function (settingBtn) {
+        settingBtn.x = game.camera.x + 500
+    },
+  }
 slime.title = function() {};
 slime.title.prototype = {
   preload: function() {
@@ -37,8 +63,8 @@ slime.title.prototype = {
     //game.load.audio('op-music', 'assets/audio/op.mp3');
     game.load.spritesheet('volume', 'assets/spritesheet/volume.png', 32, 32);
     game.load.audio('op-music','assets/sounds/song.wav');
-  },
 
+  },
   create: function() {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     game.stage.backgroundColor = "#ff00ff";
@@ -55,7 +81,10 @@ slime.title.prototype = {
     b1.anchor.setTo(0.5, 0.5);
 
     volume.toggle.prototype.mute(sound, 1500, 880);
-    },
+
+    hud.funcs.prototype.set([volBtn]);
+    hud.funcs.prototype.toggle();
+  },
   update: function() {
   },
 }
