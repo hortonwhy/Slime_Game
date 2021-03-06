@@ -28,20 +28,21 @@ player.movement.prototype = {
   move: function(input) {
     // weapon for the slime
     if (game.time.now < (nextFire + 2000)) {
-
-    weapon1.x = player_slime.x;
-    weapon1.y = player_slime.y;
-    weapon1.scale.setTo (player_slime.scale.x * 2.0, player_slime.scale.y * 2.0 )
+      weapon1.x = player_slime.x;
+      weapon1.y = player_slime.y;
+      weapon1.scale.setTo (player_slime.scale.x * 2.0, player_slime.scale.y * 2.0 )
     } else {
       weapon1.x = -100; weapon1.y = -100;
     }
     // I think velocity feels better for x movement, than accel
     if (input.isDown(Phaser.Keyboard.LEFT)) {
+      volume.toggle.prototype.move(volumeBtn);
       player_slime.body.velocity.x = -player.accel;
       player_slime.scale.setTo(-1.5, 1.5);
       player_slime.animations.play('walk', 6, true);
       nextIdle = game.time.now + idleTimer;
     } else if (input.isDown(Phaser.Keyboard.RIGHT)) {
+      volume.toggle.prototype.move(volumeBtn);
       player_slime.body.velocity.x = player.accel;
       player_slime.scale.setTo(1.5,1.5);
       player_slime.animations.play('walk', 6, true);
@@ -236,7 +237,7 @@ slime.state0.prototype = {
     enemy.pacing.prototype.pace(enemy1);
 
     // allows buttons to follow the player
-    volume.toggle.prototype.move(volumeBtn);
+//    volume.toggle.prototype.move(volumeBtn);
 
     //base_game.prototype.parallaxMove()
 
