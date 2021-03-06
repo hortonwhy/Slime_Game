@@ -116,7 +116,6 @@ base_game.prototype = {
 
     // Enable Volume Button
     volumeBtn = volume.toggle.prototype.mute(sound, -100, -100);
-    hud.funcs.prototype.set([volumeBtn]);
     settingBtn = game.add.button(-900, 20, 'slime-idle', function() {
       hud.funcs.prototype.toggle();
     });
@@ -225,6 +224,10 @@ slime.state0.prototype = {
 
     //camera
     game.camera.follow(player_slime);
+
+    // enabling hud pass button objects in the array
+    hud.funcs.prototype.set([volumeBtn]);
+    hud.funcs.prototype.toggle()
   },
   update: function() {
     game.physics.arcade.collide(player_slime, [platform, platformGroup]);
