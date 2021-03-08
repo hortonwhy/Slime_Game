@@ -216,8 +216,8 @@ slime.state0.prototype = {
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('platform', 'assets/sprites/platform.png');
-    game.load.image('background', 'assets/sprites/background-high-res.png');
-    game.load.image('foreground', 'assets/sprites/foreground-high-res.png');
+    game.load.image('background', 'assets/sprites/background.png');
+    game.load.image('foreground', 'assets/sprites/foreground.png');
     game.load.audio('laser','assets/sounds/laser.wav');
     game.load.audio('jump', 'assets/sounds/jump-sfx.mp3');
     game.load.audio('enemy_death','assets/sounds/enemy_dies.m4a');
