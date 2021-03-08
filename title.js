@@ -11,10 +11,8 @@ volume.toggle = function() {};
       volume.toggle.prototype = {
       mute: function (sound, xX, yY) {
       volBtn = game.add.button(xX, yY, 'volume', function() {
-      console.log('the button is toggled');
       if ( vol_state == 1) {
         for (i = 0; i < soundsArray.length; i++) {
-          console.log(soundsArray[i]);
           soundsArray[i].volume = 0;
         }
         sound.volume = 0;
@@ -31,7 +29,6 @@ volume.toggle = function() {};
         vol_state = 1;
         volBtn.frame = 0;
       }
-      console.log(sound.volume);
     });
     volBtn.scale.setTo(3);
     volBtn.anchor.x = 0.5;
@@ -54,7 +51,6 @@ hud.funcs = function() {};
     },
     toggle: function () {
       for (i = 0; i < hud.objects.length; i++) {
-        console.log(hud.objects[i].visible);
       if (hud.objects[i].visible) {
         hud.objects[i].visible = false
       } else {

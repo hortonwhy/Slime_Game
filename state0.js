@@ -72,7 +72,6 @@ player.movement.prototype = {
   attack: function(input) {
     if (input.isDown(Phaser.Keyboard.F) && game.time.now > nextFire) {
       // Fire projectile in direction of slime
-      console.log("F");
       if (vol_state == 1){
           laser.play();
       }
@@ -80,7 +79,6 @@ player.movement.prototype = {
       weapon1.y = player_slime.y;
       nextIdle = game.time.now + idleTimer;
       var direction = player_slime.scale.x
-      console.log(player_slime.scale.x)
       nextFire = game.time.now + player.fireRate;
       var bullet;
       bullet = bullets.getFirstDead();
@@ -191,7 +189,6 @@ base_game.prototype = {
   },
   gameSounds: function (sound) {
     if (secondElapsed > game.time.now && hasJumped) {
-      console.log ("play jump sound");
       jumpSFX.play()
       onPlat = false; hasJumped = false;
     }
