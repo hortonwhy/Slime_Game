@@ -7,7 +7,7 @@ var platformGroup, onPlat, hasJumped = true, secondElapsed;
 var weapon1, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
 var volumeBtn, settingBtn;
 var background, foreground, backgroundGroup, foregroundGroup;
-let player = {};
+let player = {}, falling;
 let enemy = {};
 var numEnemies = 2; // number of enemies until group problem is fixed
 let base_game = {}; // will provide methods for quick creation of a new state
@@ -30,6 +30,10 @@ enemy.pacing = function() {};
 // can add attribute here to adjust the jump timer, or acceleration of the slime
 player.movement.prototype = {
   move: function(input) {
+    // listen for player falling
+    if (player_slime.body.velocity.y > 0) {
+      falling = true;
+    }
     // weapon for the slime
     if (game.time.now < (nextFire + 2000)) {
       weapon1.x = player_slime.x;
@@ -108,8 +112,12 @@ player.movement.prototype = {
   },
   hitPlatform: function() {
     // figure out how to play sound only on intial hit and nothing else
-    //console.log("hit plaform");
-  }
+    if (falling) {
+      console.log("play hit plat sound");
+      thud.play()
+      falling = false;
+    }
+  },
 }
 enemy.pacing.prototype = {
     pace: function(object) {
@@ -187,7 +195,7 @@ base_game.prototype = {
   parallaxMove : function () {
     console.log(backgroundGroup.children.length);
   },
-  gameSounds: function (sound) {
+  gameSounds: function (sound) { //jump sound for now
     if (secondElapsed > game.time.now && hasJumped) {
       jumpSFX.play()
       onPlat = false; hasJumped = false;
@@ -213,6 +221,7 @@ slime.state0.prototype = {
     game.load.audio('laser','assets/sounds/laser.wav');
     game.load.audio('jump', 'assets/sounds/jump-sfx.mp3');
     game.load.audio('enemy_death','assets/sounds/enemy_dies.m4a');
+    game.load.audio('playerLand', 'assets/sounds/thud.wav');
   },
 
   create: function() {
@@ -222,11 +231,13 @@ slime.state0.prototype = {
 
     // add game sounds
     // Add them to array so mute works too
+    // I'd like to make this into a separate function. like base_game.prototye.sounds()
     laser = game.add.audio("laser");
     jumpSFX = game.add.audio('jump')
     jumpSFX.volume = 0.3
     death = game.add.audio("enemy_death");
-    soundsArray = [laser, jumpSFX, death];
+    thud = game.add.audio('playerLand');
+    soundsArray = [laser, jumpSFX, death, thud];
 
     game.stage.backgroundColor = "#dddddd";
     game.physics.startSystem(Phaser.Physics.ARCADE);
