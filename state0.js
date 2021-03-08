@@ -96,7 +96,6 @@ player.movement.prototype = {
     enemy.animations.play('dead',4,true);
     if (shot == false){
         portal_slime.animations.play('dooropen', 8, false);
-        enemy.
         shot = true;
     }
     dooropen = true;
