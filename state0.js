@@ -96,11 +96,12 @@ player.movement.prototype = {
     game.physics.arcade.overlap(bullets, enemy2, this.hitEnemy);
   },
   hitEnemy: function(enemy, bullet) {
+    enemy.body.enable = false
     shot += 1
     console.log('enemy hit');
     bullet.kill();
     enemy.animations.play('dead',4,true);
-    setTimeout(() => enemy.kill(), 1200);
+    setTimeout(() => enemy.kill(), 3000);
     if (shot == numEnemies){
         portal_slime.animations.play('dooropen', 8, false);
         shot = 0;
