@@ -132,11 +132,12 @@ base_game.prototype = {
     player_ent.animations.add('walk', [3, 4]);
 
     // Enable Volume Button
+    //jumpSFX = game.add.audio('jump')
     volumeBtn = volume.toggle.prototype.mute(sound, -100, -100);
     settingBtn = game.add.button(-900, 20, 'slime-idle', function() {
       hud.funcs.prototype.toggle();
 
-    jumpSFX = game.add.audio('jump')
+    //jumpSFX = game.add.audio('jump')
     });
   },
   projectile: function() {
@@ -188,7 +189,6 @@ base_game.prototype = {
   gameSounds: function (sound) {
     if (secondElapsed > game.time.now && hasJumped) {
       console.log ("play jump sound");
-      jumpSFX.volume = 0.5
       jumpSFX.play()
       onPlat = false; hasJumped = false;
     }
@@ -220,11 +220,13 @@ slime.state0.prototype = {
     game.world.setBounds(0, 0, 5000, 1000); // important to be called early if not first
     base_game.prototype.parallax();
 
-    // add laser sounds
+    // add game sounds
+    // Add them to array so mute works too
     laser = game.add.audio("laser");
     jumpSFX = game.add.audio('jump')
     jumpSFX.volume = 0.3
     death = game.add.audio("enemy_death");
+    soundsArray = [laser, jumpSFX, death];
 
     game.stage.backgroundColor = "#dddddd";
     game.physics.startSystem(Phaser.Physics.ARCADE);

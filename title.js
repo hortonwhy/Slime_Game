@@ -1,7 +1,7 @@
 var CenterX = 2000 / 2, CenterY = 1000 / 2;
 var b1, sound;
 var vol_state = 1;
-let volume = {};
+let volume = {}, soundsArray = [];
 
 // define all HUD elements below here
 let hud = {};
@@ -13,10 +13,20 @@ volume.toggle = function() {};
       volBtn = game.add.button(xX, yY, 'volume', function() {
       console.log('the button is toggled');
       if ( vol_state == 1) {
+        for (i = 0; i < soundsArray.length; i++) {
+          console.log(soundsArray[i]);
+          soundsArray[i].volume = 0;
+        }
         sound.volume = 0;
         vol_state = 0;
         volBtn.frame = 1;
       } else {
+        for (i = 0; i < soundsArray.length; i++) {
+          soundsArray[i].volume = 1;
+          if (soundsArray[i].name == "jump") {
+            soundsArray[i].volume = 0.1;
+          }
+        }
         sound.volume = 1;
         vol_state = 1;
         volBtn.frame = 0;
