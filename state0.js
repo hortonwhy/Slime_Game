@@ -97,6 +97,8 @@ player.movement.prototype = {
         shot = true;
     }
     dooropen = true;
+    death.play();
+    
   },
 }
 enemy.pacing.prototype = {
@@ -193,6 +195,7 @@ slime.state0.prototype = {
     game.load.image('background', 'assets/sprites/background-high-res.png');
     game.load.image('foreground', 'assets/sprites/foreground-high-res.png');
     game.load.audio('laser','assets/sounds/laser.wav');
+    game.load.audio('enemy_death','assets/sounds/enemy_dies.m4a');
   },
 
   create: function() {
@@ -202,6 +205,7 @@ slime.state0.prototype = {
 
     // add laser sounds
     laser = game.add.audio("laser");
+    death = game.add.audio("enemy_death");
 
     game.stage.backgroundColor = "#dddddd";
     game.physics.startSystem(Phaser.Physics.ARCADE);
