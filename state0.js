@@ -94,8 +94,9 @@ player.movement.prototype = {
 enemy.pacing.prototype = {
     pace: function(object) {
         if (object.body.velocity.x == 0) {
-            enemy.speed *= -1
-            object.body.velocity.x = enemy.speed
+            enemy.speed *= -1;
+            object.body.velocity.x = enemy.speed;
+            object.animations.play('enemywalk', 8, true);
         }
     }
 }
@@ -175,11 +176,12 @@ slime.state0.prototype = {
     game.load.spritesheet('slime-idle', 'assets/spritesheet/slime_idle.png', 64, 64);
     game.load.spritesheet('slime-new', 'assets/spritesheet/slime-new.png', 64, 64);
     game.load.spritesheet('slime-new2', 'assets/spritesheet/slime-new2.png', 64, 64);
+    game.load.spritesheet('enemy', 'assets/spritesheet/enemy.png',128,128);
     game.load.spritesheet('projectile', 'assets/spritesheet/projectile.png', 64, 64);
     game.load.image('weapon1', 'assets/sprites/basic-weapon.png');
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
-    game.load.image('enemy', 'assets/sprites/enemy.png');
+    //game.load.image('enemy', 'assets/sprites/enemy.png');
     game.load.image('platform', 'assets/sprites/platform.png');
     game.load.image('background', 'assets/sprites/background-high-res.png');
     game.load.image('foreground', 'assets/sprites/foreground-high-res.png');
@@ -228,6 +230,9 @@ slime.state0.prototype = {
     // enabling hud pass button objects in the array
     hud.funcs.prototype.set([volumeBtn]);
     hud.funcs.prototype.toggle()
+      
+    // add the walking animation
+    enemy1.animations.add('enemywalk', [0, 1, 2]);
   },
   update: function() {
     game.physics.arcade.collide(player_slime, [platform, platformGroup]);
