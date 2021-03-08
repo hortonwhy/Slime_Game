@@ -12,6 +12,7 @@ let enemy = {};
 let base_game = {}; // will provide methods for quick creation of a new state
 let platforms = {};
 var dooropen = false;
+var shot = false; // is the enemy shot?
 // attempting slime movement to be handled more nicely
 player.accel = 400
 player.jump_height = 400;
@@ -90,8 +91,11 @@ player.movement.prototype = {
   hitEnemy: function(enemy, bullet) {
     console.log('enemy hit');
     bullet.kill();
-    enemy.kill();
-    portal_slime.animations.play('dooropen', 8, false);
+    enemy.animations.play('dead',4,true);
+    if (shot == false){
+        portal_slime.animations.play('dooropen', 8, false);
+        shot = true;
+    }
     dooropen = true;
   },
 }
@@ -211,7 +215,8 @@ slime.state0.prototype = {
     game.physics.enable(portal_slime);
       
     // add the walking animation for the enemy
-    enemy1.animations.add('enemywalk', [0, 1, 2]);
+    enemy1.animations.add('enemywalk', [0, 1, 2, 3]);
+    enemy1.animations.add('dead',[4]);
     portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
 
     // add the platforms
@@ -251,7 +256,9 @@ slime.state0.prototype = {
     player.movement.prototype.attack(game.input.keyboard);
     hud.funcs.prototype.move(settingBtn);
 
-    enemy.pacing.prototype.pace(enemy1);
+    if (shot == false){
+        enemy.pacing.prototype.pace(enemy1);
+    }
   },
 
   hitPortal: function() {
