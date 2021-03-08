@@ -212,11 +212,8 @@ slime.state0.prototype = {
     game.load.image('background', 'assets/sprites/background-high-res.png');
     game.load.image('foreground', 'assets/sprites/foreground-high-res.png');
     game.load.audio('laser','assets/sounds/laser.wav');
-<<<<<<< HEAD
     game.load.audio('jump', 'assets/sounds/jump-sfx.mp3');
-=======
     game.load.audio('enemy_death','assets/sounds/enemy_dies.m4a');
->>>>>>> 9e0c13682d55dcbffd34edc557ed55779c05e94e
   },
 
   create: function() {
@@ -226,12 +223,9 @@ slime.state0.prototype = {
 
     // add laser sounds
     laser = game.add.audio("laser");
-<<<<<<< HEAD
     jumpSFX = game.add.audio('jump')
     jumpSFX.volume = 0.3
-=======
     death = game.add.audio("enemy_death");
->>>>>>> 9e0c13682d55dcbffd34edc557ed55779c05e94e
 
     game.stage.backgroundColor = "#dddddd";
     game.physics.startSystem(Phaser.Physics.ARCADE);
