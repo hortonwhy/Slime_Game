@@ -11,6 +11,7 @@ let player = {};
 let enemy = {};
 let base_game = {}; // will provide methods for quick creation of a new state
 let platforms = {};
+var dooropen = false;
 // attempting slime movement to be handled more nicely
 player.accel = 400
 player.jump_height = 400;
@@ -88,7 +89,10 @@ player.movement.prototype = {
   },
   hitEnemy: function(enemy, bullet) {
     console.log('enemy hit');
-    bullet.kill()
+    bullet.kill();
+    enemy.kill();
+    portal_slime.animations.play('dooropen', 8, false);
+    dooropen = true;
   },
 }
 enemy.pacing.prototype = {
@@ -172,7 +176,7 @@ base_game.prototype = {
 slime.state0 = function() {};
 slime.state0.prototype = {
   preload: function() {
-    game.load.spritesheet('slime', 'assets/spritesheet/slime_backup.png', 205, 130);
+    game.load.spritesheet('slime', 'assets/spritesheet/door.png', 128, 128);
     game.load.spritesheet('slime-idle', 'assets/spritesheet/slime_idle.png', 64, 64);
     game.load.spritesheet('slime-new', 'assets/spritesheet/slime-new.png', 64, 64);
     game.load.spritesheet('slime-new2', 'assets/spritesheet/slime-new2.png', 64, 64);
@@ -181,7 +185,6 @@ slime.state0.prototype = {
     game.load.image('weapon1', 'assets/sprites/basic-weapon.png');
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
-    //game.load.image('enemy', 'assets/sprites/enemy.png');
     game.load.image('platform', 'assets/sprites/platform.png');
     game.load.image('background', 'assets/sprites/background-high-res.png');
     game.load.image('foreground', 'assets/sprites/foreground-high-res.png');
@@ -204,7 +207,12 @@ slime.state0.prototype = {
     enemy1 = game.add.sprite(1500, 800, 'enemy');
     player_slime.scale.setTo(0.7, 0.7);
     portal_slime = game.add.sprite(1000, 800, "slime");
+    portal_slime.scale.setTo(1.5, 1.5);
     game.physics.enable(portal_slime);
+      
+    // add the walking animation for the enemy
+    enemy1.animations.add('enemywalk', [0, 1, 2]);
+    portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
 
     // add the platforms
     platform = game.add.sprite(0, 950, 'platform');
@@ -231,8 +239,9 @@ slime.state0.prototype = {
     hud.funcs.prototype.set([volumeBtn]);
     hud.funcs.prototype.toggle()
       
-    // add the walking animation
-    enemy1.animations.add('enemywalk', [0, 1, 2]);
+    
+      
+    
   },
   update: function() {
     game.physics.arcade.collide(player_slime, [platform, platformGroup]);
@@ -247,7 +256,9 @@ slime.state0.prototype = {
 
   hitPortal: function() {
     console.log("hit portal");
-    changeState(1);
+    if (dooropen){
+        changeState(1);
+    }
   },
 }
 

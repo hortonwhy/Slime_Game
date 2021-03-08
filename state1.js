@@ -1,3 +1,5 @@
+dooropen = false;
+
 slime.state1 = function() {};
 slime.state1.prototype = {
   preload: function() {
