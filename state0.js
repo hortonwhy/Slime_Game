@@ -1,9 +1,9 @@
 // State0 will be the titlescreen
-let player_slime;
+let player_slime, jumpSFX;
 var slime = {};
 let bullets;
 var platform;
-var platformGroup;
+var platformGroup, onPlat, hasJumped = true, secondElapsed;
 var weapon1, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
 var volumeBtn, settingBtn;
 var background, foreground, backgroundGroup, foregroundGroup;
@@ -62,6 +62,8 @@ player.movement.prototype = {
       if (player_slime.body.velocity.y == 0) {
         nextIdle = game.time.now + idleTimer;
         player_slime.body.velocity.y = -player.jump_height;
+        secondElapsed = game.time.now + 1000;
+        hasJumped = true;
       }
     }
   },
@@ -94,10 +96,15 @@ player.movement.prototype = {
     enemy.animations.play('dead',4,true);
     if (shot == false){
         portal_slime.animations.play('dooropen', 8, false);
+        enemy.
         shot = true;
     }
     dooropen = true;
   },
+  hitPlatform: function() {
+    // figure out how to play sound only on intial hit and nothing else
+    //console.log("hit plaform");
+  }
 }
 enemy.pacing.prototype = {
     pace: function(object) {
@@ -127,6 +134,8 @@ base_game.prototype = {
     volumeBtn = volume.toggle.prototype.mute(sound, -100, -100);
     settingBtn = game.add.button(-900, 20, 'slime-idle', function() {
       hud.funcs.prototype.toggle();
+
+    jumpSFX = game.add.audio('jump')
     });
   },
   projectile: function() {
@@ -175,6 +184,14 @@ base_game.prototype = {
   parallaxMove : function () {
     console.log(backgroundGroup.children.length);
   },
+  gameSounds: function (sound) {
+    if (secondElapsed > game.time.now && hasJumped) {
+      console.log ("play jump sound");
+      jumpSFX.volume = 0.5
+      jumpSFX.play()
+      onPlat = false; hasJumped = false;
+    }
+  },
 }
 
 slime.state0 = function() {};
@@ -193,6 +210,7 @@ slime.state0.prototype = {
     game.load.image('background', 'assets/sprites/background-high-res.png');
     game.load.image('foreground', 'assets/sprites/foreground-high-res.png');
     game.load.audio('laser','assets/sounds/laser.wav');
+    game.load.audio('jump', 'assets/sounds/jump-sfx.mp3');
   },
 
   create: function() {
@@ -202,6 +220,8 @@ slime.state0.prototype = {
 
     // add laser sounds
     laser = game.add.audio("laser");
+    jumpSFX = game.add.audio('jump')
+    jumpSFX.volume = 0.3
 
     game.stage.backgroundColor = "#dddddd";
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -249,12 +269,14 @@ slime.state0.prototype = {
     
   },
   update: function() {
-    game.physics.arcade.collide(player_slime, [platform, platformGroup]);
+    game.physics.arcade.collide(player_slime, [platform, platformGroup], player.movement.prototype.hitPlatform);
     player.movement.prototype.move(game.input.keyboard);
     game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
+    base_game.prototype.gameSounds();
 
     player.movement.prototype.attack(game.input.keyboard);
     hud.funcs.prototype.move(settingBtn);
+
 
     if (shot == false){
         enemy.pacing.prototype.pace(enemy1);
