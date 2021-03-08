@@ -9,10 +9,12 @@ var volumeBtn, settingBtn;
 var background, foreground, backgroundGroup, foregroundGroup;
 let player = {};
 let enemy = {};
+var numEnemies = 2; // number of enemies until group problem is fixed
 let base_game = {}; // will provide methods for quick creation of a new state
 let platforms = {};
 var dooropen = false;
-var shot = false; // is the enemy shot?
+var shot = 0; 
+//var shot = false; is the enemy shot?
 // attempting slime movement to be handled more nicely
 player.accel = 400
 player.jump_height = 400;
@@ -89,16 +91,20 @@ player.movement.prototype = {
     }
 
     game.physics.arcade.overlap(bullets, enemy1, this.hitEnemy);
+    game.physics.arcade.overlap(bullets, enemy2, this.hitEnemy);
   },
   hitEnemy: function(enemy, bullet) {
+    shot += 1
     console.log('enemy hit');
     bullet.kill();
     enemy.animations.play('dead',4,true);
-    if (shot == false){
+    setTimeout(() => enemy.kill(), 1200);
+    if (shot == numEnemies){
         portal_slime.animations.play('dooropen', 8, false);
-        shot = true;
+        shot = 0;
+        dooropen = true;
     }
-    dooropen = true;
+    //dooropen = true;
     death.play();
     
   },
@@ -232,6 +238,7 @@ slime.state0.prototype = {
 
     player_slime = game.add.sprite(100, 100, "slime-new");
     enemy1 = game.add.sprite(1500, 800, 'enemy');
+    enemy2 = game.add.sprite(800, 800, 'enemy');
     player_slime.scale.setTo(0.7, 0.7);
     portal_slime = game.add.sprite(1000, 800, "slime");
     portal_slime.scale.setTo(1.5, 1.5);
@@ -240,6 +247,8 @@ slime.state0.prototype = {
     // add the walking animation for the enemy
     enemy1.animations.add('enemywalk', [0, 1, 2, 3]);
     enemy1.animations.add('dead',[4]);
+    enemy2.animations.add('enemywalk', [0, 1, 2, 3]);
+    enemy2.animations.add('dead',[4]);
     portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
 
     // add the platforms
@@ -257,7 +266,8 @@ slime.state0.prototype = {
 
     // custom call, shortens work and declutters the code. 
     base_game.prototype.physics(player_slime);
-    base_game.prototype.physics(enemy1)
+    base_game.prototype.physics(enemy1);
+    base_game.prototype.physics(enemy2);
     base_game.prototype.projectile();
 
     //camera
@@ -281,8 +291,9 @@ slime.state0.prototype = {
     hud.funcs.prototype.move(settingBtn);
 
 
-    if (shot == false){
+    if (shot < numEnemies){
         enemy.pacing.prototype.pace(enemy1);
+        enemy.pacing.prototype.pace(enemy2);
     }
   },
 
