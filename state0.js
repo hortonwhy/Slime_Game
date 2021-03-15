@@ -10,6 +10,7 @@ var background, foreground, backgroundGroup, foregroundGroup;
 let player = {}, falling;
 let enemy = {};
 var numEnemies = 2; // number of enemies until group problem is fixed
+var enemyGroup;
 let base_game = {}; // will provide methods for quick creation of a new state
 let platforms = {};
 var dooropen = false;
@@ -109,7 +110,7 @@ player.movement.prototype = {
     }
     //dooropen = true;
     death.play();
-    
+
   },
   hitPlatform: function() {
     // figure out how to play sound only on intial hit and nothing else
@@ -204,6 +205,34 @@ base_game.prototype = {
   },
 }
 
+enemyFunc = function () {};
+enemyFunc.prototype = {
+  initialize: function() { // make an enemy group to spawn from
+    enemyGroup = game.add.group();
+    enemyGroup.createMultiple(50, 'enemy');
+    enemyGroup.setAll('anchor.y', 0.5);
+    enemyGroup.setAll('anchor.x', 0.5);
+    enemyGroup.setAll('scale.x', 1.25);
+    enemyGroup.setAll('scale.y', 1.25);
+    enemyGroup.callAll('animations.add', 'animations', 'enemywalk', [0, 1, 2, 3]);
+    enemyGroup.callAll('animations.add', 'animations', 'dead', [4]);
+
+  },
+  spawn: function (xX, yY) {
+    console.log("spawn enemy at X: %d, Y: %d", xX, yY);
+    var enemyLocal;
+    enemyLocal = enemyGroup.getFirstDead(true, xX, yY)
+    game.physics.enable(enemyLocal);
+    enemyLocal.body.collideWorldBounds = true;
+    enemyLocal.body.gravity.y = player.gravity;
+    //enemyLocal.animations.play('enemywalk', 8, true);
+    return enemyLocal;
+
+
+  },
+
+}
+
 slime.state0 = function() {};
 slime.state0.prototype = {
   preload: function() {
@@ -229,6 +258,10 @@ slime.state0.prototype = {
 
     game.world.setBounds(0, 0, 5000, 1000); // important to be called early if not first
     base_game.prototype.parallax();
+
+    // enemy group init
+    enemyFunc.prototype.initialize();
+    enemyFunc.prototype.spawn(500, 500);
 
     // add game sounds
     // Add them to array so mute works too
