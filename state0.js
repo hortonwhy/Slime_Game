@@ -10,7 +10,7 @@ var background, foreground, backgroundGroup, foregroundGroup;
 let player = {}, falling;
 let enemy = {};
 var numEnemies = 2; // number of enemies until group problem is fixed
-var enemyGroup;
+var enemyGroup, enemySpeed = 0.25; //higher is faster
 let base_game = {}; // will provide methods for quick creation of a new state
 let platforms = {};
 var dooropen = false;
@@ -93,10 +93,13 @@ player.movement.prototype = {
       bullet.animations.play('fire', 3, true);
     }
 
-    game.physics.arcade.overlap(bullets, enemy1, this.hitEnemy);
-    game.physics.arcade.overlap(bullets, enemy2, this.hitEnemy);
+    //game.physics.arcade.overlap(bullets, enemy1, this.hitEnemy);
+    //game.physics.arcade.overlap(bullets, enemy2, this.hitEnemy);
+
+    // enemyGroup
+    game.physics.arcade.overlap(bullets, enemyGroup, this.hitEnemy);
   },
-  hitEnemy: function(enemy, bullet) {
+  hitEnemy: function(bullet, enemy) {
     enemy.body.enable = false
     shot += 1
     console.log('enemy hit');
@@ -218,7 +221,7 @@ enemyFunc.prototype = {
     enemyGroup.callAll('animations.add', 'animations', 'dead', [4]);
 
   },
-  spawn: function (xX, yY) {
+  manualSpawn: function (xX, yY) {
     console.log("spawn enemy at X: %d, Y: %d", xX, yY);
     var enemyLocal;
     enemyLocal = enemyGroup.getFirstDead(true, xX, yY)
@@ -228,7 +231,23 @@ enemyFunc.prototype = {
     //enemyLocal.animations.play('enemywalk', 8, true);
     return enemyLocal;
 
+  },
+  dynamicSpawn: function (xX, yY) {
 
+  },
+
+  chase: function (enemyLocalGroup) {
+    for (i = 0; i < enemyLocalGroup.length; i++) {
+      if (enemyLocalGroup.children[i].alive) {
+        var enemyLocal = enemyLocalGroup.children[i];
+        var deltaX = enemyLocal.x - player_slime.x;
+        var deltaY = enemyLocal.y - player_slime.y;
+        //console.log("Enemy %d, %d, %d", i, deltaX, deltaY);
+        enemyLocal.body.velocity.x = deltaX * -1 * enemySpeed;
+      } else {
+        break;
+      }
+    }
   },
 
 }
@@ -261,7 +280,7 @@ slime.state0.prototype = {
 
     // enemy group init
     enemyFunc.prototype.initialize();
-    enemyFunc.prototype.spawn(500, 500);
+    enemyFunc.prototype.manualSpawn(500, 500);
 
     // add game sounds
     // Add them to array so mute works too
@@ -278,18 +297,11 @@ slime.state0.prototype = {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
     player_slime = game.add.sprite(100, 100, "slime-new");
-    enemy1 = game.add.sprite(1500, 800, 'enemy');
-    enemy2 = game.add.sprite(800, 800, 'enemy');
     player_slime.scale.setTo(0.7, 0.7);
     portal_slime = game.add.sprite(1000, 800, "slime");
     portal_slime.scale.setTo(1.5, 1.5);
     game.physics.enable(portal_slime);
-      
-    // add the walking animation for the enemy
-    enemy1.animations.add('enemywalk', [0, 1, 2, 3]);
-    enemy1.animations.add('dead',[4]);
-    enemy2.animations.add('enemywalk', [0, 1, 2, 3]);
-    enemy2.animations.add('dead',[4]);
+
     portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
 
     // add the platforms
@@ -307,8 +319,6 @@ slime.state0.prototype = {
 
     // custom call, shortens work and declutters the code. 
     base_game.prototype.physics(player_slime);
-    base_game.prototype.physics(enemy1);
-    base_game.prototype.physics(enemy2);
     base_game.prototype.projectile();
 
     //camera
@@ -317,10 +327,12 @@ slime.state0.prototype = {
     // enabling hud pass button objects in the array
     hud.funcs.prototype.set([volumeBtn]);
     hud.funcs.prototype.toggle()
-      
-    
-      
-    
+
+
+    console.log(enemyGroup);
+    enemyFunc.prototype.chase(enemyGroup);
+
+
   },
   update: function() {
     game.physics.arcade.collide(player_slime, [platform, platformGroup], player.movement.prototype.hitPlatform);
@@ -332,10 +344,13 @@ slime.state0.prototype = {
     hud.funcs.prototype.move(settingBtn);
 
 
+    enemyFunc.prototype.chase(enemyGroup);
+    /*
     if (shot < numEnemies){
         enemy.pacing.prototype.pace(enemy1);
         enemy.pacing.prototype.pace(enemy2);
     }
+    */
   },
 
   hitPortal: function() {
