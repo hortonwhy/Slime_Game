@@ -39,14 +39,17 @@ volume.toggle = function() {};
     move: function(button) {
       button.x = game.camera.x + 1900
       button.y = 100
+      button.fixedToCamera = true;
     },
       }
 hud.funcs = function() {};
   hud.objects = [];
   hud.funcs.prototype = {
-    set: function(strArray) {
+    push: function(strArray) {
       for (i = 0; i < strArray.length; i++) {
         hud.objects.push(strArray[i]);
+        strArray[i].anchor.x = 0.5;
+        strArray[i].anchor.y = 0.5;
       }
     },
     toggle: function () {
@@ -58,8 +61,9 @@ hud.funcs = function() {};
       }
       }
     },
-    move: function (settingBtn) {
-        settingBtn.x = game.camera.x + 500
+    move: function (settingBtn, x, y) {
+        settingBtn.x = x; settingBtn.y = y;
+        settingBtn.fixedToCamera = true;
     },
   }
 slime.title = function() {};
@@ -88,7 +92,7 @@ slime.title.prototype = {
 
     volume.toggle.prototype.mute(sound, 1500, 880);
 
-    hud.funcs.prototype.set([volBtn]);
+    hud.funcs.prototype.push([volBtn]);
     hud.funcs.prototype.toggle();
   },
   update: function() {

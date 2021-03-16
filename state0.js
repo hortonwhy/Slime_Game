@@ -46,13 +46,11 @@ player.movement.prototype = {
     }
     // I think velocity feels better for x movement, than accel
     if (input.isDown(Phaser.Keyboard.LEFT)) {
-      volume.toggle.prototype.move(volumeBtn);
       player_slime.body.velocity.x = -player.accel;
       player_slime.scale.setTo(-1.5, 1.5);
       player_slime.animations.play('walk', 6, true);
       nextIdle = game.time.now + idleTimer;
     } else if (input.isDown(Phaser.Keyboard.RIGHT)) {
-      volume.toggle.prototype.move(volumeBtn);
       player_slime.body.velocity.x = player.accel;
       player_slime.scale.setTo(1.5,1.5);
       player_slime.animations.play('walk', 6, true);
@@ -150,7 +148,7 @@ base_game.prototype = {
     player_ent.animations.add('walk', [3, 4]);
 
     // Enable Volume Button
-    volumeBtn = volume.toggle.prototype.mute(sound, -100, -100);
+    volumeBtn = volume.toggle.prototype.mute(sound, 200, 90);
     settingBtn = game.add.button(-900, 20, 'slime-idle', function() {
       hud.funcs.prototype.toggle();
     });
@@ -341,13 +339,15 @@ slime.state0.prototype = {
     game.camera.follow(player_slime);
 
     // enabling hud pass button objects in the array
-    hud.funcs.prototype.set([volumeBtn]);
-    hud.funcs.prototype.toggle()
+    hud.funcs.prototype.push([volumeBtn]);
+    hud.funcs.prototype.toggle() // toggle visibility off
+    hud.funcs.prototype.move(settingBtn, game.camera.x + 500, 30);
+    hud.funcs.prototype.move(volumeBtn, game.camera.x + 900, 50);
 
     // enemy group init
     enemyFunc.prototype.initialize('enemy');
-    enemyFunc.prototype.manualSpawn(500, 500);
-    enemyFunc.prototype.dynamicSpawn();
+    //enemyFunc.prototype.manualSpawn(500, 500);
+    //enemyFunc.prototype.dynamicSpawn();
 
   },
   update: function() {
@@ -357,7 +357,6 @@ slime.state0.prototype = {
     base_game.prototype.gameSounds();
 
     player.movement.prototype.attack(game.input.keyboard);
-    hud.funcs.prototype.move(settingBtn);
 
 
     enemyFunc.prototype.chase(enemyGroup, enemySpeed); // Can change speed
