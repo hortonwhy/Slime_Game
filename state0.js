@@ -10,7 +10,7 @@ var background, foreground, backgroundGroup, foregroundGroup;
 let player = {}, falling;
 let enemy = {};
 var numEnemies = 2; // number of enemies until group problem is fixed
-var enemyGroup, enemySpeed = 0.25; //higher is faster
+var enemyGroup, nextSpawn = 0, enemySpeed = 1.0; //higher is faster
 let base_game = {}; // will provide methods for quick creation of a new state
 let platforms = {};
 var dooropen = false;
@@ -22,6 +22,7 @@ player.jump_height = 400;
 player.gravity = 800;
 player.drag = 100
 player.fireRate = 200;
+player.difficulty = 1; // Lower is more difficult
 
 // enemy attributes
 enemy.speed = 400
@@ -210,9 +211,9 @@ base_game.prototype = {
 
 enemyFunc = function () {};
 enemyFunc.prototype = {
-  initialize: function() { // make an enemy group to spawn from
+  initialize: function(enemyType) { // make an enemy group to spawn from
     enemyGroup = game.add.group();
-    enemyGroup.createMultiple(50, 'enemy');
+    enemyGroup.createMultiple(50, enemyType);
     enemyGroup.setAll('anchor.y', 0.5);
     enemyGroup.setAll('anchor.x', 0.5);
     enemyGroup.setAll('scale.x', 1.25);
@@ -228,22 +229,41 @@ enemyFunc.prototype = {
     game.physics.enable(enemyLocal);
     enemyLocal.body.collideWorldBounds = true;
     enemyLocal.body.gravity.y = player.gravity;
-    //enemyLocal.animations.play('enemywalk', 8, true);
-    return enemyLocal;
+    enemyLocal.animations.play('enemywalk', 8, true);
+    //return enemyLocal;
 
   },
-  dynamicSpawn: function (xX, yY) {
+  dynamicSpawn: function () {
+    if (nextSpawn < game.time.now) {
+      nextSpawn = game.time.now + (20000 * (player.difficulty * Math.random()));
+      console.log("nextSpawn", nextSpawn);
+    // Difficulty manipulates spawn frequency //
+    var xX = Math.random() * game.world.bounds.width;
+    var yY = Math.random() * game.world.bounds.height;
+    console.log(xX, yY);
+    if ((xX - player_slime.x) < 300) {
+      xX += 300;
+    }
+      var enemyLocal = enemyGroup.getFirstDead(true, xX, yY);
+      game.physics.enable(enemyLocal);
+      enemyLocal.body.collideWorldBounds = true;
+      enemyLocal.body.gravity.y = player.gravity;
+      enemyLocal.animations.play('enemywalk', 8, true);
+
+    }
 
   },
 
-  chase: function (enemyLocalGroup) {
+  chase: function (enemyLocalGroup, speed) {
     for (i = 0; i < enemyLocalGroup.length; i++) {
       if (enemyLocalGroup.children[i].alive) {
         var enemyLocal = enemyLocalGroup.children[i];
         var deltaX = enemyLocal.x - player_slime.x;
         var deltaY = enemyLocal.y - player_slime.y;
+        var dir = 0;
         //console.log("Enemy %d, %d, %d", i, deltaX, deltaY);
-        enemyLocal.body.velocity.x = deltaX * -1 * enemySpeed;
+        if (deltaX > 0) { dir = -100} else { dir = 100};
+        enemyLocal.body.velocity.x = dir * speed;
       } else {
         break;
       }
@@ -277,10 +297,6 @@ slime.state0.prototype = {
 
     game.world.setBounds(0, 0, 5000, 1000); // important to be called early if not first
     base_game.prototype.parallax();
-
-    // enemy group init
-    enemyFunc.prototype.initialize();
-    enemyFunc.prototype.manualSpawn(500, 500);
 
     // add game sounds
     // Add them to array so mute works too
@@ -328,10 +344,10 @@ slime.state0.prototype = {
     hud.funcs.prototype.set([volumeBtn]);
     hud.funcs.prototype.toggle()
 
-
-    console.log(enemyGroup);
-    enemyFunc.prototype.chase(enemyGroup);
-
+    // enemy group init
+    enemyFunc.prototype.initialize('enemy');
+    enemyFunc.prototype.manualSpawn(500, 500);
+    enemyFunc.prototype.dynamicSpawn();
 
   },
   update: function() {
@@ -344,13 +360,8 @@ slime.state0.prototype = {
     hud.funcs.prototype.move(settingBtn);
 
 
-    enemyFunc.prototype.chase(enemyGroup);
-    /*
-    if (shot < numEnemies){
-        enemy.pacing.prototype.pace(enemy1);
-        enemy.pacing.prototype.pace(enemy2);
-    }
-    */
+    enemyFunc.prototype.chase(enemyGroup, enemySpeed); // Can change speed
+    enemyFunc.prototype.dynamicSpawn();
   },
 
   hitPortal: function() {
