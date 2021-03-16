@@ -7,7 +7,7 @@ var platformGroup, onPlat, hasJumped = true, secondElapsed;
 var weapon1, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
 var volumeBtn, settingBtn;
 var background, foreground, backgroundGroup, foregroundGroup;
-let player = {}, falling;
+let player = {}, falling, scoreTime = {};
 let enemy = {};
 var numEnemies = 2; // number of enemies until group problem is fixed
 var enemyGroup, nextSpawn = 0, enemySpeed = 1.0; //higher is faster
@@ -270,6 +270,22 @@ enemyFunc.prototype = {
 
 }
 
+scoreFunc = function() {};
+scoreFunc.prototype = {
+  start: function() {
+
+    scoreTime.time = 0;
+    scoreTime.text = game.add.text(CenterX, CenterY / 4, "Score: [" + scoreTime.time + "]", {font: "30px Monospace"});
+    scoreTime.text.fixedToCamera = true;
+  },
+  update: function() {
+    scoreTime.time = Math.round(game.time.now / 1000);
+    console.log(scoreTime.text.text = "Score: [" + scoreTime.time + "]");
+  },
+
+
+}
+
 slime.state0 = function() {};
 slime.state0.prototype = {
   preload: function() {
@@ -344,6 +360,9 @@ slime.state0.prototype = {
     hud.funcs.prototype.move(settingBtn, game.camera.x + 500, 30);
     hud.funcs.prototype.move(volumeBtn, game.camera.x + 900, 50);
 
+    //score time set the intial text location
+    scoreFunc.prototype.start();
+
     // enemy group init
     enemyFunc.prototype.initialize('enemy');
     //enemyFunc.prototype.manualSpawn(500, 500);
@@ -361,6 +380,9 @@ slime.state0.prototype = {
 
     enemyFunc.prototype.chase(enemyGroup, enemySpeed); // Can change speed
     enemyFunc.prototype.dynamicSpawn();
+
+    // keeps score up to date
+    scoreFunc.prototype.update()
   },
 
   hitPortal: function() {
