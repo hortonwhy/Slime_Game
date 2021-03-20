@@ -279,7 +279,7 @@ scoreFunc.prototype = {
     scoreTime.text.fixedToCamera = true;
   },
   update: function() {
-    scoreTime.time = Math.round(game.time.now / 1000);
+    scoreTime.time = Math.round((game.time.now - scoreTime.titleTime) / 1000);
     console.log(scoreTime.text.text = "Score: [" + scoreTime.time + "]");
   },
 

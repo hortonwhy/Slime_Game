@@ -86,6 +86,7 @@ slime.title.prototype = {
     sound.play();
 
     b1 = game.add.button(CenterX, CenterY, 'startBtn', function() {
+      scoreTime.titleTime = game.time.now;
       changeState(0);
     });
     b1.anchor.setTo(0.5, 0.5);
