@@ -71,6 +71,8 @@ slime.title = function() {};
 slime.title.prototype = {
   preload: function() {
     game.load.image('startBtn', 'assets/sprites/start_button.jpg');
+    game.load.image('startBtn', 'assets/sprites/tutorial_button.jpg');
+    game.load.image('blankBtn', 'assets/sprites/blankBtn.png');
     //game.load.audio('op-music', 'assets/audio/op.mp3');
     game.load.spritesheet('volume', 'assets/spritesheet/volume.png', 32, 32);
     game.load.audio('op-music','assets/sounds/song.wav');
@@ -86,11 +88,25 @@ slime.title.prototype = {
     sound.loop = true;
     sound.play();
 
-    b1 = game.add.button(CenterX, CenterY, 'startBtn', function() {
+    b1 = game.add.button(CenterX, CenterY, 'blankBtn', function() {
       timeInTitle = game.time.now;
       changeState(0);
     });
     b1.anchor.setTo(0.5, 0.5);
+    b1Text = game.add.text(CenterX, CenterY, "[" + "Start Game" + "]", {font: "40px Monospace"});
+    b1Text.anchor.setTo(0.5, 0.5);
+    b1.scale.x = 12;
+    b1.scale.y = 3;
+
+    b2 = game.add.button(CenterX, CenterY + 150, 'blankBtn', function() {
+      changeState(1) // tutorial state
+    });
+    b2Text = game.add.text(CenterX, CenterY + 150, "[" + "Tutorial" + "]", {font: "40px Monospace"});
+    b2Text.anchor.setTo(0.5, 0.5);
+    b2.anchor.setTo(0.5, 0.5);
+    b2.scale.x = 12;
+    b2.scale.y = 3;
+    console.log(b2);
 
     volume.toggle.prototype.mute(sound, 1500, 880);
 
