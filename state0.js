@@ -2,7 +2,7 @@
 let player_slime, jumpSFX;
 var slime = {};
 let bullets;
-var platform;
+var rockGroup;
 var platformGroup, onPlat, hasJumped = true, secondElapsed;
 var weapon1, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
 var volumeBtn, settingBtn;
@@ -211,8 +211,17 @@ base_game.prototype = {
     platformGroup.setAll('body.immovable', true);
     // insert plaform creates here
     if (worldType == "0") {
+        rockGroup = game.add.group();
+      for (i = 0; i < worldX / 32; i++) {
+        rockGroup.create(i * 32, worldY - 32, 'rock-ground');
+
+      }
+      rockGroup.setAll('anchor.y', 0.5);
+      rockGroup.setAll('anchor.x', 0.5);
+      rockGroup.setAll('scale.x', 2.5);
+      rockGroup.setAll('scale.y', 2.5);
       var locations = [
-        [100, 900], [250, 900], [310, 850], [620, 800], [960, 720],
+        [0, 900], [500, 800], [960, 720],
       ];
     }
 
@@ -289,14 +298,13 @@ enemyFunc.prototype = {
 scoreFunc = function() {};
 scoreFunc.prototype = {
   start: function() {
-
     scoreTime.time = 0;
     scoreTime.text = game.add.text(CenterX, CenterY / 4, "Score: [" + scoreTime.time + "]", {font: "30px Monospace"});
     scoreTime.text.fixedToCamera = true;
   },
   update: function() {
-    scoreTime.time = Math.round((game.time.now - scoreTime.titleTime) / 1000);
-    //console.log(scoreTime.text.text = "Score: [" + scoreTime.time + "]");
+    scoreTime.time = Math.round((game.time.now - timeInTitle) / 1000);
+    console.log(scoreTime.text.text = "Score: [" + scoreTime.time + "]");
   },
 
 
@@ -305,7 +313,7 @@ scoreFunc.prototype = {
 slime.state0 = function() {};
 slime.state0.prototype = {
   preload: function() {
-    game.load.spritesheet('slime', 'assets/spritesheet/door.png', 128, 128);
+    game.load.spritesheet('door', 'assets/spritesheet/door.png', 128, 128);
     game.load.spritesheet('slime-idle', 'assets/spritesheet/slime_idle.png', 64, 64);
     game.load.spritesheet('slime-new', 'assets/spritesheet/slime-new.png', 64, 64);
     game.load.spritesheet('slime-new2', 'assets/spritesheet/slime-new2.png', 64, 64);
@@ -317,15 +325,18 @@ slime.state0.prototype = {
     game.load.image('platform', 'assets/sprites/platform.png');
     game.load.image('background', 'assets/sprites/background.png');
     game.load.image('foreground', 'assets/sprites/foreground.png');
+    game.load.image('rock-ground', 'assets/sprites/rock_ground.png');
     game.load.audio('laser','assets/sounds/laser.wav');
     game.load.audio('jump', 'assets/sounds/jump-sfx.mp3');
     game.load.audio('enemy_death','assets/sounds/enemy_dies.m4a');
     game.load.audio('playerLand', 'assets/sounds/thud.wav');
+
   },
 
   create: function() {
 
     game.world.setBounds(0, 0, 5000, 1000); // important to be called early if not first
+    var gameX = game.world.bounds.width; gameY = game.world.bounds.height;
     base_game.prototype.parallax();
 
     // add game sounds
@@ -344,7 +355,8 @@ slime.state0.prototype = {
 
     player_slime = game.add.sprite(100, 100, "slime-new");
     player_slime.scale.setTo(0.7, 0.7);
-    portal_slime = game.add.sprite(1000, 800, "slime");
+
+    portal_slime = game.add.sprite(gameX - 500, 300, "door");
     portal_slime.scale.setTo(1.5, 1.5);
     game.physics.enable(portal_slime);
 
@@ -354,9 +366,10 @@ slime.state0.prototype = {
     base_game.prototype.genPlatforms(game.world.bounds.width, game.world.bounds.height, 0)
 
     // add collide with the platforms
-    game.physics.enable([player_slime, platformGroup]);
+    game.physics.enable([player_slime, platformGroup, rockGroup]);
     player_slime.body.collideWorldBounds = true;
     platformGroup.setAll('body.immovable', true);
+    rockGroup.setAll('body.immovable', true);
 
     // custom call, shortens work and declutters the code. 
     base_game.prototype.physics(player_slime);
@@ -381,6 +394,8 @@ slime.state0.prototype = {
   },
   update: function() {
     game.physics.arcade.collide(player_slime, [platformGroup], player.movement.prototype.hitPlatform);
+    game.physics.arcade.collide(player_slime, [rockGroup]);
+    game.physics.arcade.collide(enemyGroup, [rockGroup, player_slime, platformGroup]);
     player.movement.prototype.move(game.input.keyboard);
     game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
     base_game.prototype.gameSounds();

@@ -2,6 +2,7 @@ var CenterX = 2000 / 2, CenterY = 1000 / 2;
 var b1, sound;
 var vol_state = 1;
 let volume = {}, soundsArray = [];
+var timeInTitle = 0;
 
 // define all HUD elements below here
 let hud = {};
@@ -86,7 +87,7 @@ slime.title.prototype = {
     sound.play();
 
     b1 = game.add.button(CenterX, CenterY, 'startBtn', function() {
-      scoreTime.titleTime = game.time.now;
+      timeInTitle = game.time.now;
       changeState(0);
     });
     b1.anchor.setTo(0.5, 0.5);
