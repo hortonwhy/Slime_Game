@@ -210,8 +210,8 @@ base_game.prototype = {
     platformGroup = game.add.group();
     platformGroup.setAll('body.immovable', true);
     // insert plaform creates here
+    rockGroup = game.add.group();
     if (worldType == "0") {
-        rockGroup = game.add.group();
       for (i = 0; i < worldX / 32; i++) {
         rockGroup.create(i * 32, worldY - 32, 'rock-ground');
 
@@ -222,6 +222,18 @@ base_game.prototype = {
       rockGroup.setAll('scale.y', 2.5);
       var locations = [
         [0, 900], [500, 800], [960, 720],
+      ];
+    }
+    else if (worldType == "tut"){
+      for (i = 0; i < worldX / 32; i++) {
+        rockGroup.create(i * 32, worldY - 32, 'rock-ground');
+      }
+      rockGroup.setAll('anchor.y', 0.5);
+      rockGroup.setAll('anchor.x', 0.5);
+      rockGroup.setAll('scale.x', 2.5);
+      rockGroup.setAll('scale.y', 2.5);
+      var locations = [
+        [1700, 770], [1400, 840], [1950, 840],
       ];
     }
 

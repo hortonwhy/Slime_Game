@@ -99,6 +99,7 @@ slime.title.prototype = {
     b1.scale.y = 3;
 
     b2 = game.add.button(CenterX, CenterY + 150, 'blankBtn', function() {
+      timeInTitle = game.time.now;
       changeState(1) // tutorial state
     });
     b2Text = game.add.text(CenterX, CenterY + 150, "[" + "Tutorial" + "]", {font: "40px Monospace"});
