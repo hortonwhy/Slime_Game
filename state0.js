@@ -205,7 +205,23 @@ base_game.prototype = {
       onPlat = false; hasJumped = false;
     }
   },
-}
+  genPlatforms : function (worldX, worldY, worldType) {
+    var numPlats = 20;
+    platformGroup = game.add.group();
+    platformGroup.setAll('body.immovable', true);
+    // insert plaform creates here
+    if (worldType == "0") {
+      var locations = [
+        [100, 900], [250, 900], [310, 850], [620, 800], [960, 720],
+      ];
+    }
+
+    for (i = 0; i < locations.length; i++) {
+      platformGroup.create(locations[i][0], locations[i][1], 'platform');
+    }
+  }
+
+  },
 
 enemyFunc = function () {};
 enemyFunc.prototype = {
@@ -280,7 +296,7 @@ scoreFunc.prototype = {
   },
   update: function() {
     scoreTime.time = Math.round((game.time.now - scoreTime.titleTime) / 1000);
-    console.log(scoreTime.text.text = "Score: [" + scoreTime.time + "]");
+    //console.log(scoreTime.text.text = "Score: [" + scoreTime.time + "]");
   },
 
 
@@ -335,16 +351,11 @@ slime.state0.prototype = {
     portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
 
     // add the platforms
-    platform = game.add.sprite(0, 950, 'platform');
-    platformGroup = game.add.group();
-    platformGroup.create(310, 850, 'platform');
-    platformGroup.create(620, 800, 'platform');
-    platformGroup.create(960, 720, 'platform');
+    base_game.prototype.genPlatforms(game.world.bounds.width, game.world.bounds.height, 0)
 
     // add collide with the platforms
-    game.physics.enable([player_slime, platform, platformGroup]);
+    game.physics.enable([player_slime, platformGroup]);
     player_slime.body.collideWorldBounds = true;
-    platform.body.immovable = true;
     platformGroup.setAll('body.immovable', true);
 
     // custom call, shortens work and declutters the code. 
@@ -366,11 +377,10 @@ slime.state0.prototype = {
     // enemy group init
     enemyFunc.prototype.initialize('enemy');
     //enemyFunc.prototype.manualSpawn(500, 500);
-    //enemyFunc.prototype.dynamicSpawn();
 
   },
   update: function() {
-    game.physics.arcade.collide(player_slime, [platform, platformGroup], player.movement.prototype.hitPlatform);
+    game.physics.arcade.collide(player_slime, [platformGroup], player.movement.prototype.hitPlatform);
     player.movement.prototype.move(game.input.keyboard);
     game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
     base_game.prototype.gameSounds();
