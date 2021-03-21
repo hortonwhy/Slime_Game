@@ -122,25 +122,30 @@ player.movement.prototype = {
     game.physics.arcade.overlap(bullets, enemyGroup, this.hitEnemy);
   },
   hitEnemy: function(bullet, enemy) {
+    console.log(enemy)
     bullet.kill();
+    // make healthbar above enemy
+    if (enemy.health == 1) {
+     enemy.bar = enemyFunc.prototype.healthInit(enemy)
+    }
     var damage = 0.5;
     enemyDead = enemyFunc.prototype.damaged(enemy, damage); // if dead will disable body here and health bar
+    enemyFunc.prototype.healthUpdate(enemy) //update healthbar
     if (enemyDead) {
-    enemy.body.enable = false
+    enemy.body.enable = false //this was causing some weird bugs ???
     shot += 1
     console.log('enemy hit');
-    //bullet.kill();
     enemy.animations.play('dead',4,true);
-    setTimeout(() => enemy.kill(), 3000);
+    setTimeout(() => enemy.bar.kill(), 2000);
+    setTimeout(() => enemy.kill(), 2000);
+    setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
+    death.play();
     if (shot == numEnemies){
         portal_slime.animations.play('dooropen', 8, false);
         shot = 0;
         dooropen = true;
     }
-    //dooropen = true;
-    death.play();
     }
-
   },
   hitPlatform: function() {
     // figure out how to play sound only on intial hit and nothing else
@@ -273,15 +278,29 @@ base_game.prototype = {
 
 enemyFunc = function () {};
 enemyFunc.prototype = {
-  healthInit : function() {
-    //copy code from player health and place it right above the enemy
+  healthInit : function(enemy) {
+    Bar = game.add.sprite(enemy.x, enemy.y - 100, "healthBar");
+    Bar.scale.setTo(4, .7);
+    Bar.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+    Bar.anchor.x = 0.5;
+    Bar.anchor.y = 0.5;
+    return Bar
   },
-  healthUpdate: function() {
-    // use moveTo obj/sprite physics
+  healthUpdate: function(enemy) {
+    //console.log(enemy.bar, enemy);
+    enemy.bar.x = enemy.x;
+    enemy.bar.y = enemy.y - 100;
+    setTimeout(() => enemyFunc.prototype.healthUpdate(enemy), 50);
+    var diff = Math.round(enemy.health / 1 * 13);
+    console.log(diff)
+    enemy.bar.frame = (diff - 13) * -1;
+    if (enemy.health < 0) {
+      healthBar.frame = 13; // empty
+    }
   },
   damaged: function(enemy, damage) {
     enemy.health -= damage;
-    if (enemy.health < 0){
+    if (enemy.health <= 0){
       return true
     } else {
       return false
