@@ -5,7 +5,7 @@ let bullets;
 var rockGroup;
 var platformGroup, onPlat, hasJumped = true, secondElapsed;
 var weapon1, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
-var volumeBtn, settingBtn;
+var volumeBtn, settingBtn, healthBar;
 var background, foreground, backgroundGroup, foregroundGroup;
 let player = {}, falling, scoreTime = {};
 let enemy = {};
@@ -14,7 +14,8 @@ var enemyGroup, nextSpawn = 0, enemySpeed = 1.0; //higher is faster
 let base_game = {}; // will provide methods for quick creation of a new state
 let platforms = {};
 var dooropen = false;
-var shot = 0; 
+var shot = 0;
+var healthCoolDown = 500;
 //var shot = false; is the enemy shot?
 // attempting slime movement to be handled more nicely
 player.accel = 400
@@ -23,6 +24,10 @@ player.gravity = 800;
 player.drag = 100
 player.fireRate = 200;
 player.difficulty = 1; // Lower is more difficult
+player.max_health = 10;
+player.health = 10;
+player.mana = 100;
+player.knockback = 20; // velocity
 
 // enemy attributes
 enemy.speed = 400
@@ -31,6 +36,28 @@ player.movement = function() {};
 enemy.pacing = function() {};
 // can add attribute here to adjust the jump timer, or acceleration of the slime
 player.movement.prototype = {
+  healthInit: function(xX, yY, fixedBool) {
+    healthBar = game.add.sprite(xX, yY, "healthBar");
+    healthBar.scale.setTo(6, 1.5);
+    healthBar.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+    healthBar.fixedToCamera = fixedBool;
+  },
+  healthHit: function(playerS, enemy) {
+    console.log(playerS);
+    //console.log(enemy);
+    var direction = playerS.x - enemy.x // need to add knockback
+    if (playerS !== "undefined") {
+    player.health -= player.difficulty * 0.05;
+    var diff = Math.round(player.health / player.max_health * 13);
+    //console.log(diff)
+    //console.log(player.health);
+    healthBar.frame = (diff - 13) * -1;
+    if (player.health < 1) {
+      healthBar.frame = 13; // empty
+      player.prototype.deathPlay();
+    }
+    }
+  },
   move: function(input) {
     // listen for player falling
     if (player_slime.body.velocity.y > 0) {
@@ -91,14 +118,13 @@ player.movement.prototype = {
       game.physics.arcade.moveToXY(bullet, player_slime.x + (direction * 1000 * 1), player_slime.y, 1000);
       bullet.animations.play('fire', 3, true);
     }
-
-    //game.physics.arcade.overlap(bullets, enemy1, this.hitEnemy);
-    //game.physics.arcade.overlap(bullets, enemy2, this.hitEnemy);
-
     // enemyGroup
     game.physics.arcade.overlap(bullets, enemyGroup, this.hitEnemy);
   },
   hitEnemy: function(bullet, enemy) {
+    var damage = 0.5;
+    enemyDead = enemyFunc.prototype.damaged(enemy, damage); // if dead will disable body here and health bar
+    if (enemyDead) {
     enemy.body.enable = false
     shot += 1
     console.log('enemy hit');
@@ -112,6 +138,7 @@ player.movement.prototype = {
     }
     //dooropen = true;
     death.play();
+    }
 
   },
   hitPlatform: function() {
@@ -215,8 +242,7 @@ base_game.prototype = {
       for (i = 0; i < worldX / 32; i++) {
         rockGroup.create(i * 32, worldY - 32, 'rock-ground');
 
-      }
-      rockGroup.setAll('anchor.y', 0.5);
+      } rockGroup.setAll('anchor.y', 0.5);
       rockGroup.setAll('anchor.x', 0.5);
       rockGroup.setAll('scale.x', 2.5);
       rockGroup.setAll('scale.y', 2.5);
@@ -246,6 +272,30 @@ base_game.prototype = {
 
 enemyFunc = function () {};
 enemyFunc.prototype = {
+  healthInit : function() {
+    //copy code from player health and place it right above the enemy
+  },
+  healthUpdate: function() {
+    // use moveTo obj/sprite physics
+  },
+  damaged: function(enemy, damage) {
+    console.log(enemy)
+    if (healthCoolDown < game.time.now) {
+      enemy.health -= damage;
+      healthCoolDown = game.time.now + 500
+      cd = true;
+    } else {
+      cd = false;
+    }
+
+    console.log(enemy.health);
+    if (enemy.health < 0 && cd){
+      return true
+    } else {
+      return false
+    }
+
+  },
   initialize: function(enemyType) { // make an enemy group to spawn from
     enemyGroup = game.add.group();
     enemyGroup.createMultiple(50, enemyType);
@@ -325,6 +375,7 @@ scoreFunc.prototype = {
 slime.state0 = function() {};
 slime.state0.prototype = {
   preload: function() {
+    game.load.spritesheet('healthBar', 'assets/spritesheet/healthBar.png', 32, 32);
     game.load.spritesheet('door', 'assets/spritesheet/door.png', 128, 128);
     game.load.spritesheet('slime-idle', 'assets/spritesheet/slime_idle.png', 64, 64);
     game.load.spritesheet('slime-new', 'assets/spritesheet/slime-new.png', 64, 64);
@@ -396,6 +447,8 @@ slime.state0.prototype = {
     hud.funcs.prototype.move(settingBtn, game.camera.x + 500, 30);
     hud.funcs.prototype.move(volumeBtn, game.camera.x + 900, 50);
 
+    player.movement.prototype.healthInit(250, 30, true) // enable healh bar
+
     //score time set the intial text location
     scoreFunc.prototype.start();
 
@@ -407,13 +460,13 @@ slime.state0.prototype = {
   update: function() {
     game.physics.arcade.collide(player_slime, [platformGroup], player.movement.prototype.hitPlatform);
     game.physics.arcade.collide(player_slime, [rockGroup]);
-    game.physics.arcade.collide(enemyGroup, [rockGroup, player_slime, platformGroup]);
+    game.physics.arcade.collide(enemyGroup, [rockGroup,platformGroup]);
+    game.physics.arcade.collide(player_slime, [enemyGroup], player.movement.prototype.healthHit);
     player.movement.prototype.move(game.input.keyboard);
     game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
     base_game.prototype.gameSounds();
 
     player.movement.prototype.attack(game.input.keyboard);
-
 
     enemyFunc.prototype.chase(enemyGroup, enemySpeed); // Can change speed
     enemyFunc.prototype.dynamicSpawn();
