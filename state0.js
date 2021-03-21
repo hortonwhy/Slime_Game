@@ -122,13 +122,14 @@ player.movement.prototype = {
     game.physics.arcade.overlap(bullets, enemyGroup, this.hitEnemy);
   },
   hitEnemy: function(bullet, enemy) {
+    bullet.kill();
     var damage = 0.5;
     enemyDead = enemyFunc.prototype.damaged(enemy, damage); // if dead will disable body here and health bar
     if (enemyDead) {
     enemy.body.enable = false
     shot += 1
     console.log('enemy hit');
-    bullet.kill();
+    //bullet.kill();
     enemy.animations.play('dead',4,true);
     setTimeout(() => enemy.kill(), 3000);
     if (shot == numEnemies){
@@ -279,17 +280,8 @@ enemyFunc.prototype = {
     // use moveTo obj/sprite physics
   },
   damaged: function(enemy, damage) {
-    console.log(enemy)
-    if (healthCoolDown < game.time.now) {
-      enemy.health -= damage;
-      healthCoolDown = game.time.now + 500
-      cd = true;
-    } else {
-      cd = false;
-    }
-
-    console.log(enemy.health);
-    if (enemy.health < 0 && cd){
+    enemy.health -= damage;
+    if (enemy.health < 0){
       return true
     } else {
       return false
