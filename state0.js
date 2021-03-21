@@ -349,7 +349,6 @@ enemyFunc.prototype = {
     }
 
   },
-
   chase: function (enemyLocalGroup, speed) {
     for (i = 0; i < enemyLocalGroup.length; i++) {
       if (enemyLocalGroup.children[i].alive) {
@@ -365,8 +364,41 @@ enemyFunc.prototype = {
       }
     }
   },
+  enemyProjectile: function() {    // make projectile class for enemy
+      enemybullets = game.add.group();
+      enemybullets.enableBody = true;
+      enemybullets.physicsBodyType = Phaser.Physics.ARCADE;
+      enemybullets.createMultiple(50, 'projectile');
+      enemybullets.setAll('checkWorldBounds', true);
+      enemybullets.setAll('outOfBoundsKill', true);
+  },
+  enemyFire: function(player) {
+      enemyWeapon = game.add.weapon(5, 'bullet');
+      enemyWeapon.fireRate = 5;
+      enemyWeapon.bulletSpeed = 10;
+      enemyWeapon.bulletKillType = Phaser.Weapon.KILL_CAMERA_BOUNDS;
+      var shootingEnemy = enemyGroup.getClosestTo(player);
+      enemyWeapon.trackSprite(shootingEnemy);
+      enemyWeapon.fireAngle = 0;
+      enemyWeapon.fire();
+    },
+      
+      
+      
+      
+      // make shooting function for enemy
+  //    if (Math.abs(player.x - shootingEnemy.x <= 5)) {
+//        var shootingEnemy = enemyGroup.getClosestTo(player);
+//        var shootDirection = player.scale.x;
+//        var enemybullet = enemybullets.getFirstDead();
+//        enemybullet.reset(shootingEnemy.x, shootingEnemy.y);
+//        enemybullet.rotation = game.physics.arcade.angleToXY(enemybullet, player.x + (1000 * shootDirection * 1) , player.y)
+//        game.physics.arcade.moveToXY(enemybullet, player.x + (shootDirection * 1000 * 1), player.y, 1000);
+          
+  }
+  
 
-}
+
 
 scoreFunc = function() {};
 scoreFunc.prototype = {
@@ -481,6 +513,7 @@ slime.state0.prototype = {
 
     enemyFunc.prototype.chase(enemyGroup, enemySpeed); // Can change speed
     enemyFunc.prototype.dynamicSpawn();
+    // enemyFunc.prototype.enemyFire(player_slime); need to fix direction and firing speed
 
     // keeps score up to date
     scoreFunc.prototype.update()
