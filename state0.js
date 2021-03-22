@@ -35,7 +35,28 @@ enemy.speed = 400
 
 player.movement = function() {};
 enemy.pacing = function() {};
-// can add attribute here to adjust the jump timer, or acceleration of the slime
+
+player.prototype = {
+  deathPlay: function() {
+    var CenterX = game.camera.view.x + (game.camera.width / 2);
+    deathScreen = game.add.sprite(CenterX, CenterY, "blankBtn");
+    deathScreen.anchor.x = 0.5; deathScreen.anchor.y = 0.5;
+    deathScreen.scale.x = 25; deathScreen.scale.y = 15;
+    deathText = game.add.text(CenterX, CenterY, "You have died!", {font: "45px Monospace"});
+    deathText.anchor.x = 0.5; deathText.anchor.y = 0.5;
+    returnToMenu = game.add.button(CenterX, CenterY + 100, "blankBtn", function() {
+      game.paused = false;
+      game.state.start('title');
+    });
+    returnToMenu.anchor.x = 0.5; returnToMenu.anchor.y = 0.5;
+    returnToMenu.scale.x = 10; returnToMenu.scale.y = 3;
+    deathText = game.add.text(CenterX, CenterY + 100, "To Main Menu", {font: "30px Monospace"});
+    deathText.anchor.x = 0.5; deathText.anchor.y = 0.5;
+    game.paused = true;
+  },
+
+}
+
 player.movement.prototype = {
   healthInit: function(xX, yY, fixedBool) {
     healthBar = game.add.sprite(xX, yY, "healthBar");
