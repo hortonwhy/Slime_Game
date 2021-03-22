@@ -64,7 +64,6 @@ player.movement.prototype = {
     healthBar.fixedToCamera = fixedBool;
   },
   healthHit: function(playerS, enemy) {
-    console.log(playerS);
     //console.log(enemy);
     var direction = playerS.x - enemy.x // need to add knockback
     if (playerS !== "undefined") {
@@ -445,7 +444,7 @@ scoreFunc.prototype = {
   },
   update: function() {
     scoreTime.time = Math.round((game.time.now - timeInTitle) / 1000);
-    console.log(scoreTime.text.text = "Score: [" + scoreTime.time + "]");
+    //console.log(scoreTime.text.text = "Score: [" + scoreTime.time + "]");
   },
 
 
@@ -573,7 +572,7 @@ slime.state0.prototype = {
     enemyWeapon.trackSprite(closestEnemy, 0, 0);
     
     //have enemy shoot towards player
-    if (closestEnemy.x < player_slime.x) {
+    if (closestEnemy != null && closestEnemy.x < player_slime.x) {
       enemyWeapon.fireAngle = 0
     }else{
       enemyWeapon.fireAngle = 180
