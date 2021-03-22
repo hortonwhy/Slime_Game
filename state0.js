@@ -4,8 +4,7 @@ var slime = {};
 let bullets;
 var rockGroup;
 var platformGroup, onPlat, hasJumped = true, secondElapsed;
-var weapon1, weapon2, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
-var weaponholding; // dictates weapon 1 or 2
+var weapon1, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
 var volumeBtn, settingBtn, healthBar;
 var background, foreground, backgroundGroup, foregroundGroup;
 let player = {}, falling, scoreTime = {};
@@ -36,6 +35,25 @@ enemy.speed = 400
 player.movement = function() {};
 enemy.pacing = function() {};
 // can add attribute here to adjust the jump timer, or acceleration of the slime
+player.prototype = {
+  deathPlay: function() {
+    var CenterX = game.camera.view.x + (game.camera.width / 2);
+    deathScreen = game.add.sprite(CenterX, CenterY, "blankBtn");
+    deathScreen.anchor.x = 0.5; deathScreen.anchor.y = 0.5;
+    deathScreen.scale.x = 25; deathScreen.scale.y = 15;
+    deathText = game.add.text(CenterX, CenterY, "You have died!", {font: "45px Monospace"});
+    deathText.anchor.x = 0.5; deathText.anchor.y = 0.5;
+    returnToMenu = game.add.button(CenterX, CenterY + 100, "blankBtn", function() {
+      game.paused = false;
+      game.state.start('title');
+    });
+    returnToMenu.anchor.x = 0.5; returnToMenu.anchor.y = 0.5;
+    returnToMenu.scale.x = 10; returnToMenu.scale.y = 3;
+    deathText = game.add.text(CenterX, CenterY + 100, "To Main Menu", {font: "30px Monospace"});
+    deathText.anchor.x = 0.5; deathText.anchor.y = 0.5;
+    game.paused = true;
+  },
+}
 player.movement.prototype = {
   healthInit: function(xX, yY, fixedBool) {
     healthBar = game.add.sprite(xX, yY, "healthBar");
@@ -65,27 +83,13 @@ player.movement.prototype = {
       falling = true;
     }
     // weapon for the slime
-    if (weaponholding == 1){
-        if (game.time.now < (nextFire + 2000)) {
-            weapon1.x = player_slime.x;
-            weapon1.y = player_slime.y;
-            weapon1.scale.setTo (player_slime.scale.x * 2.0, player_slime.scale.y * 2.0 )
-        } else {
-            weapon1.x = -100; weapon1.y = -100;
-        }
+    if (game.time.now < (nextFire + 2000)) {
+      weapon1.x = player_slime.x;
+      weapon1.y = player_slime.y;
+      weapon1.scale.setTo (player_slime.scale.x * 2.0, player_slime.scale.y * 2.0 )
+    } else {
+      weapon1.x = -100; weapon1.y = -100;
     }
-    else if (weaponholding == 2){
-        if (game.time.now < (nextFire + 2000)) {
-            weapon2.x = player_slime.x;
-            weapon2.y = player_slime.y;
-            weapon2.scale.setTo (player_slime.scale.x*0.6, player_slime.scale.y*0.6)
-        } else {
-            weapon2.x = -100; weapon2.y = -100;
-        }
-    }
-      
-
-      
     // I think velocity feels better for x movement, than accel
     if (input.isDown(Phaser.Keyboard.LEFT)) {
       player_slime.body.velocity.x = -player.accel;
@@ -114,19 +118,6 @@ player.movement.prototype = {
         hasJumped = true;
       }
     }
-
-    if (Math.abs(player_slime.x - weapon2.x) <= 5 && Math.abs(player_slime.y - weapon2.y) <= 50){
-        weaponholding = 2;
-    }
-      
-    if (Math.abs(player_slime.x - apple.x) <= 5 && Math.abs(player_slime.y - apple.y) <= 50){
-        player.health += 3;
-        var diff = Math.round(player.health / player.max_health * 13);
-        //console.log(diff)
-        //console.log(player.health);
-        healthBar.frame = (diff - 13) * -1;
-        apple.kill();
-    }
   },
   attack: function(input) {
     if (input.isDown(Phaser.Keyboard.F) && game.time.now > nextFire) {
@@ -134,14 +125,8 @@ player.movement.prototype = {
       if (vol_state == 1){
           laser.play();
       }
-      if (weaponholding == 1){
-          weapon1.x = player_slime.x;
-          weapon1.y = player_slime.y;
-      }
-      else if (weaponholding == 2){
-          weapon2.x = player_slime.x;
-          weapon2.y = player_slime.y;
-      }
+      weapon1.x = player_slime.x;
+      weapon1.y = player_slime.y;
       nextIdle = game.time.now + idleTimer;
       var direction = player_slime.scale.x
       nextFire = game.time.now + player.fireRate;
@@ -162,12 +147,7 @@ player.movement.prototype = {
     if (enemy.health == 1) {
      enemy.bar = enemyFunc.prototype.healthInit(enemy)
     }
-    if (weaponholding == 1){
-        var damage = 0.25;
-    }
-    else if (weaponholding == 2){
-        var damage = 0.5;
-    }
+    var damage = 0.5;
     enemyDead = enemyFunc.prototype.damaged(enemy, damage); // if dead will disable body here and health bar
     enemyFunc.prototype.healthUpdate(enemy) //update healthbar
     if (enemyDead) {
@@ -242,14 +222,6 @@ base_game.prototype = {
       weapon1.scale.setTo(3);
       weapon1.anchor.x = 0.5;
       weapon1.anchor.y = 0.5;
-      
-      weapon2 = game.add.sprite(1300, 920, 'weapon2');
-      weapon2.anchor.x = 0.5;
-      weapon2.anchor.y = 0.5;
-      
-      // add food
-      apple = game.add.sprite(1900,880,'apple');
-      apple.scale.setTo(0.25);
   },
   platform_physics: function(platform){
       platformGroup = game.add.group();     
@@ -410,8 +382,39 @@ enemyFunc.prototype = {
         break;
       }
     }
-  },          
-}
+  },
+  enemyProjectile: function() {    // make projectile class for enemy
+      enemybullets = game.add.group();
+      enemybullets.enableBody = true;
+      enemybullets.physicsBodyType = Phaser.Physics.ARCADE;
+      enemybullets.createMultiple(50, 'projectile');
+      enemybullets.setAll('checkWorldBounds', true);
+      enemybullets.setAll('outOfBoundsKill', true);
+  },
+  enemyFire: function(player) {
+      enemyWeapon = game.add.weapon(5, 'bullet');
+      enemyWeapon.fireRate = 5;
+      enemyWeapon.bulletSpeed = 10;
+      enemyWeapon.bulletKillType = Phaser.Weapon.KILL_CAMERA_BOUNDS;
+      var shootingEnemy = enemyGroup.getClosestTo(player);
+      enemyWeapon.trackSprite(shootingEnemy);
+      enemyWeapon.fireAngle = 0;
+      enemyWeapon.fire();
+    },
+      
+      
+      
+      
+      // make shooting function for enemy
+  //    if (Math.abs(player.x - shootingEnemy.x <= 5)) {
+//        var shootingEnemy = enemyGroup.getClosestTo(player);
+//        var shootDirection = player.scale.x;
+//        var enemybullet = enemybullets.getFirstDead();
+//        enemybullet.reset(shootingEnemy.x, shootingEnemy.y);
+//        enemybullet.rotation = game.physics.arcade.angleToXY(enemybullet, player.x + (1000 * shootDirection * 1) , player.y)
+//        game.physics.arcade.moveToXY(enemybullet, player.x + (shootDirection * 1000 * 1), player.y, 1000);
+          
+  }
   
 
 
@@ -442,8 +445,6 @@ slime.state0.prototype = {
     game.load.spritesheet('enemy', 'assets/spritesheet/enemy.png',128,128);
     game.load.spritesheet('projectile', 'assets/spritesheet/projectile.png', 64, 64);
     game.load.image('weapon1', 'assets/sprites/basic-weapon.png');
-    game.load.image('weapon2', 'assets/sprites/laser_gun.png');
-    game.load.image('apple','assets/sprites/apple.png');
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('platform', 'assets/sprites/platform.png');
@@ -462,7 +463,6 @@ slime.state0.prototype = {
     game.world.setBounds(0, 0, 5000, 1000); // important to be called early if not first
     var gameX = game.world.bounds.width; gameY = game.world.bounds.height;
     base_game.prototype.parallax();
-    weaponholding = 1;
 
     // add game sounds
     // Add them to array so mute works too
@@ -478,7 +478,7 @@ slime.state0.prototype = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-    player_slime = game.add.sprite(1000, 100, "slime-new");
+    player_slime = game.add.sprite(100, 100, "slime-new");
     player_slime.scale.setTo(0.7, 0.7);
 
     portal_slime = game.add.sprite(gameX - 500, 300, "door");
@@ -518,24 +518,12 @@ slime.state0.prototype = {
     enemyFunc.prototype.initialize('enemy');
     //enemyFunc.prototype.manualSpawn(500, 500);
 
-    // add enemy's weapon and set properties
-    enemyWeapon = game.add.weapon(3, 'projectile');
-    enemyWeapon.autofire = true;
-    enemyWeapon.fireRate = 2000;
-  //  enemyWeapon.bulletSpeed = 50;
-    enemyWeapon.bulletKillType = Phaser.Weapon.KILL_CAMERA_BOUNDS;
-
-
   },
   update: function() {
     game.physics.arcade.collide(player_slime, [platformGroup], player.movement.prototype.hitPlatform);
     game.physics.arcade.collide(player_slime, [rockGroup]);
     game.physics.arcade.collide(enemyGroup, [rockGroup,platformGroup]);
     game.physics.arcade.collide(player_slime, [enemyGroup], player.movement.prototype.healthHit);
-    game.physics.arcade.collide(player_slime, enemyWeapon.bullets, player.movement.prototype.healthHit);
-    
-
-
     player.movement.prototype.move(game.input.keyboard);
     game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
     base_game.prototype.gameSounds();
@@ -544,20 +532,7 @@ slime.state0.prototype = {
 
     enemyFunc.prototype.chase(enemyGroup, enemySpeed); // Can change speed
     enemyFunc.prototype.dynamicSpawn();
-    
-
-    //find closest enemy to player and give that one the weapon
-    var closestEnemy = enemyGroup.getClosestTo(player_slime);
-    enemyWeapon.trackSprite(closestEnemy, 0, 0);
-    
-    //have enemy shoot towards player
-    if (closestEnemy.x < player_slime.x) {
-      enemyWeapon.fireAngle = 0
-    }else{
-      enemyWeapon.fireAngle = 180
-    }
-
-    enemyWeapon.fire()
+    // enemyFunc.prototype.enemyFire(player_slime); need to fix direction and firing speed
 
     // keeps score up to date
     scoreFunc.prototype.update()
@@ -574,8 +549,4 @@ slime.state0.prototype = {
 function changeState (stateNum) {
   console.log("state" + stateNum);
   game.state.start("state" + stateNum);
-}
-
-function playerHit(bullet) {
-  bullet.kill()
 }
