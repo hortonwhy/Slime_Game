@@ -444,7 +444,7 @@ scoreFunc.prototype = {
   },
   update: function() {
     scoreTime.time = Math.round((game.time.now - timeInTitle) / 1000);
-    //console.log(scoreTime.text.text = "Score: [" + scoreTime.time + "]");
+    scoreTime.text.text = "Score: [" + scoreTime.time + "]";
   },
 
 
