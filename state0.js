@@ -542,8 +542,10 @@ slime.state0.prototype = {
     enemyWeapon = game.add.weapon(3, 'projectile');
     enemyWeapon.autofire = true;
     enemyWeapon.fireRate = 2000;
+    enemyWeapon.bulletLifespan = 3000;
   //  enemyWeapon.bulletSpeed = 50;
     enemyWeapon.bulletKillType = Phaser.Weapon.KILL_CAMERA_BOUNDS;
+    enemyWeapon.bulletKillType = Phaser.Weapon.KILL_LIFESPAN;
 
 
   },
