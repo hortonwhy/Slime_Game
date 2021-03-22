@@ -115,8 +115,17 @@ player.movement.prototype = {
       }
     }
 
-    if (Math.abs(player_slime.x - weapon2.x) <= 5){
+    if (Math.abs(player_slime.x - weapon2.x) <= 5 && Math.abs(player_slime.y - weapon2.y) <= 50){
         weaponholding = 2;
+    }
+      
+    if (Math.abs(player_slime.x - apple.x) <= 5 && Math.abs(player_slime.y - apple.y) <= 50){
+        player.health += 3;
+        var diff = Math.round(player.health / player.max_health * 13);
+        //console.log(diff)
+        //console.log(player.health);
+        healthBar.frame = (diff - 13) * -1;
+        apple.kill();
     }
   },
   attack: function(input) {
@@ -237,6 +246,10 @@ base_game.prototype = {
       weapon2 = game.add.sprite(1300, 920, 'weapon2');
       weapon2.anchor.x = 0.5;
       weapon2.anchor.y = 0.5;
+      
+      // add food
+      apple = game.add.sprite(1900,880,'apple');
+      apple.scale.setTo(0.25);
   },
   platform_physics: function(platform){
       platformGroup = game.add.group();     
@@ -461,6 +474,7 @@ slime.state0.prototype = {
     game.load.spritesheet('projectile', 'assets/spritesheet/projectile.png', 64, 64);
     game.load.image('weapon1', 'assets/sprites/basic-weapon.png');
     game.load.image('weapon2', 'assets/sprites/laser_gun.png');
+    game.load.image('apple','assets/sprites/apple.png');
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('platform', 'assets/sprites/platform.png');
@@ -495,7 +509,7 @@ slime.state0.prototype = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-    player_slime = game.add.sprite(100, 100, "slime-new");
+    player_slime = game.add.sprite(1000, 100, "slime-new");
     player_slime.scale.setTo(0.7, 0.7);
 
     portal_slime = game.add.sprite(gameX - 500, 300, "door");
