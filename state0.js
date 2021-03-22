@@ -498,7 +498,7 @@ slime.state0.prototype = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-    player_slime = game.add.sprite(1000, 100, "slime-new");
+    player_slime = game.add.sprite(game.world.bounds.width / 2, game.height - (game.height / 4), "slime-new");
     player_slime.scale.setTo(0.7, 0.7);
 
     portal_slime = game.add.sprite(gameX - 500, 745, "door");
