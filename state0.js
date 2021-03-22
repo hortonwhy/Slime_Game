@@ -54,7 +54,6 @@ player.prototype = {
     deathText.anchor.x = 0.5; deathText.anchor.y = 0.5;
     game.paused = true;
   },
-
 }
 
 player.movement.prototype = {
@@ -502,7 +501,7 @@ slime.state0.prototype = {
     player_slime = game.add.sprite(1000, 100, "slime-new");
     player_slime.scale.setTo(0.7, 0.7);
 
-    portal_slime = game.add.sprite(gameX - 500, 300, "door");
+    portal_slime = game.add.sprite(gameX - 500, 745, "door");
     portal_slime.scale.setTo(1.5, 1.5);
     game.physics.enable(portal_slime);
 
