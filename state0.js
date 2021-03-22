@@ -358,7 +358,6 @@ enemyFunc.prototype = {
     enemy.bar.y = enemy.y - 100;
     setTimeout(() => enemyFunc.prototype.healthUpdate(enemy), 50);
     var diff = Math.round(enemy.health / 1 * 13);
-    console.log(diff)
     enemy.bar.frame = (diff - 13) * -1;
     if (enemy.health < 0) {
       healthBar.frame = 13; // empty
@@ -398,11 +397,11 @@ enemyFunc.prototype = {
   dynamicSpawn: function () {
     if (nextSpawn < game.time.now) {
       nextSpawn = game.time.now + (20000 * (player.difficulty * Math.random()));
-      console.log("nextSpawn", nextSpawn);
+      //console.log("nextSpawn", nextSpawn);
     // Difficulty manipulates spawn frequency //
     var xX = Math.random() * game.world.bounds.width;
     var yY = Math.random() * game.world.bounds.height;
-    console.log(xX, yY);
+    //console.log(xX, yY);
     if ((xX - player_slime.x) < 300) {
       xX += 300;
     }

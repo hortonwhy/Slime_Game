@@ -107,7 +107,6 @@ slime.title.prototype = {
     b2.anchor.setTo(0.5, 0.5);
     b2.scale.x = 12;
     b2.scale.y = 3;
-    console.log(b2);
 
     volume.toggle.prototype.mute(sound, 1500, 880);
 
