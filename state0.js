@@ -4,7 +4,8 @@ var slime = {};
 let bullets;
 var rockGroup;
 var platformGroup, onPlat, hasJumped = true, secondElapsed;
-var weapon1, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
+var weapon1, weapon2, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
+var weaponholding; // dictates weapon 1 or 2
 var volumeBtn, settingBtn, healthBar;
 var background, foreground, backgroundGroup, foregroundGroup;
 let player = {}, falling, scoreTime = {};
@@ -64,13 +65,27 @@ player.movement.prototype = {
       falling = true;
     }
     // weapon for the slime
-    if (game.time.now < (nextFire + 2000)) {
-      weapon1.x = player_slime.x;
-      weapon1.y = player_slime.y;
-      weapon1.scale.setTo (player_slime.scale.x * 2.0, player_slime.scale.y * 2.0 )
-    } else {
-      weapon1.x = -100; weapon1.y = -100;
+    if (weaponholding == 1){
+        if (game.time.now < (nextFire + 2000)) {
+            weapon1.x = player_slime.x;
+            weapon1.y = player_slime.y;
+            weapon1.scale.setTo (player_slime.scale.x * 2.0, player_slime.scale.y * 2.0 )
+        } else {
+            weapon1.x = -100; weapon1.y = -100;
+        }
     }
+    else if (weaponholding == 2){
+        if (game.time.now < (nextFire + 2000)) {
+            weapon2.x = player_slime.x;
+            weapon2.y = player_slime.y;
+            weapon2.scale.setTo (player_slime.scale.x*0.6, player_slime.scale.y*0.6)
+        } else {
+            weapon2.x = -100; weapon2.y = -100;
+        }
+    }
+      
+
+      
     // I think velocity feels better for x movement, than accel
     if (input.isDown(Phaser.Keyboard.LEFT)) {
       player_slime.body.velocity.x = -player.accel;
@@ -99,6 +114,10 @@ player.movement.prototype = {
         hasJumped = true;
       }
     }
+
+    if (Math.abs(player_slime.x - weapon2.x) <= 5){
+        weaponholding = 2;
+    }
   },
   attack: function(input) {
     if (input.isDown(Phaser.Keyboard.F) && game.time.now > nextFire) {
@@ -106,8 +125,14 @@ player.movement.prototype = {
       if (vol_state == 1){
           laser.play();
       }
-      weapon1.x = player_slime.x;
-      weapon1.y = player_slime.y;
+      if (weaponholding == 1){
+          weapon1.x = player_slime.x;
+          weapon1.y = player_slime.y;
+      }
+      else if (weaponholding == 2){
+          weapon2.x = player_slime.x;
+          weapon2.y = player_slime.y;
+      }
       nextIdle = game.time.now + idleTimer;
       var direction = player_slime.scale.x
       nextFire = game.time.now + player.fireRate;
@@ -128,7 +153,12 @@ player.movement.prototype = {
     if (enemy.health == 1) {
      enemy.bar = enemyFunc.prototype.healthInit(enemy)
     }
-    var damage = 0.5;
+    if (weaponholding == 1){
+        var damage = 0.25;
+    }
+    else if (weaponholding == 2){
+        var damage = 0.5;
+    }
     enemyDead = enemyFunc.prototype.damaged(enemy, damage); // if dead will disable body here and health bar
     enemyFunc.prototype.healthUpdate(enemy) //update healthbar
     if (enemyDead) {
@@ -203,6 +233,10 @@ base_game.prototype = {
       weapon1.scale.setTo(3);
       weapon1.anchor.x = 0.5;
       weapon1.anchor.y = 0.5;
+      
+      weapon2 = game.add.sprite(1300, 920, 'weapon2');
+      weapon2.anchor.x = 0.5;
+      weapon2.anchor.y = 0.5;
   },
   platform_physics: function(platform){
       platformGroup = game.add.group();     
@@ -426,6 +460,7 @@ slime.state0.prototype = {
     game.load.spritesheet('enemy', 'assets/spritesheet/enemy.png',128,128);
     game.load.spritesheet('projectile', 'assets/spritesheet/projectile.png', 64, 64);
     game.load.image('weapon1', 'assets/sprites/basic-weapon.png');
+    game.load.image('weapon2', 'assets/sprites/laser_gun.png');
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('platform', 'assets/sprites/platform.png');
@@ -444,6 +479,7 @@ slime.state0.prototype = {
     game.world.setBounds(0, 0, 5000, 1000); // important to be called early if not first
     var gameX = game.world.bounds.width; gameY = game.world.bounds.height;
     base_game.prototype.parallax();
+    weaponholding = 1;
 
     // add game sounds
     // Add them to array so mute works too
