@@ -538,7 +538,7 @@ slime.state0.prototype = {
 
     // add enemy's weapon and set properties
     enemyWeapon = game.add.weapon(3, 'projectile');
-    enemyWeapon.autofire = true;
+    //enemyWeapon.autofire = true;
     enemyWeapon.fireRate = 2000;
     enemyWeapon.bulletLifespan = 3000;
   //  enemyWeapon.bulletSpeed = 50;
@@ -571,13 +571,15 @@ slime.state0.prototype = {
     enemyWeapon.trackSprite(closestEnemy, 0, 0);
     
     //have enemy shoot towards player
-    if (closestEnemy != null && closestEnemy.x < player_slime.x) {
+    console.log(closestEnemy);
+    if (closestEnemy != null) {
+    if (closestEnemy.x < player_slime.x) {
       enemyWeapon.fireAngle = 0
     }else{
       enemyWeapon.fireAngle = 180
     }
-
-    enemyWeapon.fire()
+      enemyWeapon.fire()
+    }
 
     // keeps score up to date
     scoreFunc.prototype.update()
