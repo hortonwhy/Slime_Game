@@ -19,6 +19,7 @@ var shot = 0;
 var healthCoolDown = 500; var nextManaRegen = 0;
 var states = ['first', 'second', 'third']
 var enemyFireRate = 1000; var enemyNextFire = 0;
+var level = 0; var nextDoor;// first loop
 //var shot = false; is the enemy shot?
 // attempting slime movement to be handled more nicely
 player.accel = 400
@@ -501,13 +502,29 @@ scoreFunc = function() {};
 scoreFunc.prototype = {
   start: function() {
     scoreTime.time = 0;
+    scoreTime.background1 = game.add.sprite(CenterX + (CenterX / 2) - 15, CenterY / 4 - 20, 'blankBtn');
+    //scoreTime.background1.anchor.setTo(0.5, 0.5);
+    scoreTime.background1.scale.x = 6.6;
+    scoreTime.background1.scale.y = 2;
+    scoreTime.background2 = game.add.sprite(CenterX - 15, CenterY / 4 - 20, 'blankBtn');
+    //scoreTime.background2.anchor.setTo(0.5, 0.5);
+    scoreTime.background2.scale.x = 6.6;
+    scoreTime.background2.scale.y = 2;
+    scoreTime.level = game.add.text(CenterX + (CenterX / 2), CenterY / 4, "Level: [" + level + "]", {font: "30px Monospace"});
     scoreTime.text = game.add.text(CenterX, CenterY / 4, "Score: [" + scoreTime.time + "]", {font: "30px Monospace"});
     scoreTime.text.fixedToCamera = true;
+    scoreTime.level.fixedToCamera = true;
+    scoreTime.background1.fixedToCamera = true;;
+    scoreTime.background2.fixedToCamera = true;;
   },
   update: function() {
     scoreTime.time = Math.round((game.time.now - timeInTitle) / 1000);
     scoreTime.text.text = "Score: [" + scoreTime.time + "]";
+    scoreTime.level.text = "Level: [" + level + "]";
   },
+  nextDoor: function() {
+  },
+
 
 
 }
@@ -659,6 +676,7 @@ slime.state0.prototype = {
 
 function changeStateReal (stateNum, statesIndex) {
   statesIdx = statesIndex;
+  level++;
   game.state.start("state" + stateNum);
 }
 
