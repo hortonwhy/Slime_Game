@@ -7,6 +7,7 @@ var timeInTitle = 0;
 // define all HUD elements below here
 let hud = {};
 var volBtn;
+var statesIdx = 0; // used for later deciding what background world to spawn
 
 volume.toggle = function() {};
       volume.toggle.prototype = {

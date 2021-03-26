@@ -17,6 +17,7 @@ let platforms = {};
 var dooropen = false;
 var shot = 0;
 var healthCoolDown = 500;
+var states = ['first', 'second', 'third']
 //var shot = false; is the enemy shot?
 // attempting slime movement to be handled more nicely
 player.accel = 400
@@ -279,10 +280,10 @@ base_game.prototype = {
       game.physics.enable(object);
       player_ent.body.collideWorldBounds = true;
   },
-  parallax : function() {
+  parallax : function(backgroundVar, foregroundVar) {
     // trying out background parallax stuff
-    background = game.add.sprite(0, 0, 'background');
-    foreground = game.add.sprite(0, 0, 'foreground');
+    background = game.add.sprite(0, 0, backgroundVar);
+    foreground = game.add.sprite(0, 0, foregroundVar);
     backgroundGroup = game.add.group()
     foregroundGroup = game.add.group()
     var width = game.world.width; var height = game.world.height;
@@ -290,8 +291,8 @@ base_game.prototype = {
     backgroundGroup.setAll('scale.setTo', width / background.width, height / background.height);
     foregroundGroup.setAll('scale.setTo', width / foreground.width, height / foreground.height);
     while (currentX < width) {
-      backgroundGroup.create(currentX, 0, 'background');
-      foregroundGroup.create(currentX, 0, 'foreground');
+      backgroundGroup.create(currentX, 0, backgroundVar);
+      foregroundGroup.create(currentX, 0, foregroundVar);
       currentX += background.width
     }
   },
@@ -467,6 +468,9 @@ slime.state0.prototype = {
     game.load.image('platform', 'assets/sprites/platform.png');
     game.load.image('background', 'assets/sprites/background.png');
     game.load.image('foreground', 'assets/sprites/foreground.png');
+    game.load.image('background2', 'assets/sprites/background-high-res.png');
+    game.load.image('foreground2', 'assets/sprites/foreground-high-res.png');
+
     game.load.image('rock-ground', 'assets/sprites/rock_ground.png');
     game.load.audio('laser','assets/sounds/laser.wav');
     game.load.audio('jump', 'assets/sounds/jump-sfx.mp3');
@@ -479,7 +483,21 @@ slime.state0.prototype = {
 
     game.world.setBounds(0, 0, 5000, 1000); // important to be called early if not first
     var gameX = game.world.bounds.width; gameY = game.world.bounds.height;
-    base_game.prototype.parallax();
+    /* WORLD BUILDING HERE, BASED ON statesIdx */
+    // 0 === first level
+    // 1 === second level
+    // 2 === third level
+    // *****  NEED ART FOR LEVELS 2 AND THREE ****
+    switch (statesIdx) {
+      case 0:
+        base_game.prototype.parallax('background', 'foreground'); break;
+      case 1:
+        base_game.prototype.parallax('background2', 'foreground2'); break;
+      case 2:
+        base_game.prototype.parallax('background3', 'foreground3'); break;
+    }
+
+    /* END WORLD BUILDING */
     weaponholding = 1;
 
     // add game sounds
@@ -571,7 +589,6 @@ slime.state0.prototype = {
     enemyWeapon.trackSprite(closestEnemy, 0, 0);
     
     //have enemy shoot towards player
-    console.log(closestEnemy);
     if (closestEnemy != null) {
     if (closestEnemy.x < player_slime.x) {
       enemyWeapon.fireAngle = 0
@@ -588,13 +605,13 @@ slime.state0.prototype = {
   hitPortal: function() {
     console.log("hit portal");
     if (dooropen){
-        changeState(1);
+        changeStateReal(0, 1); // statesIndex is the 'level' to pass into it
     }
   },
 }
 
-function changeState (stateNum) {
-  console.log("state" + stateNum);
+function changeStateReal (stateNum, statesIndex) {
+  statesIdx = statesIndex;
   game.state.start("state" + stateNum);
 }
 
