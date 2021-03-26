@@ -571,7 +571,6 @@ slime.state0.prototype = {
     game.physics.arcade.collide(enemyGroup, [rockGroup,platformGroup]);
     game.physics.arcade.collide(player_slime, [enemyGroup], player.movement.prototype.healthHit);
     game.physics.arcade.collide(player_slime, enemyWeapon.bullets, player.movement.prototype.healthHit);
-    
 
 
     player.movement.prototype.move(game.input.keyboard);
@@ -582,12 +581,11 @@ slime.state0.prototype = {
 
     enemyFunc.prototype.chase(enemyGroup, enemySpeed); // Can change speed
     enemyFunc.prototype.dynamicSpawn();
-    
 
     //find closest enemy to player and give that one the weapon
     var closestEnemy = enemyGroup.getClosestTo(player_slime);
     enemyWeapon.trackSprite(closestEnemy, 0, 0);
-    
+
     //have enemy shoot towards player
     if (closestEnemy != null) {
     if (closestEnemy.x < player_slime.x) {
@@ -605,7 +603,16 @@ slime.state0.prototype = {
   hitPortal: function() {
     console.log("hit portal");
     if (dooropen){
-        changeStateReal(0, 1); // statesIndex is the 'level' to pass into it
+      switch (statesIdx) {
+        case 0:
+          changeStateReal(0, 1); break;
+        case 1:
+          changeStateReal(0, 2); break;
+        case 2:
+          changeStateReal(0, 0); break;
+      }
+
+
     }
   },
 }
