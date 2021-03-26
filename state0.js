@@ -18,6 +18,7 @@ var dooropen = false;
 var shot = 0;
 var healthCoolDown = 500;
 var states = ['first', 'second', 'third']
+var enemyFireRate = 1000; var enemyNextFire = 0;
 //var shot = false; is the enemy shot?
 // attempting slime movement to be handled more nicely
 player.accel = 400
@@ -64,14 +65,14 @@ player.movement.prototype = {
     healthBar.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
     healthBar.fixedToCamera = fixedBool;
   },
-  healthHit: function(playerS, enemy) {
+  healthHit: function(playerS, enemy, damage = player.difficulty * 0.05) {
     //console.log(enemy);
     var direction = playerS.x - enemy.x // need to add knockback
     if (playerS !== "undefined") {
-    player.health -= player.difficulty * 0.05;
+    player.health -= damage
     var diff = Math.round(player.health / player.max_health * 13);
     //console.log(diff)
-    //console.log(player.health);
+    console.log("Player Health: ", player.health);
     healthBar.frame = (diff - 13) * -1;
     if (player.health < 1) {
       healthBar.frame = 13; // empty
@@ -257,6 +258,18 @@ base_game.prototype = {
       bullets.setAll('scale.y', 1);
       bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
       bullets.callAll('animations.play', 'animations', 'fire');
+
+      enemyBullets = game.add.group();
+      enemyBullets.enableBody = true;
+      enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
+      enemyBullets.createMultiple(50, 'projectile');
+      enemyBullets.setAll('checkWorldBounds', true);
+      enemyBullets.setAll('outOfBoundsKill', true);
+      enemyBullets.setAll('anchor.y', 0.5);
+      enemyBullets.setAll('scale.x', 1);
+      enemyBullets.setAll('scale.y', 1);
+      enemyBullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
+      enemyBullets.callAll('animations.play', 'animations', 'fire');
       // create a weapon sprite to move as needed
       weapon1 = game.add.sprite(500, 100, 'weapon1');
       weapon1.scale.setTo(3);
@@ -429,11 +442,40 @@ enemyFunc.prototype = {
         break;
       }
     }
-  },          
+  },
+  attack: function () {
+    //find closest enemy to player and give that one the weapon
+    var closestEnemy = enemyGroup.getClosestTo(player_slime);
+
+    var direction;
+    var enemyBullet;
+
+    //have enemy shoot towards player
+    if (closestEnemy != null) {
+    if (closestEnemy.x < player_slime.x) {
+      direction = 1;
+    }else{
+      direction = -1;
+    }
+      if (game.time.now > enemyNextFire) {
+    enemyNextFire = game.time.now + enemyFireRate;
+    enemyBullet = enemyBullets.getFirstDead();
+    enemyBullet.reset(closestEnemy.x, closestEnemy.y);
+    enemyBullet.rotation = game.physics.arcade.angleToXY(enemyBullet, closestEnemy.x + (1000 * direction * 1) , closestEnemy.y)
+    game.physics.arcade.moveToXY(enemyBullet, closestEnemy.x + (direction * 1000 * 1), closestEnemy.y, 250);
+    enemyBullet.animations.play('fire', 3, true);
+      }
+    if (enemyBullet != null && enemyBullet.alive) {
+    setTimeout(() => enemyBullet.kill(), 2000);
+    }
+    game.physics.arcade.overlap(enemyBullets, player_slime, this.hitPlayer);
+    }
+  },
+  hitPlayer: function (playerSlime, bullet) {
+    player.movement.prototype.healthHit(player_slime, bullet, 1);
+    bullet.kill()
+  }
 }
-  
-
-
 
 scoreFunc = function() {};
 scoreFunc.prototype = {
@@ -554,23 +596,13 @@ slime.state0.prototype = {
     enemyFunc.prototype.initialize('enemy');
     //enemyFunc.prototype.manualSpawn(500, 500);
 
-    // add enemy's weapon and set properties
-    enemyWeapon = game.add.weapon(3, 'projectile');
-    //enemyWeapon.autofire = true;
-    enemyWeapon.fireRate = 2000;
-    enemyWeapon.bulletLifespan = 3000;
-  //  enemyWeapon.bulletSpeed = 50;
-    enemyWeapon.bulletKillType = Phaser.Weapon.KILL_CAMERA_BOUNDS;
-    enemyWeapon.bulletKillType = Phaser.Weapon.KILL_LIFESPAN;
-
-
   },
   update: function() {
     game.physics.arcade.collide(player_slime, [platformGroup], player.movement.prototype.hitPlatform);
     game.physics.arcade.collide(player_slime, [rockGroup]);
     game.physics.arcade.collide(enemyGroup, [rockGroup,platformGroup]);
     game.physics.arcade.collide(player_slime, [enemyGroup], player.movement.prototype.healthHit);
-    game.physics.arcade.collide(player_slime, enemyWeapon.bullets, player.movement.prototype.healthHit);
+    //game.physics.arcade.collide(player_slime, enemyWeapon.bullets, player.movement.prototype.healthHit);
 
 
     player.movement.prototype.move(game.input.keyboard);
@@ -582,19 +614,7 @@ slime.state0.prototype = {
     enemyFunc.prototype.chase(enemyGroup, enemySpeed); // Can change speed
     enemyFunc.prototype.dynamicSpawn();
 
-    //find closest enemy to player and give that one the weapon
-    var closestEnemy = enemyGroup.getClosestTo(player_slime);
-    enemyWeapon.trackSprite(closestEnemy, 0, 0);
-
-    //have enemy shoot towards player
-    if (closestEnemy != null) {
-    if (closestEnemy.x < player_slime.x) {
-      enemyWeapon.fireAngle = 0
-    }else{
-      enemyWeapon.fireAngle = 180
-    }
-      enemyWeapon.fire()
-    }
+    enemyFunc.prototype.attack();
 
     // keeps score up to date
     scoreFunc.prototype.update()
@@ -611,8 +631,6 @@ slime.state0.prototype = {
         case 2:
           changeStateReal(0, 0); break;
       }
-
-
     }
   },
 }
