@@ -451,7 +451,7 @@ enemyFunc.prototype = {
     var enemyBullet;
 
     //have enemy shoot towards player
-    if (closestEnemy != null) {
+    if (closestEnemy != null && closestEnemy.body.enable) {
     if (closestEnemy.x < player_slime.x) {
       direction = 1;
     }else{
