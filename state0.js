@@ -15,7 +15,7 @@ var enemyGroup, nextSpawn = 0, enemySpeed = 1.0; //higher is faster
 let base_game = {}; // will provide methods for quick creation of a new state
 let platforms = {};
 var dooropen = false;
-var shot = 0;
+//var shot = 0;
 var healthCoolDown = 500; var nextManaRegen = 0;
 var states = ['first', 'second', 'third']
 var enemyFireRate = 1000; var enemyNextFire = 0;
@@ -214,18 +214,20 @@ player.movement.prototype = {
     enemyFunc.prototype.healthUpdate(enemy) //update healthbar
     if (enemyDead) {
     enemy.body.enable = false //this was causing some weird bugs ???
-    shot += 1
+    //shot += 1
     console.log('enemy hit');
     enemy.animations.play('dead',4,true);
     setTimeout(() => enemy.bar.kill(), 2000);
     setTimeout(() => enemy.kill(), 2000);
     setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
     death.play();
+      /*
     if (shot == numEnemies){
         portal_slime.animations.play('dooropen', 8, false);
         shot = 0;
         dooropen = true;
     }
+    */
     }
   },
   hitPlatform: function() {
@@ -502,27 +504,49 @@ scoreFunc = function() {};
 scoreFunc.prototype = {
   start: function() {
     scoreTime.time = 0;
+
     scoreTime.background1 = game.add.sprite(CenterX + (CenterX / 2) - 15, CenterY / 4 - 20, 'blankBtn');
-    //scoreTime.background1.anchor.setTo(0.5, 0.5);
     scoreTime.background1.scale.x = 6.6;
     scoreTime.background1.scale.y = 2;
+
     scoreTime.background2 = game.add.sprite(CenterX - 15, CenterY / 4 - 20, 'blankBtn');
-    //scoreTime.background2.anchor.setTo(0.5, 0.5);
     scoreTime.background2.scale.x = 6.6;
     scoreTime.background2.scale.y = 2;
+
+    scoreTime.background3 = game.add.sprite(CenterX + (CenterX / 4) - 15, CenterY / 4 - 20, 'blankBtn');
+    scoreTime.background3.scale.x = 6.6;
+    scoreTime.background3.scale.y = 2;
+
+
     scoreTime.level = game.add.text(CenterX + (CenterX / 2), CenterY / 4, "Level: [" + level + "]", {font: "30px Monospace"});
+
     scoreTime.text = game.add.text(CenterX, CenterY / 4, "Score: [" + scoreTime.time + "]", {font: "30px Monospace"});
+
+    scoreTime.nextDoor = game.add.text(CenterX + (CenterX / 4), CenterY / 4, "Door: [" + nextDoor + "]", 
+      {font: "30px Monospace"});
+
     scoreTime.text.fixedToCamera = true;
     scoreTime.level.fixedToCamera = true;
-    scoreTime.background1.fixedToCamera = true;;
-    scoreTime.background2.fixedToCamera = true;;
+    scoreTime.nextDoor.fixedToCamera = true;
+    scoreTime.background1.fixedToCamera = true;
+    scoreTime.background2.fixedToCamera = true;
+    scoreTime.background3.fixedToCamera = true;
   },
   update: function() {
     scoreTime.time = Math.round((game.time.now - timeInTitle) / 1000);
     scoreTime.text.text = "Score: [" + scoreTime.time + "]";
     scoreTime.level.text = "Level: [" + level + "]";
+    scoreTime.nextDoor.text = "Door: [" + nextDoor + "]";
+    scoreFunc.prototype.nextDoorCheck()
   },
-  nextDoor: function() {
+  nextDoorSet: function() {
+    nextDoor = ((level + 1) * 0.05) * 1000 + scoreTime.time
+    console.log("Next Door set as: ", nextDoor);
+  }, 
+  nextDoorCheck: function() {
+    if (scoreTime.time >= nextDoor) {
+      dooropen = true;
+    }
   },
 
 
@@ -630,6 +654,7 @@ slime.state0.prototype = {
 
     //score time set the intial text location
     scoreFunc.prototype.start();
+    scoreFunc.prototype.nextDoorSet();
 
     // enemy group init
     enemyFunc.prototype.initialize('enemy');
