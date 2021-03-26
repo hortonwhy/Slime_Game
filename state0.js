@@ -83,7 +83,7 @@ player.movement.prototype = {
   manaRegen: function() {
     if (nextManaRegen < game.time.now) {
       nextManaRegen = game.time.now + player.manaRegenRate;
-      player.movement.prototype.manaChange(10)
+      player.movement.prototype.manaChange(5)
     }
   },
 
@@ -540,12 +540,18 @@ scoreFunc.prototype = {
     scoreFunc.prototype.nextDoorCheck()
   },
   nextDoorSet: function() {
-    nextDoor = ((level + 1) * 0.05) * 1000 + scoreTime.time
+    nextDoor = scoreTime.time + 25
     console.log("Next Door set as: ", nextDoor);
   }, 
   nextDoorCheck: function() {
-    if (scoreTime.time >= nextDoor) {
+    if (scoreTime.time >= nextDoor && dooropen != true) {
+      console.log("score is greater than requirement");
       dooropen = true;
+      portal_slime.animations.play('dooropen', 8, false);
+      scoreTime.alertText = game.add.text(CenterX, CenterY, "The Door has opened...", {font: "40px"});
+      scoreTime.alertText.fixedToCamera = true;
+      setTimeout(() => scoreTime.alertText.visible = false, 4000);
+
     }
   },
 
