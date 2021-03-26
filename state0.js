@@ -540,6 +540,10 @@ scoreFunc.prototype = {
     scoreFunc.prototype.nextDoorCheck()
   },
   nextDoorSet: function() {
+    scoreFunc.prototype.update()
+    if (dooropen) {
+      dooropen = false;
+    }
     nextDoor = scoreTime.time + 25
     console.log("Next Door set as: ", nextDoor);
   }, 
@@ -548,7 +552,8 @@ scoreFunc.prototype = {
       console.log("score is greater than requirement");
       dooropen = true;
       portal_slime.animations.play('dooropen', 8, false);
-      scoreTime.alertText = game.add.text(CenterX, CenterY, "The Door has opened...", {font: "40px"});
+      scoreTime.alertText = game.add.text(CenterX, CenterY, "The Door has opened...", {font: "80px"});
+      scoreTime.alertText.scale.x = 0.5; scoreTime.alertText.scale.y = 0.5;
       scoreTime.alertText.fixedToCamera = true;
       setTimeout(() => scoreTime.alertText.visible = false, 4000);
 
