@@ -16,7 +16,7 @@ let base_game = {}; // will provide methods for quick creation of a new state
 let platforms = {};
 var dooropen = false;
 var shot = 0;
-var healthCoolDown = 500;
+var healthCoolDown = 500; var nextManaRegen = 0;
 var states = ['first', 'second', 'third']
 var enemyFireRate = 1000; var enemyNextFire = 0;
 //var shot = false; is the enemy shot?
@@ -29,7 +29,9 @@ player.fireRate = 200;
 player.difficulty = 1; // Lower is more difficult
 player.max_health = 10;
 player.health = 10;
+player.max_mana = 100;
 player.mana = 100;
+player.manaRegenRate = 5000;
 player.knockback = 20; // velocity
 
 // enemy attributes
@@ -65,6 +67,25 @@ player.movement.prototype = {
     healthBar.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
     healthBar.fixedToCamera = fixedBool;
   },
+  manaInit: function(xX, yY, fixedBool) {
+    manaBar = game.add.sprite(xX, yY, "manaBar");
+    manaBar.scale.setTo(6, 1.5);
+    manaBar.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+    manaBar.fixedToCamera = fixedBool;
+  },
+  manaChange: function (mana) {
+    player.mana += mana;
+    var diff = Math.round(player.mana / player.max_mana * 13);
+    //console.log("Player Mana: ", player.mana);
+    manaBar.frame = (diff - 13) * -1;
+  },
+  manaRegen: function() {
+    if (nextManaRegen < game.time.now) {
+      nextManaRegen = game.time.now + player.manaRegenRate;
+      player.movement.prototype.manaChange(10)
+    }
+  },
+
   healthHit: function(playerS, enemy, damage = player.difficulty * 0.05) {
     //console.log(enemy);
     var direction = playerS.x - enemy.x // need to add knockback
@@ -72,7 +93,7 @@ player.movement.prototype = {
     player.health -= damage
     var diff = Math.round(player.health / player.max_health * 13);
     //console.log(diff)
-    console.log("Player Health: ", player.health);
+    //console.log("Player Health: ", player.health);
     healthBar.frame = (diff - 13) * -1;
     if (player.health < 1) {
       healthBar.frame = 13; // empty
@@ -104,9 +125,7 @@ player.movement.prototype = {
             weapon2.x = -100; weapon2.y = -100;
         }
     }
-      
 
-      
     // I think velocity feels better for x movement, than accel
     if (input.isDown(Phaser.Keyboard.LEFT)) {
       player_slime.body.velocity.x = -player.accel;
@@ -139,7 +158,7 @@ player.movement.prototype = {
     if (Math.abs(player_slime.x - weapon2.x) <= 5 && Math.abs(player_slime.y - weapon2.y) <= 50){
         weaponholding = 2;
     }
-      
+
     if (Math.abs(player_slime.x - apple.x) <= 5 && Math.abs(player_slime.y - apple.y) <= 50){
         player.health += 3;
         var diff = Math.round(player.health / player.max_health * 13);
@@ -152,6 +171,7 @@ player.movement.prototype = {
   attack: function(input) {
     if (input.isDown(Phaser.Keyboard.F) && game.time.now > nextFire) {
       // Fire projectile in direction of slime
+      player.movement.prototype.manaChange(-2); // need to change based on weapon holding
       if (vol_state == 1){
           laser.play();
       }
@@ -495,6 +515,7 @@ scoreFunc.prototype = {
 slime.state0 = function() {};
 slime.state0.prototype = {
   preload: function() {
+    game.load.spritesheet('manaBar', 'assets/spritesheet/manaBar.png', 32, 32);
     game.load.spritesheet('healthBar', 'assets/spritesheet/healthBar.png', 32, 32);
     game.load.spritesheet('door', 'assets/spritesheet/door.png', 128, 128);
     game.load.spritesheet('slime-idle', 'assets/spritesheet/slime_idle.png', 64, 64);
@@ -584,10 +605,11 @@ slime.state0.prototype = {
     // enabling hud pass button objects in the array
     hud.funcs.prototype.push([volumeBtn]);
     hud.funcs.prototype.toggle() // toggle visibility off
-    hud.funcs.prototype.move(settingBtn, game.camera.x + 500, 30);
+    hud.funcs.prototype.move(settingBtn, game.camera.x + 100, 30);
     hud.funcs.prototype.move(volumeBtn, game.camera.x + 900, 50);
 
     player.movement.prototype.healthInit(250, 30, true) // enable healh bar
+    player.movement.prototype.manaInit(450, 30, true) // enable healh bar
 
     //score time set the intial text location
     scoreFunc.prototype.start();
@@ -610,10 +632,10 @@ slime.state0.prototype = {
     base_game.prototype.gameSounds();
 
     player.movement.prototype.attack(game.input.keyboard);
+    player.movement.prototype.manaRegen();
 
     enemyFunc.prototype.chase(enemyGroup, enemySpeed); // Can change speed
     enemyFunc.prototype.dynamicSpawn();
-
     enemyFunc.prototype.attack();
 
     // keeps score up to date
