@@ -22,7 +22,7 @@ var enemyFireRate = 1000; var enemyNextFire = 0;
 //var shot = false; is the enemy shot?
 // attempting slime movement to be handled more nicely
 player.accel = 400
-player.jump_height = 400;
+player.jump_height = 600;
 player.gravity = 800;
 player.drag = 100
 player.fireRate = 200;
