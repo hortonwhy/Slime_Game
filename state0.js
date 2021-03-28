@@ -417,6 +417,15 @@ enemyFunc.prototype = {
 
   },
   initialize: function(enemyType) { // make an enemy group to spawn from
+    flyingGroup = game.add.group();
+    flyingGroup.createMultiple(50, enemyType);
+    flyingGroup.setAll('anchor.y', 0.5);
+    flyingGroup.setAll('anchor.x', 0.5);
+    flyingGroup.setAll('scale.x', 1.25);
+    flyingGroup.setAll('scale.y', 1.25);
+    flyingGroup.callAll('animations.add', 'animations', 'enemywalk', [0, 1, 2, 3]);
+    flyingGroup.callAll('animations.add', 'animations', 'dead', [4]);
+    
     enemyGroup = game.add.group();
     enemyGroup.createMultiple(50, enemyType);
     enemyGroup.setAll('anchor.y', 0.5);
@@ -445,15 +454,26 @@ enemyFunc.prototype = {
     // Difficulty manipulates spawn frequency //
     var xX = Math.random() * game.world.bounds.width;
     var yY = Math.random() * game.world.bounds.height;
+    var fixedY = 500  // so flying enemies spawn in the air
+    var numTypeEnemies = 2 // keeps track of how many types of enemies for dynamic spawn
     //console.log(xX, yY);
     if ((xX - player_slime.x) < 300) {
       xX += 300;
     }
-      var enemyLocal = enemyGroup.getFirstDead(true, xX, yY);
-      game.physics.enable(enemyLocal);
-      enemyLocal.body.collideWorldBounds = true;
-      enemyLocal.body.gravity.y = player.gravity;
-      enemyLocal.animations.play('enemywalk', 8, true);
+    var enemyType = Math.floor(Math.random() * (numTypeEnemies-1));
+    var enemyLocal = enemyGroup.getFirstDead(true, xX, yY);
+    var flyingLocal = flyingGroup.getFirstDead(true, xX, fixedY);
+    if (enemyType == 0) {
+        game.physics.enable(enemyLocal);
+        enemyLocal.body.collideWorldBounds = true;
+        enemyLocal.body.gravity.y = player.gravity;
+        enemyLocal.animations.play('enemywalk', 8, true);       
+    }else if (enemyType == 1){
+        game.physics.enable(flyingLocal);
+        flyingLocal.body.collideWorldBounds = true;
+        flyingLocal.body.gravity.y = 0;
+        flyingLocal.animations.play('enemywalk', 8, true);
+    }
 
     }
 
