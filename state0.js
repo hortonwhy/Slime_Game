@@ -612,6 +612,8 @@ slime.state0.prototype = {
     game.load.image('foreground', 'assets/sprites/foreground.png');
     game.load.image('background2', 'assets/sprites/background2.png');
     game.load.image('foreground2', 'assets/sprites/foreground2.png');
+    game.load.image('background3', 'assets/sprites/background3.png');
+    game.load.image('foreground3', 'assets/sprites/foreground3.png');
     game.load.image('exit', 'assets/sprites/exit1.png');
     game.load.image('rock-ground', 'assets/sprites/rock_ground.png');
     game.load.audio('laser','assets/sounds/laser.wav');
