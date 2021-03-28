@@ -2,11 +2,13 @@
 let player_slime, jumpSFX;
 var slime = {};
 let bullets;
+var manaBar;
 var rockGroup;
 var platformGroup, onPlat, hasJumped = true, secondElapsed;
 var weapon1, weapon2, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
 var weaponholding; // dictates weapon 1 or 2
 var volumeBtn, settingBtn, healthBar;
+var b1_tutorial;
 var background, foreground, backgroundGroup, foregroundGroup;
 let player = {}, falling, scoreTime = {};
 let enemy = {};
@@ -268,6 +270,11 @@ base_game.prototype = {
     settingBtn = game.add.button(-900, 20, 'slime-idle', function() {
       hud.funcs.prototype.toggle();
     });
+    b1_tutorial = game.add.button(-1000, 20, 'exit', function() {
+      //changeState('title');
+      game.state.start("title");
+      //hud.funcs.prototype.toggle();
+    });
   },
   projectile: function() {
       bullets = game.add.group();
@@ -294,7 +301,7 @@ base_game.prototype = {
       enemyBullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
       enemyBullets.callAll('animations.play', 'animations', 'fire');
       // create a weapon sprite to move as needed
-      weapon1 = game.add.sprite(500, 100, 'weapon1');
+      weapon1 = game.add.sprite(500, -100, 'weapon1');
       weapon1.scale.setTo(3);
       weapon1.anchor.x = 0.5;
       weapon1.anchor.y = 0.5;
@@ -304,7 +311,7 @@ base_game.prototype = {
       weapon2.anchor.y = 0.5;
       
       // add food
-      apple = game.add.sprite(1900,880,'apple');
+      apple = game.add.sprite(2400,880,'apple');
       apple.scale.setTo(0.25);
   },
   platform_physics: function(platform){
@@ -585,7 +592,7 @@ slime.state0.prototype = {
     game.load.image('foreground', 'assets/sprites/foreground.png');
     game.load.image('background2', 'assets/sprites/background-high-res.png');
     game.load.image('foreground2', 'assets/sprites/foreground-high-res.png');
-
+    game.load.image('exit', 'assets/sprites/exit1.png');
     game.load.image('rock-ground', 'assets/sprites/rock_ground.png');
     game.load.audio('laser','assets/sounds/laser.wav');
     game.load.audio('jump', 'assets/sounds/jump-sfx.mp3');
@@ -692,7 +699,7 @@ slime.state0.prototype = {
     enemyFunc.prototype.attack();
 
     // keeps score up to date
-    scoreFunc.prototype.update()
+    scoreFunc.prototype.update();
   },
 
   hitPortal: function() {
