@@ -5,7 +5,7 @@ let bullets;
 var manaBar;
 var rockGroup;
 var platformGroup, onPlat, hasJumped = true, secondElapsed;
-var weapon1, weapon2, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0;
+var weapon1, weapon2, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0, currentWeapon;
 var weaponholding; // dictates weapon 1 or 2
 var volumeBtn, settingBtn, healthBar;
 var b1_tutorial;
@@ -65,6 +65,12 @@ player.prototype = {
 }
 
 player.movement.prototype = {
+  pickUpWeapon: function() {
+    if (weaponholding != 2 && Math.abs(player_slime.x - weapon2.x) <= 5 && Math.abs(player_slime.y - weapon2.y) <= 50){
+        weapon2.x = -100;
+        player.movement.prototype.addWeaponInv(2);
+    }
+  },
   alertWeapon: function(weapon) {
     var backdrop = game.add.sprite(CenterX, CenterY, 'blankBtn');
     backdrop.scale.x = 22;
@@ -76,10 +82,10 @@ player.movement.prototype = {
     backdrop.fixedToCamera = true;
     setTimeout(() => backdrop.kill(), 2000); setTimeout(() => Localtext.kill(), 2000);
   },
-  addWeaponInv: function(weapon) { // if player doesn't have the unique weapon, add it to inventory
+  addWeaponInv: function(weaponNum, weapon) { // if player doesn't have the unique weapon, add it to inventory
     for (i = 0; i < player.weapons.length; i++) {
-      if (weapon != player.weapons[i]) {
-        player.weapons.push(weapon);
+      if (weaponNum != player.weapons[i]) {
+        player.weapons.push(weaponNum);
       }
     }
   },
@@ -94,15 +100,24 @@ player.movement.prototype = {
   changeWeapon: function (i, weapon) {
     hasWeapon = player.movement.prototype.checkInv(weapon)
     if (hasWeapon) {
+      if (currentWeapon == null) {
+        currentWeapon = weapon1
+      }
+      if (weaponholding != weapon){
+      currentWeapon.visible = false;
       weaponholding = weapon;
+      currentWeapon = weapon2; //hardcoded bad for 3rd weapon :D
+      weapon.visible = true;
+      return
+      }
       return
     }
     player.movement.prototype.alertWeapon(weapon);
-    console.log("Weapon: ", weapon, "is not in your inventory");
+    //console.log("Weapon: ", weapon, "is not in your inventory");
 
   },
   addKeyCallBack: function (key, fn, args) {
-    console.log(key, fn, args);
+    //console.log(key, fn, args);
     game.input.keyboard.addKey(key).onDown.add(fn, null, null, args);
   },
   // add new weapons to this
@@ -204,8 +219,10 @@ player.movement.prototype = {
       }
     }
 
-    if (Math.abs(player_slime.x - weapon2.x) <= 5 && Math.abs(player_slime.y - weapon2.y) <= 50){
-        weaponholding = 2;
+    if (weaponholding != 2 && Math.abs(player_slime.x - weapon2.x) <= 5 && Math.abs(player_slime.y - weapon2.y) <= 50){
+        //weapon2.x = -100;
+        //player.movement.prototype.addWeaponInv(2);
+        //weaponholding = 2;
     }
 
     if (Math.abs(player_slime.x - apple.x) <= 5 && Math.abs(player_slime.y - apple.y) <= 50){
@@ -218,7 +235,7 @@ player.movement.prototype = {
     }
   },
   attack: function(input) {
-    if (input.isDown(Phaser.Keyboard.F) && game.time.now > nextFire) {
+    if (player.mana > 0 && input.isDown(Phaser.Keyboard.F) && game.time.now > nextFire) {
       // Fire projectile in direction of slime
       player.movement.prototype.manaChange(-2); // need to change based on weapon holding
       if (vol_state == 1){
@@ -355,6 +372,7 @@ base_game.prototype = {
       weapon2 = game.add.sprite(1300, 920, 'weapon2');
       weapon2.anchor.x = 0.5;
       weapon2.anchor.y = 0.5;
+      game.physics.enable(weapon2);
       
       // add food
       apple = game.add.sprite(2400,880,'apple');
@@ -518,7 +536,7 @@ enemyFunc.prototype = {
     var flyingLocal = flyingGroup.getFirstDead(true, xX, fixedY);
         game.physics.enable(flyingLocal);
         flyingLocal.body.collideWorldBounds = true;
-        console.log(flyingLocal.body.gravity);
+        //console.log(flyingLocal.body.gravity);
         flyingLocal.body.gravity.y = 0;
         flyingLocal.animations.play('enemywalk', 8, true);
     }
@@ -626,7 +644,7 @@ scoreFunc.prototype = {
       dooropen = false;
     }
     nextDoor = scoreTime.time + 25
-    console.log("Next Door set as: ", nextDoor);
+    //console.log("Next Door set as: ", nextDoor);
   }, 
   nextDoorCheck: function() {
     if (scoreTime.time >= nextDoor && dooropen != true) {
@@ -765,7 +783,7 @@ slime.state0.prototype = {
     game.physics.arcade.collide(player_slime, [enemyGroup], player.movement.prototype.healthHit);
     game.physics.arcade.collide(player_slime, [flyingGroup], player.movement.prototype.healthHit);
     //game.physics.arcade.collide(player_slime, enemyWeapon.bullets, player.movement.prototype.healthHit);
-
+    game.physics.arcade.overlap(player_slime, [weapon2], player.movement.prototype.pickUpWeapon);
 
     player.movement.prototype.move(game.input.keyboard);
     game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
