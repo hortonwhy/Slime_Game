@@ -36,6 +36,7 @@ player.max_mana = 100;
 player.mana = 100;
 player.manaRegenRate = 5000;
 player.knockback = 20; // velocity
+player.weapons = [1];
 
 // enemy attributes
 enemy.speed = 400
@@ -64,6 +65,51 @@ player.prototype = {
 }
 
 player.movement.prototype = {
+  alertWeapon: function(weapon) {
+    var backdrop = game.add.sprite(CenterX, CenterY, 'blankBtn');
+    backdrop.scale.x = 22;
+    backdrop.scale.y = 2
+    var Localtext = game.add.text(CenterX, CenterY, "Weapon: " + weapon + " is not in your inventory", {font: "30px Monospace"});
+    Localtext.anchor.x = 0.5; Localtext.anchor.y = 0.5;
+    Localtext.fixedToCamera = true;
+    backdrop.anchor.x = 0.5; backdrop.anchor.y = 0.5;
+    backdrop.fixedToCamera = true;
+    setTimeout(() => backdrop.kill(), 2000); setTimeout(() => Localtext.kill(), 2000);
+  },
+  addWeaponInv: function(weapon) { // if player doesn't have the unique weapon, add it to inventory
+    for (i = 0; i < player.weapons.length; i++) {
+      if (weapon != player.weapons[i]) {
+        player.weapons.push(weapon);
+      }
+    }
+  },
+  checkInv: function(weapon) { // return t/f if weapon is in inv
+    for (i = 0; i < player.weapons.length; i++) {
+      if (player.weapons[i] == weapon) {
+        return true;
+      }
+    }
+    return false;
+  },
+  changeWeapon: function (i, weapon) {
+    hasWeapon = player.movement.prototype.checkInv(weapon)
+    if (hasWeapon) {
+      weaponholding = weapon;
+      return
+    }
+    player.movement.prototype.alertWeapon(weapon);
+    console.log("Weapon: ", weapon, "is not in your inventory");
+
+  },
+  addKeyCallBack: function (key, fn, args) {
+    console.log(key, fn, args);
+    game.input.keyboard.addKey(key).onDown.add(fn, null, null, args);
+  },
+  // add new weapons to this
+  weaponChangeEventListener: function () {
+    this.addKeyCallBack(Phaser.Keyboard.ONE, this.changeWeapon, 1);
+    this.addKeyCallBack(Phaser.Keyboard.TWO, this.changeWeapon, 2);
+  },
   healthInit: function(xX, yY, fixedBool) {
     healthBar = game.add.sprite(xX, yY, "healthBar");
     healthBar.scale.setTo(6, 1.5);
@@ -85,7 +131,7 @@ player.movement.prototype = {
   manaRegen: function() {
     if (nextManaRegen < game.time.now) {
       nextManaRegen = game.time.now + player.manaRegenRate;
-      player.movement.prototype.manaChange(5)
+      player.movement.prototype.manaChange(2)
     }
   },
 
@@ -201,7 +247,6 @@ player.movement.prototype = {
     game.physics.arcade.overlap(bullets, flyingGroup, this.hitEnemy);
   },
   hitEnemy: function(bullet, enemy) {
-    console.log(enemy)
     bullet.kill();
     // make healthbar above enemy
     if (enemy.health == 1) {
@@ -218,7 +263,7 @@ player.movement.prototype = {
     if (enemyDead) {
     enemy.body.enable = false //this was causing some weird bugs ???
     //shot += 1
-    console.log('enemy hit');
+    //console.log('enemy hit');
     enemy.animations.play('dead',4,true);
     setTimeout(() => enemy.bar.kill(), 2000);
     setTimeout(() => enemy.kill(), 2000);
@@ -654,6 +699,7 @@ slime.state0.prototype = {
 
     /* END WORLD BUILDING */
     weaponholding = 1;
+    player.movement.prototype.weaponChangeEventListener();
 
     // add game sounds
     // Add them to array so mute works too
