@@ -479,16 +479,22 @@ enemyFunc.prototype = {
     }
 
   },
-  chase: function (enemyLocalGroup, speed) {
+  chase: function (enemyLocalGroup, speed, ychase) {  //ychase will be true or false
     for (i = 0; i < enemyLocalGroup.length; i++) {
       if (enemyLocalGroup.children[i].alive) {
         var enemyLocal = enemyLocalGroup.children[i];
         var deltaX = enemyLocal.x - player_slime.x;
         var deltaY = enemyLocal.y - player_slime.y;
-        var dir = 0;
+        var xdir = 0;
+        var ydir = 0;
         //console.log("Enemy %d, %d, %d", i, deltaX, deltaY);
-        if (deltaX > 0) { dir = -100} else { dir = 100};
-        enemyLocal.body.velocity.x = dir * speed;
+        if (deltaX > 0) { xdir = -100} else { xdir = 100};
+        enemyLocal.body.velocity.x = xdir * speed;
+        
+        if (ychase == true) {
+            if (deltaY < 0) {ydir = 100} else {ydir = -100}
+            enemyLocal.body.velocity.y = ydir * speed
+        }
       } else {
         break;
       }
@@ -717,7 +723,8 @@ slime.state0.prototype = {
     player.movement.prototype.attack(game.input.keyboard);
     player.movement.prototype.manaRegen();
 
-    enemyFunc.prototype.chase(enemyGroup, enemySpeed); // Can change speed
+    enemyFunc.prototype.chase(enemyGroup, enemySpeed, false); // Can change speed
+    enemyFunc.prototype.chase(flyingGroup, enemySpeed, true)
     enemyFunc.prototype.dynamicSpawn();
     enemyFunc.prototype.attack();
 
