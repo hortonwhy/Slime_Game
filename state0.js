@@ -460,7 +460,7 @@ enemyFunc.prototype = {
     if ((xX - player_slime.x) < 300) {
       xX += 300;
     }
-    var enemyType = Math.floor(Math.random() * (numTypeEnemies-1));
+    var enemyType = Math.trunc(Math.random() * numTypeEnemies);
     if (enemyType == 0) {
     var enemyLocal = enemyGroup.getFirstDead(true, xX, yY);
         game.physics.enable(enemyLocal);
@@ -471,6 +471,7 @@ enemyFunc.prototype = {
     var flyingLocal = flyingGroup.getFirstDead(true, xX, fixedY);
         game.physics.enable(flyingLocal);
         flyingLocal.body.collideWorldBounds = true;
+        console.log(flyingLocal.body.gravity);
         flyingLocal.body.gravity.y = 0;
         flyingLocal.animations.play('enemywalk', 8, true);
     }
