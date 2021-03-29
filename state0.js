@@ -355,6 +355,7 @@ base_game.prototype = {
     platformGroup.setAll('body.immovable', true);
     // insert plaform creates here
     rockGroup = game.add.group();
+    grassGroup = game.add.group();
     if (worldType == "0") {
       for (i = 0; i < worldX / 32; i++) {
         rockGroup.create(i * 32, worldY - 32, 'rock-ground');
@@ -624,10 +625,12 @@ slime.state0.prototype = {
     game.load.image('foreground3', 'assets/sprites/foreground3.png');
     game.load.image('exit', 'assets/sprites/exit1.png');
     game.load.image('rock-ground', 'assets/sprites/rock_ground.png');
+    game.load.image('background2_ground', 'assets/sprites/background2_ground.png')
     game.load.audio('laser','assets/sounds/laser.wav');
     game.load.audio('jump', 'assets/sounds/jump-sfx.mp3');
     game.load.audio('enemy_death','assets/sounds/enemy_dies.m4a');
     game.load.audio('playerLand', 'assets/sounds/thud.wav');
+
 
   },
 
