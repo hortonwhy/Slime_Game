@@ -542,22 +542,25 @@ enemyFunc.prototype = {
   dynamicSpawn: function () {
     if (nextSpawn < game.time.now) {
       nextSpawn = game.time.now + (15000 * (player.difficulty * Math.random()));
-      console.log("nextSpawn", nextSpawn);
+      //console.log("nextSpawn", nextSpawn);
     // Difficulty manipulates spawn frequency //
     var xX = Math.random() * game.world.bounds.width;
     var yY = Math.random() * game.world.bounds.height;
     var fixedY = 500  // so flying enemies spawn in the air
     var numTypeEnemies = 2 // keeps track of how many types of enemies for dynamic spawn
     //console.log(xX, yY);
-    var validXxLow = (player_slime.x - 400); validXxHigh = (player_slime.x + 400);
-    var validyYLow = game.world.bounds.height - 100;
+    var validXxLow = (player_slime.x - 1100); validXxHigh = (player_slime.x + 1100);
+    var validyYLow = game.world.bounds.height - 90;
+    //console.log(xX, validXxLow, validXxHigh);
+      while (validXxLow < xX && validXxHigh > xX) {
+        console.log("invalid spawn, rerolling...");
+        xX = Math.random() * game.world.bounds.width;
+      }
+      while (validyYLow < yY) {
+        console.log("invalid y coord, rerolling...");
+        yY = Math.random() * game.world.bounds.height;
+      }
 
-    while (xX > validXxHigh && xX < validXxLow) {
-      xX = Math.random() * game.world.bounds.width;
-    }
-    while (yY > validyYLow) {
-      yY = Math.random() * game.worlds.bounds.height;
-    }
     var enemyType = Math.trunc(Math.random() * numTypeEnemies);
     if (enemyType == 0) {
     var enemyLocal = enemyGroup.getFirstDead(true, xX, yY);
@@ -566,7 +569,8 @@ enemyFunc.prototype = {
         enemyLocal.body.gravity.y = player.gravity;
         enemyLocal.animations.play('enemywalk', 8, true);
     }else if (enemyType == 1){
-    var flyingLocal = flyingGroup.getFirstDead(true, xX, fixedY);
+      yRange = Math.random() * 800;
+    var flyingLocal = flyingGroup.getFirstDead(true, xX, fixedY - yRange);
         game.physics.enable(flyingLocal);
         flyingLocal.body.collideWorldBounds = true;
         //console.log(flyingLocal.body.gravity);
@@ -589,7 +593,7 @@ enemyFunc.prototype = {
         if (deltaX > 0) { xdir = -100} else { xdir = 100};
         enemyLocal.body.velocity.x = xdir * speed;
         if (ychase == true) {
-            if (deltaY < 0) {ydir = 100} else {ydir = -100}
+            if (deltaY < 0) {ydir = 25} else {ydir = -25}
             enemyLocal.body.velocity.y = ydir * speed
         }
       } else {
