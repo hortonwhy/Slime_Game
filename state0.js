@@ -65,6 +65,29 @@ player.prototype = {
 }
 
 player.movement.prototype = {
+  displayWeapon: function() {
+    //currentWeapon
+    var backdrop = game.add.sprite(CenterX + 40, CenterY/8 - 20, 'blankBtn');
+    backdrop.scale.x = 10;
+    backdrop.scale.y = 4;
+    var Localtext = game.add.text(CenterX -20, CenterY/8 -35, "Equipped: ", {font: "30px Monospace"});
+    Localtext.anchor.x = 0.5; Localtext.anchor.y = 0.5;
+    Localtext.fixedToCamera = true;
+    backdrop.anchor.x = 0.5; backdrop.anchor.y = 0.5;
+    backdrop.fixedToCamera = true;
+
+    if (currentWeapon != null) {
+      var displayWep = game.add.sprite(CenterX, CenterY/8, currentWeapon.key)
+      displayWep.anchor.x = 0.5; displayWep.anchor.y = 0.5;
+      displayWep.fixedToCamera = true;
+      if (currentWeapon.key == 'weapon1') {
+        displayWep.scale.x = 3; displayWep.scale.y = 3;
+      } else {
+        displayWep.scale.x = 0.8; displayWep.scale.y = 0.8;
+      }
+    }
+    setTimeout(() => player.movement.prototype.displayWeapon(), 100);
+  },
   pickUpWeapon: function() {
     if (weaponholding != 2 && Math.abs(player_slime.x - weapon2.x) <= 5 && Math.abs(player_slime.y - weapon2.y) <= 50){
         weapon2.x = -100;
@@ -103,12 +126,16 @@ player.movement.prototype = {
       if (currentWeapon == null) {
         currentWeapon = weapon1
       }
-      if (weaponholding != weapon){
-      currentWeapon.visible = false;
-      weaponholding = weapon;
-      currentWeapon = weapon2; //hardcoded bad for 3rd weapon :D
-      weapon.visible = true;
-      return
+      if (weapon == 1){
+        currentWeapon.visible = false;
+        weaponholding = weapon;
+        currentWeapon = weapon1; //hardcoded bad for 3rd weapon :D
+        currentWeapon.visible = true;
+      } else if (weapon == 2) { 
+        currentWeapon.visible = false;
+        weaponholding = weapon;
+        currentWeapon = weapon2;
+        currentWeapon.visible = true;
       }
       return
     }
@@ -770,6 +797,9 @@ slime.state0.prototype = {
     //score time set the intial text location
     scoreFunc.prototype.start();
     scoreFunc.prototype.nextDoorSet();
+
+    //set displayweapon on hud
+    player.movement.prototype.displayWeapon()
 
     // enemy group init
     enemyFunc.prototype.initialize('enemy');
