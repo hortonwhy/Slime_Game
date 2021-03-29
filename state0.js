@@ -461,14 +461,14 @@ enemyFunc.prototype = {
       xX += 300;
     }
     var enemyType = Math.floor(Math.random() * (numTypeEnemies-1));
-    var enemyLocal = enemyGroup.getFirstDead(true, xX, yY);
-    var flyingLocal = flyingGroup.getFirstDead(true, xX, fixedY);
     if (enemyType == 0) {
+    var enemyLocal = enemyGroup.getFirstDead(true, xX, yY);
         game.physics.enable(enemyLocal);
         enemyLocal.body.collideWorldBounds = true;
         enemyLocal.body.gravity.y = player.gravity;
         enemyLocal.animations.play('enemywalk', 8, true);       
     }else if (enemyType == 1){
+    var flyingLocal = flyingGroup.getFirstDead(true, xX, fixedY);
         game.physics.enable(flyingLocal);
         flyingLocal.body.collideWorldBounds = true;
         flyingLocal.body.gravity.y = 0;
