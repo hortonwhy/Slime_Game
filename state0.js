@@ -13,7 +13,7 @@ var background, foreground, backgroundGroup, foregroundGroup;
 let player = {}, falling, scoreTime = {};
 let enemy = {};
 var numEnemies = 2; // number of enemies until group problem is fixed
-var enemyGroup, nextSpawn = 0, enemySpeed = 1.0; //higher is faster
+var enemyGroup, flyingGroup, nextSpawn = 0, enemySpeed = 1.0; //higher is faster
 let base_game = {}; // will provide methods for quick creation of a new state
 let platforms = {};
 var dooropen = false;
@@ -198,6 +198,7 @@ player.movement.prototype = {
     }
     // enemyGroup
     game.physics.arcade.overlap(bullets, enemyGroup, this.hitEnemy);
+    game.physics.arcade.overlap(bullets, flyingGroup, this.hitEnemy);
   },
   hitEnemy: function(bullet, enemy) {
     console.log(enemy)
@@ -713,6 +714,7 @@ slime.state0.prototype = {
     game.physics.arcade.collide(player_slime, [rockGroup]);
     game.physics.arcade.collide(enemyGroup, [rockGroup,platformGroup]);
     game.physics.arcade.collide(player_slime, [enemyGroup], player.movement.prototype.healthHit);
+    game.physics.arcade.collide(player_slime, [flyingGroup], player.movement.prototype.healthHit);
     //game.physics.arcade.collide(player_slime, enemyWeapon.bullets, player.movement.prototype.healthHit);
 
 
