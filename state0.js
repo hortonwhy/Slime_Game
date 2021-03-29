@@ -509,6 +509,7 @@ enemyFunc.prototype = {
 
   },
   initialize: function(enemyType) { // make an enemy group to spawn from
+    if (enemyType == 'flyingenemy'){
     flyingGroup = game.add.group();
     flyingGroup.createMultiple(50, enemyType);
     flyingGroup.setAll('anchor.y', 0.5);
@@ -517,7 +518,9 @@ enemyFunc.prototype = {
     flyingGroup.setAll('scale.y', 1.25);
     flyingGroup.callAll('animations.add', 'animations', 'enemywalk', [0, 1, 2, 3]);
     flyingGroup.callAll('animations.add', 'animations', 'dead', [4]);
+    }
     
+    else{
     enemyGroup = game.add.group();
     enemyGroup.createMultiple(50, enemyType);
     enemyGroup.setAll('anchor.y', 0.5);
@@ -526,6 +529,7 @@ enemyFunc.prototype = {
     enemyGroup.setAll('scale.y', 1.25);
     enemyGroup.callAll('animations.add', 'animations', 'enemywalk', [0, 1, 2, 3]);
     enemyGroup.callAll('animations.add', 'animations', 'dead', [4]);
+    }
 
   },
   manualSpawn: function (xX, yY) {
@@ -590,7 +594,7 @@ enemyFunc.prototype = {
         var xdir = 0;
         var ydir = 0;
         //console.log("Enemy %d, %d, %d", i, deltaX, deltaY);
-        if (deltaX > 0) { xdir = -100} else { xdir = 100};
+        if (deltaX > 0){ xdir = -100} else { xdir = 100};
         enemyLocal.body.velocity.x = xdir * speed;
         if (ychase == true) {
             if (deltaY < 0) {ydir = 25} else {ydir = -25}
@@ -613,8 +617,10 @@ enemyFunc.prototype = {
     if (closestEnemy != null && closestEnemy.body.enable) {
     if (closestEnemy.x < player_slime.x) {
       direction = 1;
+      //closestEnemy.setAll('scale.x', 1);
     }else{
       direction = -1;
+      //closestEnemy.setAll('scale.x', -1);
     }
       if (game.time.now > enemyNextFire) {
     enemyNextFire = game.time.now + enemyFireRate;
@@ -710,6 +716,7 @@ slime.state0.prototype = {
     game.load.spritesheet('slime-new', 'assets/spritesheet/slime-new.png', 64, 64);
     game.load.spritesheet('slime-new2', 'assets/spritesheet/slime-new2.png', 64, 64);
     game.load.spritesheet('enemy', 'assets/spritesheet/enemy.png',128,128);
+    game.load.spritesheet('flyingenemy', 'assets/spritesheet/bug.png',128,128);
     game.load.spritesheet('projectile', 'assets/spritesheet/projectile.png', 64, 64);
     game.load.image('weapon1', 'assets/sprites/basic-weapon.png');
     game.load.image('weapon2', 'assets/sprites/laser_gun.png');
@@ -813,6 +820,7 @@ slime.state0.prototype = {
 
     // enemy group init
     enemyFunc.prototype.initialize('enemy');
+    enemyFunc.prototype.initialize('flyingenemy');
     //enemyFunc.prototype.manualSpawn(500, 500);
     enemyFunc.prototype.chase(enemyGroup, enemySpeed, false); // Can change speed
     enemyFunc.prototype.chase(flyingGroup, enemySpeed, true)
