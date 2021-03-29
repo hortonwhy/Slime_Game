@@ -171,14 +171,13 @@ player.movement.prototype = {
     manaBar.frame = (diff - 13) * -1;
   },
   manaRegen: function() {
-    if (nextManaRegen < game.time.now) {
+    if (nextManaRegen < game.time.now && player.mana <= player.max_mana) {
       nextManaRegen = game.time.now + player.manaRegenRate;
       player.movement.prototype.manaChange(2)
     }
   },
 
   healthHit: function(playerS, enemy, damage = player.difficulty * 0.05) {
-    //console.log(enemy);
     var direction = playerS.x - enemy.x // need to add knockback
     if (playerS !== "undefined") {
     player.health -= damage
@@ -264,15 +263,16 @@ player.movement.prototype = {
   attack: function(input) {
     if (player.mana > 0 && input.isDown(Phaser.Keyboard.F) && game.time.now > nextFire) {
       // Fire projectile in direction of slime
-      player.movement.prototype.manaChange(-2); // need to change based on weapon holding
       if (vol_state == 1){
           laser.play();
       }
       if (weaponholding == 1){
+      player.movement.prototype.manaChange(-2); // need to change based on weapon holding
           weapon1.x = player_slime.x;
           weapon1.y = player_slime.y;
       }
       else if (weaponholding == 2){
+      player.movement.prototype.manaChange(-4); // need to change based on weapon holding
           weapon2.x = player_slime.x;
           weapon2.y = player_slime.y;
       }
@@ -541,8 +541,8 @@ enemyFunc.prototype = {
   },
   dynamicSpawn: function () {
     if (nextSpawn < game.time.now) {
-      nextSpawn = game.time.now + (20000 * (player.difficulty * Math.random()));
-      //console.log("nextSpawn", nextSpawn);
+      nextSpawn = game.time.now + (15000 * (player.difficulty * Math.random()));
+      console.log("nextSpawn", nextSpawn);
     // Difficulty manipulates spawn frequency //
     var xX = Math.random() * game.world.bounds.width;
     var yY = Math.random() * game.world.bounds.height;
@@ -550,9 +550,13 @@ enemyFunc.prototype = {
     var numTypeEnemies = 2 // keeps track of how many types of enemies for dynamic spawn
     //console.log(xX, yY);
     var validXxLow = (player_slime.x - 400); validXxHigh = (player_slime.x + 400);
+    var validyYLow = game.world.bounds.height - 100;
 
     while (xX > validXxHigh && xX < validXxLow) {
       xX = Math.random() * game.world.bounds.width;
+    }
+    while (yY > validyYLow) {
+      yY = Math.random() * game.worlds.bounds.height;
     }
     var enemyType = Math.trunc(Math.random() * numTypeEnemies);
     if (enemyType == 0) {
@@ -560,7 +564,7 @@ enemyFunc.prototype = {
         game.physics.enable(enemyLocal);
         enemyLocal.body.collideWorldBounds = true;
         enemyLocal.body.gravity.y = player.gravity;
-        enemyLocal.animations.play('enemywalk', 8, true);       
+        enemyLocal.animations.play('enemywalk', 8, true);
     }else if (enemyType == 1){
     var flyingLocal = flyingGroup.getFirstDead(true, xX, fixedY);
         game.physics.enable(flyingLocal);
@@ -814,8 +818,8 @@ slime.state0.prototype = {
     game.physics.arcade.collide(player_slime, [platformGroup], player.movement.prototype.hitPlatform);
     game.physics.arcade.collide(player_slime, [rockGroup]);
     game.physics.arcade.collide(enemyGroup, [rockGroup,platformGroup]);
-    game.physics.arcade.collide(player_slime, [enemyGroup], player.movement.prototype.healthHit);
-    game.physics.arcade.collide(player_slime, [flyingGroup], player.movement.prototype.healthHit);
+    game.physics.arcade.collide(player_slime, [enemyGroup, flyingGroup], player.movement.prototype.healthHit);
+    //game.physics.arcade.collide(player_slime, [flyingGroup], player.movement.prototype.healthHit);
     //game.physics.arcade.collide(player_slime, enemyWeapon.bullets, player.movement.prototype.healthHit);
     game.physics.arcade.overlap(player_slime, [weapon2], player.movement.prototype.pickUpWeapon);
 
@@ -853,6 +857,7 @@ slime.state0.prototype = {
 function changeStateReal (stateNum, statesIndex) {
   statesIdx = statesIndex;
   level++;
+  player.difficult *= 0.98 // lowers when you change levels
   game.state.start("state" + stateNum);
 }
 
