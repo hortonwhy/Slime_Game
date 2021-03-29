@@ -549,8 +549,10 @@ enemyFunc.prototype = {
     var fixedY = 500  // so flying enemies spawn in the air
     var numTypeEnemies = 2 // keeps track of how many types of enemies for dynamic spawn
     //console.log(xX, yY);
-    if ((xX - player_slime.x) < 300) {
-      xX += 300;
+    var validXxLow = (player_slime.x - 400); validXxHigh = (player_slime.x + 400);
+
+    while (xX > validXxHigh && xX < validXxLow) {
+      xX = Math.random() * game.world.bounds.width;
     }
     var enemyType = Math.trunc(Math.random() * numTypeEnemies);
     if (enemyType == 0) {
@@ -582,7 +584,6 @@ enemyFunc.prototype = {
         //console.log("Enemy %d, %d, %d", i, deltaX, deltaY);
         if (deltaX > 0) { xdir = -100} else { xdir = 100};
         enemyLocal.body.velocity.x = xdir * speed;
-        
         if (ychase == true) {
             if (deltaY < 0) {ydir = 100} else {ydir = -100}
             enemyLocal.body.velocity.y = ydir * speed
@@ -591,6 +592,7 @@ enemyFunc.prototype = {
         break;
       }
     }
+    setTimeout(() => enemyFunc.prototype.chase(enemyLocalGroup, speed, ychase), 100);
   },
   attack: function () {
     //find closest enemy to player and give that one the weapon
@@ -804,6 +806,8 @@ slime.state0.prototype = {
     // enemy group init
     enemyFunc.prototype.initialize('enemy');
     //enemyFunc.prototype.manualSpawn(500, 500);
+    enemyFunc.prototype.chase(enemyGroup, enemySpeed, false); // Can change speed
+    enemyFunc.prototype.chase(flyingGroup, enemySpeed, true)
 
   },
   update: function() {
@@ -822,8 +826,8 @@ slime.state0.prototype = {
     player.movement.prototype.attack(game.input.keyboard);
     player.movement.prototype.manaRegen();
 
-    enemyFunc.prototype.chase(enemyGroup, enemySpeed, false); // Can change speed
-    enemyFunc.prototype.chase(flyingGroup, enemySpeed, true)
+    //enemyFunc.prototype.chase(enemyGroup, enemySpeed, false); // Can change speed
+    //enemyFunc.prototype.chase(flyingGroup, enemySpeed, true)
     enemyFunc.prototype.dynamicSpawn();
     enemyFunc.prototype.attack();
 
