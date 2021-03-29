@@ -3,7 +3,7 @@ let player_slime, jumpSFX;
 var slime = {};
 let bullets;
 var manaBar;
-var rockGroup;
+var rockGroup, grassGroup, metalGroup;
 var platformGroup, onPlat, hasJumped = true, secondElapsed;
 var weapon1, weapon2, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0, currentWeapon;
 var weaponholding; // dictates weapon 1 or 2
@@ -446,6 +446,7 @@ base_game.prototype = {
     // insert plaform creates here
     rockGroup = game.add.group();
     grassGroup = game.add.group();
+    metalGroup = game.add.group();
     if (worldType == "0") {
       for (i = 0; i < worldX / 32; i++) {
         rockGroup.create(i * 32, worldY - 32, 'rock-ground');
@@ -457,7 +458,29 @@ base_game.prototype = {
       var locations = [
         [0, 900], [500, 800], [960, 720],
       ];
-    }
+    }else if (worldType == "1"){
+      for (i = 0; i < worldX / 32; i++) {
+        grassGroup.create(i * 32, worldY - 32, 'background2_ground');
+
+      } grassGroup.setAll('anchor.y', 0.5);
+      grassGroup.setAll('anchor.x', 0.5);
+      grassGroup.setAll('scale.x', 2.5);
+      grassGroup.setAll('scale.y', 2.5);
+      var locations = [
+        [0, 900], [500, 800], [960, 720],
+      ];
+    }else if (worldType == "2"){
+      for (i = 0; i < worldX / 32; i++) {
+        metalGroup.create(i * 32, worldY - 32, 'background3_ground');
+
+      } metalGroup.setAll('anchor.y', 0.5);
+      metalGroup.setAll('anchor.x', 0.5);
+      metalGroup.setAll('scale.x', 2.5);
+      metalGroup.setAll('scale.y', 2.5);
+      var locations = [
+        [0, 900], [500, 800], [960, 720],
+      ];
+    } 
     else if (worldType == "tut"){
       for (i = 0; i < worldX / 32; i++) {
         rockGroup.create(i * 32, worldY - 32, 'rock-ground');
@@ -732,7 +755,8 @@ slime.state0.prototype = {
     game.load.image('foreground3', 'assets/sprites/foreground3.png');
     game.load.image('exit', 'assets/sprites/exit1.png');
     game.load.image('rock-ground', 'assets/sprites/rock_ground.png');
-    game.load.image('background2_ground', 'assets/sprites/background2_ground.png')
+    game.load.image('background2_ground', 'assets/sprites/background2_ground.png');
+    game.load.image('background3_ground', 'assets/sprites/background3_ground.png');
     game.load.audio('laser','assets/sounds/laser.wav');
     game.load.audio('jump', 'assets/sounds/jump-sfx.mp3');
     game.load.audio('enemy_death','assets/sounds/enemy_dies.m4a');
@@ -788,6 +812,7 @@ slime.state0.prototype = {
 
     // add the platforms
     base_game.prototype.genPlatforms(game.world.bounds.width, game.world.bounds.height, 0)
+  
 
     // add collide with the platforms
     game.physics.enable([player_slime, platformGroup, rockGroup]);
