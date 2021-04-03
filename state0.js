@@ -391,14 +391,14 @@ base_game.prototype = {
       enemyBullets = game.add.group();
       enemyBullets.enableBody = true;
       enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
-      enemyBullets.createMultiple(50, 'projectile');
+      enemyBullets.createMultiple(50, 'enemy_projectile');
       enemyBullets.setAll('checkWorldBounds', true);
       enemyBullets.setAll('outOfBoundsKill', true);
       enemyBullets.setAll('anchor.y', 0.5);
-      enemyBullets.setAll('scale.x', 1);
-      enemyBullets.setAll('scale.y', 1);
-      enemyBullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
-      enemyBullets.callAll('animations.play', 'animations', 'fire');
+      enemyBullets.setAll('scale.x', 0.5);
+      enemyBullets.setAll('scale.y', 0.5);
+      enemyBullets.callAll('animations.add', 'animations', 'enemy_fire', [0, 1, 2,3,4,5], 5, true);
+      enemyBullets.callAll('animations.play', 'animations', 'enemy_fire');
       // create a weapon sprite to move as needed
       weapon1 = game.add.sprite(500, -100, 'weapon1');
       weapon1.scale.setTo(3);
@@ -660,7 +660,7 @@ enemyFunc.prototype = {
     enemyBullet.reset(closestEnemy.x, closestEnemy.y);
     enemyBullet.rotation = game.physics.arcade.angleToXY(enemyBullet, closestEnemy.x + (1000 * direction * 1) , closestEnemy.y)
     game.physics.arcade.moveToXY(enemyBullet, closestEnemy.x + (direction * 1000 * 1), closestEnemy.y, 250);
-    enemyBullet.animations.play('fire', 3, true);
+    enemyBullet.animations.play('enemy_fire', 3, true);
       }
     if (enemyBullet != null && enemyBullet.alive) {
     setTimeout(() => enemyBullet.kill(), 2000);
@@ -752,6 +752,7 @@ slime.state0.prototype = {
     game.load.spritesheet('enemy', 'assets/spritesheet/enemy.png',128,128);
     game.load.spritesheet('flyingenemy', 'assets/spritesheet/bug.png',128,128);
     game.load.spritesheet('projectile', 'assets/spritesheet/projectile.png', 64, 64);
+    game.load.spritesheet('enemy_projectile','assets/spritesheet/enemy_bullet.png',128,128);
     game.load.image('weapon1', 'assets/sprites/basic-weapon.png');
     game.load.image('weapon2', 'assets/sprites/laser_gun.png');
     game.load.image('apple','assets/sprites/apple.png');
