@@ -68,6 +68,7 @@ player.prototype = {
 player.movement.prototype = {
   displayWeapon: function() {
     //currentWeapon
+    if (game.state.current == 'state0'){
     var backdrop = game.add.sprite(CenterX + 40, CenterY/8 - 20, 'blankBtn');
     backdrop.scale.x = 10;
     backdrop.scale.y = 4;
@@ -86,6 +87,7 @@ player.movement.prototype = {
       } else {
         displayWep.scale.x = 0.8; displayWep.scale.y = 0.8;
       }
+    }
     }
     setTimeout(() => player.movement.prototype.displayWeapon(), 100);
   },
@@ -138,7 +140,6 @@ player.movement.prototype = {
         currentWeapon = weapon2;
         currentWeapon.visible = true;
       }
-      return
     }
     player.movement.prototype.alertWeapon(weapon);
     //console.log("Weapon: ", weapon, "is not in your inventory");
@@ -619,10 +620,10 @@ enemyFunc.prototype = {
         var xdir = 0;
         var ydir = 0;
         //console.log("Enemy %d, %d, %d", i, deltaX, deltaY);
-        if (deltaX > 0){ xdir = -100} else { xdir = 100};
+        if (deltaX > 0){ xdir = -130} else { xdir = 130};
         enemyLocal.body.velocity.x = xdir * speed;
         if (ychase == true) {
-            if (deltaY < 0) {ydir = 25} else {ydir = -25}
+            if (deltaY < 0) {ydir = 35} else {ydir = -35}
             enemyLocal.body.velocity.y = ydir * speed
         }
       } else {
@@ -711,7 +712,7 @@ scoreFunc.prototype = {
     if (dooropen) {
       dooropen = false;
     }
-    nextDoor = scoreTime.time + 25
+    nextDoor = Math.trunc(scoreTime.time + 25 + (scoreTime.time * 0.1))
     //console.log("Next Door set as: ", nextDoor);
   }, 
   nextDoorCheck: function() {
@@ -896,8 +897,9 @@ slime.state0.prototype = {
 function changeStateReal (stateNum, statesIndex) {
   statesIdx = statesIndex;
   level++;
-  player.difficult *= 0.98 // lowers when you change levels
+  player.difficulty *= 0.70 // lowers when you change levels
   game.state.start("state" + stateNum);
+  console.log(player.difficulty);
 }
 
 function playerHit(bullet) {
