@@ -85,13 +85,11 @@ slime.title.prototype = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.world.setBounds(0, 0, 600, 800);
     sound = game.add.audio('op-music');
-    console.log(sound);
     if (!sound.isPlaying){
     sound.autoplay = true;
     sound.loop = true;
     sound.play();
     }
-    console.log(sound);
 
     b1 = game.add.button(CenterX, CenterY, 'blankBtn', function() {
       timeInTitle = game.time.now;
