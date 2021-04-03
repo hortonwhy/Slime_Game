@@ -1,7 +1,7 @@
 let tutorial = {};
 var firstPause = true, secondPause = true, thirdPause = true, fourthPause = true, arrowKeys = false, contBtn = false;
 var message = 0;
-var messages = ["Use the arrow keys to move left and right, and jump up and down","Use the 'f' key to fire weapon", "^ Here is your health bar. Get shot too much, and you lose the game.","^ Here is your mana bar. Shoot enemies too much, and you'll lose ammo.","Pick up more powerful weapons by walking towards them.", "Pick up food to increase health."];
+var messages = ["Use the arrow keys to move left and right, and jump up and down","Use the 'f' key to fire weapon", "^ Here is your health bar. Get shot too much, \n and you lose the game.","^ Here is your mana bar. Shoot enemies too much, \n and you'll lose ammo.","^ Here is your score. \n When the score reaches the door time, \n you may continue to the next level.","Pick up more powerful weapons by walking towards them.", "Pick up food to increase health."];
 var weapon1, weapon2, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0, currentWeapon;
 var weaponholding;
 var dooropen = false;
@@ -28,21 +28,25 @@ tutorial.prototype = {
     if (xval > 500){
        if (message == 2){
            game.paused = true;
-           tutorial.prototype.controls(message,CenterX-250,CenterY-370);
+           tutorial.prototype.controls(message,CenterX-400,CenterY-370);
        }
        else if (message == 3){
            game.paused = true;
-           tutorial.prototype.controls(message,CenterX-100,CenterY-370);
+           tutorial.prototype.controls(message,CenterX-200,CenterY-370);
+       }
+       else if (message == 4){
+           game.paused = true;
+           tutorial.prototype.controls(message,CenterX+500,CenterY-370);
        }
     }
-    if (xval > 1220){
-        if (message == 4){
+    if (xval > 1200){
+        if (message == 5){
            game.paused = true;
            tutorial.prototype.controls(message,CenterX+300,CenterY);
         }
     }
     if (xval > 2320){
-        if (message == 5){
+        if (message == 6){
            game.paused = true;
            tutorial.prototype.controls(message,CenterX+1000,CenterY);
         }

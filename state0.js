@@ -726,16 +726,18 @@ scoreFunc.prototype = {
       console.log("score is greater than requirement");
       dooropen = true;
       portal_slime.animations.play('dooropen', 8, false);
-      scoreTime.alertText = game.add.text(CenterX, CenterY, "The Door has opened...", {font: "80px"});
+      if (game.state.current == 'state0'){
+        scoreTime.alertText = game.add.text(CenterX, CenterY, "The Door has opened...", {font: "80px"});
+      }
+      else if (game.state.current == 'state1'){
+        scoreTime.alertText = game.add.text(CenterX, CenterY, "The Door has opened... \n walk to the right to exit tutorial", {font: "80px"});
+      }
       scoreTime.alertText.scale.x = 0.5; scoreTime.alertText.scale.y = 0.5;
       scoreTime.alertText.fixedToCamera = true;
       setTimeout(() => scoreTime.alertText.visible = false, 4000);
 
     }
   },
-
-
-
 }
 
 slime.state0 = function() {};
