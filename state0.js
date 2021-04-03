@@ -25,8 +25,8 @@ var level = 0; var nextDoor;// first loop
 //var shot = false; is the enemy shot?
 // attempting slime movement to be handled more nicely
 player.accel = 400
-player.jump_height = 600;
-player.gravity = 800;
+player.jump_height = 750;
+player.gravity = 1700;
 player.drag = 100
 player.fireRate = 200;
 player.difficulty = 1; // Lower is more difficult
