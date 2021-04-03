@@ -69,18 +69,19 @@ player.movement.prototype = {
   displayWeapon: function() {
     //currentWeapon
     if (game.state.current == 'state0'){
-    var backdrop = game.add.sprite(CenterX + 40, CenterY/8 - 20, 'blankBtn');
+    var backdrop = game.add.sprite(CenterX - 200, CenterY/8 - 20, 'blankBtn');
     backdrop.scale.x = 10;
     backdrop.scale.y = 4;
-    var Localtext = game.add.text(CenterX -20, CenterY/8 -35, "Equipped: ", {font: "30px Monospace"});
+    var Localtext = game.add.text(CenterX -200, CenterY/8 -35, "Curr. Weapon", {font: "30px Monospace"});
     Localtext.anchor.x = 0.5; Localtext.anchor.y = 0.5;
     Localtext.fixedToCamera = true;
     backdrop.anchor.x = 0.5; backdrop.anchor.y = 0.5;
     backdrop.fixedToCamera = true;
 
     if (currentWeapon != null) {
-      var displayWep = game.add.sprite(CenterX, CenterY/8, currentWeapon.key)
+      var displayWep = game.add.sprite(CenterX -200, CenterY/8, currentWeapon.key)
       displayWep.anchor.x = 0.5; displayWep.anchor.y = 0.5;
+      console.log(currentWeapon)
       displayWep.fixedToCamera = true;
       if (currentWeapon.key == 'weapon1') {
         displayWep.scale.x = 3; displayWep.scale.y = 3;
@@ -140,6 +141,7 @@ player.movement.prototype = {
         currentWeapon = weapon2;
         currentWeapon.visible = true;
       }
+      return
     }
     player.movement.prototype.alertWeapon(weapon);
     //console.log("Weapon: ", weapon, "is not in your inventory");
@@ -159,12 +161,16 @@ player.movement.prototype = {
     healthBar.scale.setTo(6, 1.5);
     healthBar.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
     healthBar.fixedToCamera = fixedBool;
+    var Localtext = game.add.text(xX + 20, yY + 10, "Health", {font: "30px Monospace"});
+    Localtext.fixedToCamera = fixedBool;
   },
   manaInit: function(xX, yY, fixedBool) {
     manaBar = game.add.sprite(xX, yY, "manaBar");
     manaBar.scale.setTo(6, 1.5);
     manaBar.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
     manaBar.fixedToCamera = fixedBool;
+    var Localtext = game.add.text(xX + 20, yY + 10, "Mana", {font: "30px Monospace"});
+    Localtext.fixedToCamera = fixedBool;
   },
   manaChange: function (mana) {
     player.mana += mana;
@@ -673,24 +679,24 @@ scoreFunc.prototype = {
   start: function() {
     scoreTime.time = 0;
 
-    scoreTime.background1 = game.add.sprite(CenterX + (CenterX / 2) - 15, CenterY / 4 - 20, 'blankBtn');
-    scoreTime.background1.scale.x = 6.6;
+    scoreTime.background1 = game.add.sprite(CenterX + (CenterX / 2) - 15, CenterY / 4 - 120, 'blankBtn');
+    scoreTime.background1.scale.x = 16.5;
     scoreTime.background1.scale.y = 2;
 
-    scoreTime.background2 = game.add.sprite(CenterX - 15, CenterY / 4 - 20, 'blankBtn');
+    scoreTime.background2 = game.add.sprite(CenterX - 15, CenterY / 4 - 120, 'blankBtn');
     scoreTime.background2.scale.x = 6.6;
     scoreTime.background2.scale.y = 2;
 
-    scoreTime.background3 = game.add.sprite(CenterX + (CenterX / 4) - 15, CenterY / 4 - 20, 'blankBtn');
-    scoreTime.background3.scale.x = 6.6;
+    scoreTime.background3 = game.add.sprite(CenterX + (CenterX / 4) - 15, CenterY / 4 - 120, 'blankBtn');
+    scoreTime.background3.scale.x = 7.5;
     scoreTime.background3.scale.y = 2;
 
 
-    scoreTime.level = game.add.text(CenterX + (CenterX / 2), CenterY / 4, "Level: [" + level + "]", {font: "30px Monospace"});
+    scoreTime.level = game.add.text(CenterX, CenterY / 4 -100, "Level: [" + level + "]", {font: "30px Monospace"});
 
-    scoreTime.text = game.add.text(CenterX, CenterY / 4, "Score: [" + scoreTime.time + "]", {font: "30px Monospace"});
+    scoreTime.text = game.add.text(CenterX + (CenterX / 4), CenterY / 4 - 100, "Score: [" + scoreTime.time + "]", {font: "30px Monospace"});
 
-    scoreTime.nextDoor = game.add.text(CenterX + (CenterX / 4), CenterY / 4, "Door: [" + nextDoor + "]", 
+    scoreTime.nextDoor = game.add.text(CenterX + (CenterX / 2), CenterY / 4 - 100, "Door: [" + nextDoor + "]", 
       {font: "30px Monospace"});
 
     scoreTime.text.fixedToCamera = true;
@@ -704,7 +710,7 @@ scoreFunc.prototype = {
     scoreTime.time = Math.round((game.time.now - timeInTitle) / 1000);
     scoreTime.text.text = "Score: [" + scoreTime.time + "]";
     scoreTime.level.text = "Level: [" + level + "]";
-    scoreTime.nextDoor.text = "Door: [" + nextDoor + "]";
+    scoreTime.nextDoor.text = "Time until next Door: [" + nextDoor + "]";
     scoreFunc.prototype.nextDoorCheck()
   },
   nextDoorSet: function() {
@@ -852,6 +858,8 @@ slime.state0.prototype = {
     //enemyFunc.prototype.manualSpawn(500, 500);
     enemyFunc.prototype.chase(enemyGroup, enemySpeed, false); // Can change speed
     enemyFunc.prototype.chase(flyingGroup, enemySpeed, true)
+    currentWeapon = 1
+
 
   },
   update: function() {
