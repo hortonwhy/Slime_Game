@@ -53,6 +53,7 @@ player.prototype = {
     deathText = game.add.text(CenterX, CenterY, "You have died!", {font: "45px Monospace"});
     deathText.anchor.x = 0.5; deathText.anchor.y = 0.5;
     returnToMenu = game.add.button(CenterX, CenterY + 100, "blankBtn", function() {
+      sound.stop() // stop music so it doesn't overlap
       game.paused = false;
       game.state.start('title');
     });
@@ -178,6 +179,7 @@ player.movement.prototype = {
   },
 
   healthHit: function(playerS, enemy, damage = player.difficulty * 0.05) {
+    console.log("Player is hit");
     var direction = playerS.x - enemy.x // need to add knockback
     if (playerS !== "undefined") {
     player.health -= damage
