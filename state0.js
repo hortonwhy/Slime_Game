@@ -465,7 +465,8 @@ base_game.prototype = {
       rockGroup.setAll('scale.x', 2.5);
       rockGroup.setAll('scale.y', 2.5);
       var locations = [
-        [0, 900], [500, 800], [960, 720],
+        [0, 900], [500, 800], [960, 720], [1500, 800], [2000, 720], [2500, 640], [3000, 640],
+          [3500, 720]
       ];
     }else if (worldType == "1"){
       for (i = 0; i < worldX / 32; i++) {
@@ -476,7 +477,7 @@ base_game.prototype = {
       grassGroup.setAll('scale.x', 2.5);
       grassGroup.setAll('scale.y', 2.5);
       var locations = [
-        [0, 900], [500, 800], [960, 720],
+        [0, 900], [500, 800], [960, 720], 
       ];
     }else if (worldType == "2"){
       for (i = 0; i < worldX / 32; i++) {
@@ -823,14 +824,18 @@ slime.state0.prototype = {
     portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
 
     // add the platforms
-    base_game.prototype.genPlatforms(game.world.bounds.width, game.world.bounds.height, 0)
+    base_game.prototype.genPlatforms(game.world.bounds.width, game.world.bounds.height, statesIdx)
   
 
     // add collide with the platforms
     game.physics.enable([player_slime, platformGroup, rockGroup]);
+    game.physics.enable([player_slime, platformGroup, grassGroup]);
+    game.physics.enable([player_slime, platformGroup, metalGroup]);
     player_slime.body.collideWorldBounds = true;
     platformGroup.setAll('body.immovable', true);
     rockGroup.setAll('body.immovable', true);
+    grassGroup.setAll('body.immovable', true);
+    metalGroup.setAll('body.immovable', true);
 
     // custom call, shortens work and declutters the code. 
     base_game.prototype.physics(player_slime);
@@ -868,7 +873,11 @@ slime.state0.prototype = {
   update: function() {
     game.physics.arcade.collide(player_slime, [platformGroup], player.movement.prototype.hitPlatform);
     game.physics.arcade.collide(player_slime, [rockGroup]);
+    game.physics.arcade.collide(player_slime, [grassGroup]);
+    game.physics.arcade.collide(player_slime, [metalGroup]);
     game.physics.arcade.collide(enemyGroup, [rockGroup,platformGroup]);
+    game.physics.arcade.collide(enemyGroup, [grassGroup,platformGroup]);
+    game.physics.arcade.collide(enemyGroup, [metalGroup,platformGroup]);
     game.physics.arcade.collide(player_slime, [enemyGroup, flyingGroup], player.movement.prototype.healthHit);
     //game.physics.arcade.collide(player_slime, [flyingGroup], player.movement.prototype.healthHit);
     //game.physics.arcade.collide(player_slime, enemyWeapon.bullets, player.movement.prototype.healthHit);
@@ -895,9 +904,11 @@ slime.state0.prototype = {
     if (dooropen){
       switch (statesIdx) {
         case 0:
-          changeStateReal(0, 1); break;
+          changeStateReal(0, 1);
+          break;
         case 1:
-          changeStateReal(0, 2); break;
+          changeStateReal(0, 2);
+          break;
         case 2:
           changeStateReal(0, 0); break;
       }
