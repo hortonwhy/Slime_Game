@@ -81,7 +81,6 @@ player.movement.prototype = {
     if (currentWeapon != null) {
       var displayWep = game.add.sprite(CenterX -200, CenterY/8, currentWeapon.key)
       displayWep.anchor.x = 0.5; displayWep.anchor.y = 0.5;
-      console.log(currentWeapon)
       displayWep.fixedToCamera = true;
       if (currentWeapon.key == 'weapon1') {
         displayWep.scale.x = 3; displayWep.scale.y = 3;
@@ -811,8 +810,12 @@ slime.state0.prototype = {
     }
 
     /* END WORLD BUILDING */
-    if (weaponholding == null) { weaponholding = 1; }
+    /*
+    if (weaponholding == null) { weaponholding = 1; var i;
+      player.movement.prototype.changeWeapon(i, weaponholding);
+    }
     player.movement.prototype.weaponChangeEventListener();
+    */
 
     // add game sounds
     // Add them to array so mute works too
@@ -884,6 +887,11 @@ slime.state0.prototype = {
     enemyFunc.prototype.chase(enemyGroup, enemySpeed, false); // Can change speed
     enemyFunc.prototype.chase(flyingGroup, enemySpeed, true)
     currentWeapon = 1
+
+    if (weaponholding == null) { weaponholding = 1; var i;}
+    player.movement.prototype.changeWeapon(i, weaponholding);
+
+    player.movement.prototype.weaponChangeEventListener();
 
 
   },
