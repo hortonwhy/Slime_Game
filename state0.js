@@ -465,8 +465,8 @@ base_game.prototype = {
       rockGroup.setAll('scale.x', 2.5);
       rockGroup.setAll('scale.y', 2.5);
       var locations = [
-        [0, 900], [500, 800], [960, 720], [1500, 800], [2000, 720], [2500, 640], [3000, 640],
-          [3500, 720]
+        [0, 900], [500, 800], [960, 720], [1500, 800], [2000, 720], [2500, 640], [2750, 800], [3000, 640],
+          [3500, 720], [4000, 800]
       ];
     }else if (worldType == "1"){
       for (i = 0; i < worldX / 32; i++) {
@@ -477,7 +477,8 @@ base_game.prototype = {
       grassGroup.setAll('scale.x', 2.5);
       grassGroup.setAll('scale.y', 2.5);
       var locations = [
-        [0, 900], [500, 800], [960, 720], 
+        [0, 900], [500, 800], [960, 720], [1000, 720], [1250, 800], [1500, 640], [2000, 640], [2250, 800], [2500, 720], [3000, 640],
+          [3500, 560], [3750, 720], [4000, 800]
       ];
     }else if (worldType == "2"){
       for (i = 0; i < worldX / 32; i++) {
@@ -488,7 +489,7 @@ base_game.prototype = {
       metalGroup.setAll('scale.x', 2.5);
       metalGroup.setAll('scale.y', 2.5);
       var locations = [
-        [0, 900], [500, 800], [960, 720],
+        [0, 900], [500, 800], [960, 720], [1400, 640], [2000, 850], [2500, 720], [3000, 640], [3500, 520], [4000, 520]
       ];
     } 
     else if (worldType == "tut"){
