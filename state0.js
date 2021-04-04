@@ -508,9 +508,22 @@ base_game.prototype = {
     for (i = 0; i < locations.length; i++) {
       platformGroup.create(locations[i][0], locations[i][1], 'platform');
     }
-  }
+    base_game.prototype.randomPortal(locations)
+  },
+  randomPortal: function(locations) {
+    randomIdx = Math.trunc(Math.random() * locations.length)
+    console.log(locations);
+    var gameX = locations[randomIdx][0]+130; var gameY = locations[randomIdx][1]-80;
+
+    portal_slime = game.add.sprite(gameX, gameY, "door");
+    portal_slime.anchor.x = 0.5; portal_slime.anchor.y = 0.5;
+    portal_slime.scale.setTo(1.5, 1.5);
+    game.physics.enable(portal_slime);
+    portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
 
   },
+}
+
 
 enemyFunc = function () {};
 enemyFunc.prototype = {
@@ -798,7 +811,7 @@ slime.state0.prototype = {
     }
 
     /* END WORLD BUILDING */
-    weaponholding = 1;
+    if (weaponholding == null) { weaponholding = 1; }
     player.movement.prototype.weaponChangeEventListener();
 
     // add game sounds
@@ -818,14 +831,17 @@ slime.state0.prototype = {
     player_slime = game.add.sprite(game.world.bounds.width / 2, game.height - (game.height / 4), "slime-new");
     player_slime.scale.setTo(0.7, 0.7);
 
+    /*
     portal_slime = game.add.sprite(gameX - 500, 745, "door");
     portal_slime.scale.setTo(1.5, 1.5);
     game.physics.enable(portal_slime);
-
     portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
+    */
+    //base_game.prototype.randomPortal(statesIdx)
+
 
     // add the platforms
-    base_game.prototype.genPlatforms(game.world.bounds.width, game.world.bounds.height, statesIdx)
+    var platArray = base_game.prototype.genPlatforms(game.world.bounds.width, game.world.bounds.height, statesIdx)
   
 
     // add collide with the platforms
