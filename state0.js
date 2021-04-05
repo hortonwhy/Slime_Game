@@ -1,5 +1,6 @@
 // State0 will be the titlescreen
 let player_slime, jumpSFX;
+var apples
 var slime = {};
 let bullets;
 var manaBar;
@@ -24,6 +25,7 @@ var enemyFireRate = 1000; var enemyNextFire = 0;
 var level = 0; var nextDoor;// first loop
 //var shot = false; is the enemy shot?
 // attempting slime movement to be handled more nicely
+
 player.accel = 400
 player.jump_height = 750;
 player.gravity = 1700;
@@ -37,6 +39,7 @@ player.mana = 100;
 player.manaRegenRate = 5000;
 player.knockback = 20; // velocity
 player.weapons = [1];
+
 
 // enemy attributes
 enemy.speed = 400
@@ -259,14 +262,7 @@ player.movement.prototype = {
         //weaponholding = 2;
     }
 
-    if (Math.abs(player_slime.x - apple.x) <= 5 && Math.abs(player_slime.y - apple.y) <= 50){
-        player.health += 3;
-        var diff = Math.round(player.health / player.max_health * 13);
-        //console.log(diff)
-        //console.log(player.health);
-        healthBar.frame = (diff - 13) * -1;
-        apple.kill();
-    }
+
   },
   attack: function(input) {
     if (player.mana > 0 && input.isDown(Phaser.Keyboard.F) && game.time.now > nextFire) {
@@ -313,6 +309,11 @@ player.movement.prototype = {
     enemyDead = enemyFunc.prototype.damaged(enemy, damage); // if dead will disable body here and health bar
     enemyFunc.prototype.healthUpdate(enemy) //update healthbar
     if (enemyDead) {
+    num = Math.trunc(Math.random() * 5) // 1 in 4 chance enemy drops an apple
+    if (num == 1) {
+        apples.create(enemy.x, enemy.y, 'apple');
+    }
+  //  apples.scale.setTo(0.25)
     enemy.body.enable = false //this was causing some weird bugs ???
     //shot += 1
     //console.log('enemy hit');
@@ -338,6 +339,12 @@ player.movement.prototype = {
       falling = false;
     }
   },
+  pickUpItem: function(slime, item) {
+      player.health += 3;
+      var diff = Math.round(player.health / player.max_health * 13);
+      healthBar.frame = (diff - 13) * -1;
+      item.kill();
+  }
 }
 enemy.pacing.prototype = {
     pace: function(object) {
@@ -410,8 +417,8 @@ base_game.prototype = {
       game.physics.enable(weapon2);
       
       // add food
-      apple = game.add.sprite(2400,880,'apple');
-      apple.scale.setTo(0.25);
+ //     apple = game.add.sprite(2400,880,'apple');
+//      apple.scale.setTo(0.25);
   },
   platform_physics: function(platform){
       platformGroup = game.add.group();     
@@ -829,6 +836,7 @@ slime.state0.prototype = {
 
     game.stage.backgroundColor = "#dddddd";
     game.physics.startSystem(Phaser.Physics.ARCADE);
+   // game.physics.arcade.gravity.y = 1700; 
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
     player_slime = game.add.sprite(game.world.bounds.width / 2, game.height - (game.height / 4), "slime-new");
@@ -892,7 +900,17 @@ slime.state0.prototype = {
     player.movement.prototype.changeWeapon(i, weaponholding);
 
     player.movement.prototype.weaponChangeEventListener();
-
+      
+    //code for apples
+    apples = game.add.group();
+  //  apples.scale.setTo(0.25)
+    apples.enableBody = true;
+    apples.physicsBodyType = Phaser.Physics.ARCADE;
+    apples.create(2000,800,'apple');
+    game.physics.enable(apples);
+    apples.body.collideWorldBounds = true;
+    apples.body.gravity.y = 1700;
+      
 
   },
   update: function() {
@@ -907,6 +925,7 @@ slime.state0.prototype = {
     //game.physics.arcade.collide(player_slime, [flyingGroup], player.movement.prototype.healthHit);
     //game.physics.arcade.collide(player_slime, enemyWeapon.bullets, player.movement.prototype.healthHit);
     game.physics.arcade.overlap(player_slime, [weapon2], player.movement.prototype.pickUpWeapon);
+    game.physics.arcade.overlap(player_slime, apples, player.movement.prototype.pickUpItem);
 
     player.movement.prototype.move(game.input.keyboard);
     game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
