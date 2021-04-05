@@ -1,7 +1,7 @@
 let tutorial = {};
 var firstPause = true, secondPause = true, thirdPause = true, fourthPause = true, arrowKeys = false, contBtn = false;
 var message = 0;
-var messages = ["Use the arrow keys to move left and right, and jump up and down","Use the 'f' key to fire weapon", "^ Here is your health bar. Get shot too much, \n and you lose the game.","^ Here is your mana bar. Shoot enemies too much, \n and you'll lose ammo.","^ Here is your score. \n When the score reaches the door time, \n you may continue to the next level.","Pick up more powerful weapons by walking towards them.", "Pick up food to increase health."];
+var messages = ["Use the arrow keys to move left and right, and jump up and down","Use the 'f' key to fire weapon", "^ Here is your health bar. Get shot too much, \n and you lose the game.","^ Here is your mana bar. Shoot enemies too much, \n and you'll lose ammo.","^ Here is your score. \n When the score reaches the door time, \n you may continue to the next level.","Pick up more powerful weapons by walking towards them.", "^ New weapons will show up in your inventory. \n Toggle between weapons with the number keys." ,"Pick up food to increase health."];
 var weapon1, weapon2, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0, currentWeapon;
 var weaponholding;
 var dooropen = false;
@@ -28,15 +28,15 @@ tutorial.prototype = {
     if (xval > 500){
        if (message == 2){
            game.paused = true;
-           tutorial.prototype.controls(message,CenterX-400,CenterY-370);
+           tutorial.prototype.controls(message,CenterX-400,CenterY-360);
        }
        else if (message == 3){
            game.paused = true;
-           tutorial.prototype.controls(message,CenterX-200,CenterY-370);
+           tutorial.prototype.controls(message,CenterX-200,CenterY-360);
        }
        else if (message == 4){
            game.paused = true;
-           tutorial.prototype.controls(message,CenterX+500,CenterY-370);
+           tutorial.prototype.controls(message,CenterX+500,CenterY-360);
        }
     }
     if (xval > 1200){
@@ -44,9 +44,13 @@ tutorial.prototype = {
            game.paused = true;
            tutorial.prototype.controls(message,CenterX+300,CenterY);
         }
+        if (message == 6 && player.weapons.length > 1){
+           game.paused = true;
+           tutorial.prototype.controls(message,CenterX+260,CenterY-360);
+        }
     }
     if (xval > 2320){
-        if (message == 6){
+        if (message == 7){
            game.paused = true;
            tutorial.prototype.controls(message,CenterX+1000,CenterY);
         }
@@ -64,7 +68,6 @@ tutorial.prototype = {
         conttext.kill();
         controlText.kill()
         continueBtnn.kill();
-        conttext.kill();
         game.paused = false;
       });
       conttext = game.add.text(xloc, yloc, "[" + "OK" + "]", {font: "40px Monospace"});
@@ -84,94 +87,6 @@ tutorial.prototype = {
     tutorial.prototype.continueBtn(locx-40,locy + 80);
     message ++;
     contBtn = false;
-  },
-  displayWeapon: function() {
-    //currentWeapon
-    var backdrop = game.add.sprite(CenterX + 40, CenterY/8 - 20, 'blankBtn');
-    backdrop.scale.x = 10;
-    backdrop.scale.y = 4;
-    var Localtext = game.add.text(CenterX -20, CenterY/8 -35, "Equipped: ", {font: "30px Monospace"});
-    Localtext.anchor.x = 0.5; Localtext.anchor.y = 0.5;
-    Localtext.fixedToCamera = true;
-    backdrop.anchor.x = 0.5; backdrop.anchor.y = 0.5;
-    backdrop.fixedToCamera = true;
-
-    if (currentWeapon != null) {
-      var displayWep = game.add.sprite(CenterX, CenterY/8, currentWeapon.key)
-      displayWep.anchor.x = 0.5; displayWep.anchor.y = 0.5;
-      displayWep.fixedToCamera = true;
-      if (currentWeapon.key == 'weapon1') {
-        displayWep.scale.x = 3; displayWep.scale.y = 3;
-      } else {
-        displayWep.scale.x = 0.8; displayWep.scale.y = 0.8;
-      }
-    }
-      
-    setTimeout(() => player.movement.prototype.displayWeapon(), 100);
-  },
-  pickUpWeapon: function() {
-    if (weaponholding != 2 && Math.abs(player_slime.x - weapon2.x) <= 5 && Math.abs(player_slime.y - weapon2.y) <= 50){
-        weapon2.x = -100;
-        player.movement.prototype.addWeaponInv(2);
-        //changeWeapon(0,2);
-    }
-  },
-  alertWeapon: function(weapon) {
-    var backdrop = game.add.sprite(CenterX, CenterY, 'blankBtn');
-    backdrop.scale.x = 22;
-    backdrop.scale.y = 2
-    var Localtext = game.add.text(CenterX, CenterY, "Weapon: " + weapon + " is not in your inventory", {font: "30px Monospace"});
-    Localtext.anchor.x = 0.5; Localtext.anchor.y = 0.5;
-    Localtext.fixedToCamera = true;
-    backdrop.anchor.x = 0.5; backdrop.anchor.y = 0.5;
-    backdrop.fixedToCamera = true;
-    setTimeout(() => backdrop.kill(), 2000); setTimeout(() => Localtext.kill(), 2000);
-  },
-  addWeaponInv: function(weaponNum, weapon) { // if player doesn't have the unique weapon, add it to inventory
-    for (i = 0; i < player.weapons.length; i++) {
-      if (weaponNum != player.weapons[i]) {
-        player.weapons.push(weaponNum);
-      }
-    }
-  },
-  checkInv: function(weapon) { // return t/f if weapon is in inv
-    for (i = 0; i < player.weapons.length; i++) {
-      if (player.weapons[i] == weapon) {
-        return true;
-      }
-    }
-    return false;
-  },
-  changeWeapon: function (i, weapon) {
-    hasWeapon = player.movement.prototype.checkInv(weapon)
-    if (hasWeapon) {
-      if (currentWeapon == null) {
-        currentWeapon = weapon1
-      }
-      if (weapon == 1){
-        currentWeapon.visible = false;
-        weaponholding = weapon;
-        currentWeapon = weapon1; //hardcoded bad for 3rd weapon :D
-        currentWeapon.visible = true;
-      } else if (weapon == 2) { 
-        currentWeapon.visible = false;
-        weaponholding = weapon;
-        currentWeapon = weapon2;
-        currentWeapon.visible = true;
-      }
-    }
-    player.movement.prototype.alertWeapon(weapon);
-    //console.log("Weapon: ", weapon, "is not in your inventory");
-
-  },
-  addKeyCallBack: function (key, fn, args) {
-    //console.log(key, fn, args);
-    game.input.keyboard.addKey(key).onDown.add(fn, null, null, args);
-  },
-  // add new weapons to this
-  weaponChangeEventListener: function () {
-    this.addKeyCallBack(Phaser.Keyboard.ONE, this.changeWeapon, 1);
-    this.addKeyCallBack(Phaser.Keyboard.TWO, this.changeWeapon, 2);
   },
 }
 
@@ -215,7 +130,7 @@ slime.state1.prototype = {
     // Add them to array so mute works too
     // I'd like to make this into a separate function. like base_game.prototye.sounds()
     laser = game.add.audio("laser");
-    jumpSFX = game.add.audio('jump')
+    jumpSFX = game.add.audio('jump');
     jumpSFX.volume = 0.3
     death = game.add.audio("enemy_death");
     thud = game.add.audio('playerLand');
@@ -266,7 +181,21 @@ slime.state1.prototype = {
       
       
     //score time set the intial text location
-    player.movement.prototype.displayWeapon()
+    //player.movement.prototype.displayWeapon();
+    backdrop = game.add.sprite(CenterX - 200, CenterY/8 - 20, 'blankBtn');
+    backdrop.scale.x = 10;
+    backdrop.scale.y = 4;
+    Localtext = game.add.text(CenterX -200, CenterY/8 -35, "Curr. Weapon", {font: "30px Monospace"});
+    Localtext.anchor.x = 0.5; Localtext.anchor.y = 0.5;
+    Localtext.fixedToCamera = true;
+    backdrop.anchor.x = 0.5; backdrop.anchor.y = 0.5;
+    backdrop.fixedToCamera = true;
+    currentWeapon = 1
+
+    if (weaponholding == null) { weaponholding = 1; var i;}
+    player.movement.prototype.changeWeapon(i, weaponholding);
+
+    player.movement.prototype.weaponChangeEventListener();
     
     scoreFunc.prototype.start();
     scoreFunc.prototype.nextDoorSet();
@@ -282,8 +211,8 @@ slime.state1.prototype = {
     player.movement.prototype.attack(game.input.keyboard);
     game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
     base_game.prototype.gameSounds();
-    player.movement.prototype.attack(game.input.keyboard);   
-    game.physics.arcade.overlap(player_slime, [weapon2], player.movement.prototype.pickUpWeapon);
+    player.movement.prototype.attack(game.input.keyboard);
+    game.physics.arcade.overlap(player_slime, [weapon2], player.movement.prototype.pickUpWeapon(weapon2,2));
       
     
     scoreFunc.prototype.update();
@@ -297,16 +226,14 @@ slime.state1.prototype = {
     
     tutorial.prototype.displaymessage(player_slime.x, message)
   },
-  pickUpWeapon: function() {
-    if (weaponholding != 2 && Math.abs(player_slime.x - weapon2.x) <= 5 && Math.abs(player_slime.y - weapon2.y) <= 50){
-        weapon2.x = -100;
-        player.movement.prototype.addWeaponInv(2);
-    }
-  },
 
   hitPortal: function() {
     console.log("hit portal");
     if (dooropen){
+        currentWeapon = null;
+        weaponholding = null;
+        //player.weapons = [1];
+        player.movement.prototype.removeWeaponInv();
         game.state.start('title');
     }
   },
@@ -314,5 +241,9 @@ slime.state1.prototype = {
 
 function changeState (stateNum) {
   console.log("state" + stateNum);
+  currentWeapon = null;
+  weaponholding = null;
+  player.movement.prototype.removeWeaponInv();
+  //player.weapons = [1];
   game.state.start("title");
 }
