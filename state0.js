@@ -692,7 +692,20 @@ enemyFunc.prototype = {
   hitPlayer: function (playerSlime, bullet) {
     player.movement.prototype.healthHit(player_slime, bullet, 1);
     bullet.kill()
-  }
+  },
+  appleInit: function () {
+    apples = game.add.group();
+    apples.enableBody = true;
+    apples.physicsBodyType = Phaser.Physics.ARCADE;
+    apples.createMultiple(50, 'apple');
+    apples.setAll('scale.x', 0.25); apples.setAll('scale.y', 0.25);
+    apples.setAll('checkWorldBounds', true);
+    apples.setAll('body.gravity.y', 100);
+  },
+  appleSpawn: function(xX, yY) {
+    apples.create(xX, yY, 'apple');
+  },
+
 }
 
 scoreFunc = function() {};
@@ -900,16 +913,20 @@ slime.state0.prototype = {
     player.movement.prototype.changeWeapon(i, weaponholding);
 
     player.movement.prototype.weaponChangeEventListener();
-      
+
+    enemyFunc.prototype.appleInit()
+    enemyFunc.prototype.appleSpawn(CenterX, CenterY);
+    /*
     //code for apples
     apples = game.add.group();
   //  apples.scale.setTo(0.25)
     apples.enableBody = true;
-    apples.physicsBodyType = Phaser.Physics.ARCADE;
+    //apples.physicsBodyType = Phaser.Physics.ARCADE;
     apples.create(2000,800,'apple');
     game.physics.enable(apples);
     apples.body.collideWorldBounds = true;
     apples.body.gravity.y = 1700;
+    */
       
 
   },
