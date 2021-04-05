@@ -311,9 +311,8 @@ player.movement.prototype = {
     if (enemyDead) {
     num = Math.trunc(Math.random() * 5) // 1 in 4 chance enemy drops an apple
     if (num == 1) {
-        apples.create(enemy.x, enemy.y, 'apple');
+        enemyFunc.prototype.appleSpawn(enemy.x, enemy.y);
     }
-  //  apples.scale.setTo(0.25)
     enemy.body.enable = false //this was causing some weird bugs ???
     //shot += 1
     //console.log('enemy hit');
@@ -704,7 +703,7 @@ enemyFunc.prototype = {
     apples.setAll('outOfBoundsKill', true);
   },
   appleSpawn: function(xX, yY) {
-    var apple = apples.create(player_slime.x, player_slime.y - 500, 'apple');
+    var apple = apples.create(xX, yY-20, 'apple');
     apple.scale.x = 0.25;
     apple.scale.y = 0.25;
     apple.body.gravity.y = 50;
