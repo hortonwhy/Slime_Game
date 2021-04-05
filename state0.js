@@ -694,16 +694,26 @@ enemyFunc.prototype = {
     bullet.kill()
   },
   appleInit: function () {
+    bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
+
     apples = game.add.group();
     apples.enableBody = true;
     apples.physicsBodyType = Phaser.Physics.ARCADE;
     apples.createMultiple(50, 'apple');
-    apples.setAll('scale.x', 0.25); apples.setAll('scale.y', 0.25);
     apples.setAll('checkWorldBounds', true);
-    apples.setAll('body.gravity.y', 100);
+    apples.setAll('outOfBoundsKill', true);
   },
   appleSpawn: function(xX, yY) {
-    apples.create(xX, yY, 'apple');
+    var apple = apples.create(player_slime.x, player_slime.y - 500, 'apple');
+    apple.scale.x = 0.25;
+    apple.scale.y = 0.25;
+    apple.body.gravity.y = 50;
+  },
+
+  appleBob: function(a) {
+    console.log(a.body);
+    a.body.velocity.y = -20;
+
   },
 
 }
@@ -943,6 +953,7 @@ slime.state0.prototype = {
     //game.physics.arcade.collide(player_slime, enemyWeapon.bullets, player.movement.prototype.healthHit);
     game.physics.arcade.overlap(player_slime, [weapon2], player.movement.prototype.pickUpWeapon);
     game.physics.arcade.overlap(player_slime, apples, player.movement.prototype.pickUpItem);
+    game.physics.arcade.collide(apples, [rockGroup, grassGroup, metalGroup, platformGroup], enemyFunc.prototype.appleBob);
 
     player.movement.prototype.move(game.input.keyboard);
     game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
