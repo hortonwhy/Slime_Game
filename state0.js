@@ -22,6 +22,7 @@ var dooropen = false;
 var healthCoolDown = 500; var nextManaRegen = 0;
 var states = ['first', 'second', 'third']
 var enemyFireRate = 1000; var enemyNextFire = 0;
+var enemyLongFireRate = 6000; var nextLongFire = 0;
 var level = 0; var nextDoor;// first loop
 var backdrop, Localtext;
 var currentLocations; // array of current location of platforms
@@ -206,7 +207,7 @@ player.movement.prototype = {
   },
 
   healthHit: function(playerS, enemy, damage = player.difficulty * 0.05) {
-    console.log("Player is hit");
+    //console.log("Player is hit");
     var direction = playerS.x - enemy.x // need to add knockback
     if (playerS !== "undefined") {
     player.health -= damage
@@ -371,7 +372,7 @@ player.movement.prototype = {
   hitPlatform: function() {
     // figure out how to play sound only on intial hit and nothing else
     if (falling) {
-      console.log("play hit plat sound");
+      //console.log("play hit plat sound");
       thud.play()
       falling = false;
     }
@@ -443,6 +444,19 @@ base_game.prototype = {
       enemyBullets.setAll('scale.y', 0.5);
       enemyBullets.callAll('animations.add', 'animations', 'enemy_fire', [0, 1, 2,3,4,5], 5, true);
       enemyBullets.callAll('animations.play', 'animations', 'enemy_fire');
+
+      enemyArtillery = game.add.group();
+      enemyArtillery.enableBody = true;
+      enemyArtillery.physicsBodyType = Phaser.Physics.ARCADE;
+      enemyArtillery.createMultiple(50, 'enemy_projectile'); // need a new projectile
+      enemyArtillery.setAll('checkWorldBounds', true);
+      enemyArtillery.setAll('outOfBoundsKill', true);
+      enemyArtillery.setAll('anchor.y', 0.5);
+      enemyArtillery.setAll('scale.x', 2.5);
+      enemyArtillery.setAll('scale.y', 2.5);
+      enemyArtillery.callAll('animations.add', 'animations', 'enemy_fire', [0, 1, 2,3,4,5], 5, true);
+      enemyArtillery.callAll('animations.play', 'animations', 'enemy_fire');
+
       // create a weapon sprite to move as needed
       weapon1 = game.add.sprite(500, -100, 'weapon1');
       weapon1.scale.setTo(3);
@@ -566,7 +580,7 @@ base_game.prototype = {
   },
   randomPortal: function(locations) {
     randomIdx = Math.trunc(Math.random() * locations.length)
-    console.log(locations);
+    //console.log(locations);
     var gameX = locations[randomIdx][0]+130; var gameY = locations[randomIdx][1]-80;
 
     portal_slime = game.add.sprite(gameX, gameY, "door");
@@ -737,6 +751,26 @@ enemyFunc.prototype = {
     }
   },
   longRangeFire: function() {
+    var closestEnemy = stationaryGroup.getClosestTo(player_slime);
+    if (game.time.now > nextLongFire) {
+       if (closestEnemy != null && closestEnemy.body.enable) {
+      if (closestEnemy.x < player_slime.x) {
+        direction = 1;
+        //closestEnemy.setAll('scale.x', 1);
+      }else{
+        direction = -1;
+        //closestEnemy.setAll('scale.x', -1);
+      }
+      nextLongFire = game.time.now + enemyLongFireRate;
+      enemyBullet = enemyArtillery.getFirstDead();
+      enemyBullet.reset(closestEnemy.x, closestEnemy.y);
+      enemyBullet.rotation = game.physics.arcade.angleToXY(enemyBullet, closestEnemy.x + (1000 * direction * 1) , closestEnemy.y)
+    game.physics.arcade.moveToXY(enemyBullet, closestEnemy.x + (direction * 1000 * 1), closestEnemy.y, 250);
+    enemyBullet.animations.play('enemy_fire', 3, true);
+       }
+
+    }
+    game.physics.arcade.overlap(enemyArtillery, player_slime, this.hitPlayer);
   },
   attack: function () {
     //find closest enemy to player and give that one the weapon
@@ -769,7 +803,8 @@ enemyFunc.prototype = {
     }
   },
   hitPlayer: function (playerSlime, bullet) {
-    player.movement.prototype.healthHit(player_slime, bullet, 1);
+    damage = bullet.scale.x
+    player.movement.prototype.healthHit(player_slime, bullet, damage);
     bullet.kill()
   },
   appleInit: function () {
@@ -790,7 +825,7 @@ enemyFunc.prototype = {
   },
 
   appleBob: function(a) {
-    console.log(a.body);
+    //console.log(a.body);
     a.body.velocity.y = -20;
 
   },
