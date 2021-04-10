@@ -325,6 +325,29 @@ player.movement.prototype = {
     game.physics.arcade.overlap(bullets, enemyGroup, this.hitEnemy);
     game.physics.arcade.overlap(bullets, flyingGroup, this.hitEnemy);
     game.physics.arcade.overlap(bullets, stationaryGroup, this.hitEnemy);
+    game.physics.arcade.overlap(bullets, enemyArtillery, this.hitBullet);
+  },
+  hitBullet: function(bullet, enemyBullet) {
+    bullet.kill();
+    // make healthbar above enemy
+    if (enemyBullet.health == 1) {
+       enemyBullet.bar = enemyFunc.prototype.healthInit(enemyBullet)
+    }
+    if (weaponholding == 1){
+        var damage = 0.5;
+    }
+    else if (weaponholding == 2){
+        var damage = 0.75;
+    }
+    else if (weaponholding == 3){
+        var damage = 1;
+    }
+    enemyDead = enemyFunc.prototype.damaged(enemyBullet, damage); // if dead will disable body here and health bar
+    enemyFunc.prototype.healthUpdate(enemyBullet) //update healthbar
+    if (enemyDead) {
+      enemyBullet.kill();
+      enemyBullet.bar.kill();
+    }
   },
   hitEnemy: function(bullet, enemy) {
     bullet.kill();
@@ -753,7 +776,8 @@ enemyFunc.prototype = {
     }
   },
   longRangeFire: function() {
-    var closestEnemy = stationaryGroup.getClosestTo(player_slime);
+    //var closestEnemy = stationaryGroup.getClosestTo(player_slime);
+    var closestEnemy = stationaryGroup.getFurthestFrom(player_slime);
     if (game.time.now > nextLongFire) {
        if (closestEnemy != null && closestEnemy.body.enable) {
       if (closestEnemy.x < player_slime.x) {
