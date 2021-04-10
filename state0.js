@@ -33,7 +33,7 @@ player.accel = 400
 player.jump_height = 750;
 player.gravity = 1700;
 player.drag = 100
-player.fireRate = 200;
+player.fireRate = ["", 200, 400, 600];
 player.difficulty = 1; // Lower is more difficult
 player.max_health = 10;
 player.health = 10;
@@ -61,6 +61,10 @@ player.prototype = {
     returnToMenu = game.add.button(CenterX, CenterY + 100, "blankBtn", function() {
       sound.stop() // stop music so it doesn't overlap
       game.paused = false;
+      player.health = player.max_health;
+      player.difficulty = 1;
+      player.mana = player.max_mana;
+      player.weapons = [1];
       game.state.start('title');
     });
     returnToMenu.anchor.x = 0.5; returnToMenu.anchor.y = 0.5;
@@ -213,7 +217,7 @@ player.movement.prototype = {
     player.health -= damage
     var diff = Math.round(player.health / player.max_health * 13);
     //console.log(diff)
-    //console.log("Player Health: ", player.health);
+    console.log("Player Health: ", player.health);
     healthBar.frame = (diff - 13) * -1;
     if (player.health < 1) {
       healthBar.frame = 13; // empty
@@ -309,7 +313,7 @@ player.movement.prototype = {
       }
       nextIdle = game.time.now + idleTimer;
       var direction = player_slime.scale.x
-      nextFire = game.time.now + player.fireRate;
+      nextFire = game.time.now + player.fireRate[weaponholding];
       var bullet;
       bullet = bullets.getFirstDead();
       bullet.reset(player_slime.x, player_slime.y);
