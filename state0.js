@@ -427,6 +427,7 @@ base_game.prototype = {
       bullets.createMultiple(50, 'projectile');
       bullets.setAll('checkWorldBounds', true);
       bullets.setAll('outOfBoundsKill', true);
+      bullets.setAll('anchor.x', 0.5);
       bullets.setAll('anchor.y', 0.5);
       bullets.setAll('scale.x', 1);
       bullets.setAll('scale.y', 1);
@@ -439,6 +440,7 @@ base_game.prototype = {
       enemyBullets.createMultiple(50, 'enemy_projectile');
       enemyBullets.setAll('checkWorldBounds', true);
       enemyBullets.setAll('outOfBoundsKill', true);
+      enemyBullets.setAll('anchor.x', 0.5);
       enemyBullets.setAll('anchor.y', 0.5);
       enemyBullets.setAll('scale.x', 0.5);
       enemyBullets.setAll('scale.y', 0.5);
@@ -451,6 +453,7 @@ base_game.prototype = {
       enemyArtillery.createMultiple(50, 'enemy_projectile'); // need a new projectile
       enemyArtillery.setAll('checkWorldBounds', true);
       enemyArtillery.setAll('outOfBoundsKill', true);
+      enemyArtillery.setAll('anchor.x', 0.5);
       enemyArtillery.setAll('anchor.y', 0.5);
       enemyArtillery.setAll('scale.x', 2.5);
       enemyArtillery.setAll('scale.y', 2.5);
