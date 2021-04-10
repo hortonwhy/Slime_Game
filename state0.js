@@ -455,8 +455,8 @@ base_game.prototype = {
       enemyArtillery.setAll('outOfBoundsKill', true);
       enemyArtillery.setAll('anchor.x', 0.5);
       enemyArtillery.setAll('anchor.y', 0.5);
-      enemyArtillery.setAll('scale.x', 2.5);
-      enemyArtillery.setAll('scale.y', 2.5);
+      enemyArtillery.setAll('scale.x', 1.5);
+      enemyArtillery.setAll('scale.y', 1.5);
       enemyArtillery.callAll('animations.add', 'animations', 'enemy_fire', [0, 1, 2,3,4,5], 5, true);
       enemyArtillery.callAll('animations.play', 'animations', 'enemy_fire');
 
@@ -608,6 +608,7 @@ enemyFunc.prototype = {
   },
   healthUpdate: function(enemy) {
     //console.log(enemy.bar, enemy);
+    if (enemy.alive) {
     enemy.bar.x = enemy.x;
     enemy.bar.y = enemy.y - 100;
     setTimeout(() => enemyFunc.prototype.healthUpdate(enemy), 50);
@@ -615,6 +616,7 @@ enemyFunc.prototype = {
     enemy.bar.frame = (diff - 13) * -1;
     if (enemy.health <= 0) {
       enemy.bar.frame = 13; // empty
+    }
     }
   },
   damaged: function(enemy, damage) {
@@ -766,6 +768,8 @@ enemyFunc.prototype = {
       }
       nextLongFire = game.time.now + enemyLongFireRate;
       enemyBullet = enemyArtillery.getFirstDead();
+      game.debug.bodyInfo(enemyBullet);
+      game.debug.body(enemyBullet);
       enemyBullet.reset(closestEnemy.x, closestEnemy.y);
       enemyBullet.rotation = game.physics.arcade.angleToXY(enemyBullet, closestEnemy.x + (1000 * direction * 1) , closestEnemy.y)
     game.physics.arcade.moveToXY(enemyBullet, closestEnemy.x + (direction * 1000 * 1), closestEnemy.y, 250);
@@ -1017,10 +1021,10 @@ slime.state0.prototype = {
     game.camera.follow(player_slime);
 
     // enabling hud pass button objects in the array
-    hud.funcs.prototype.push([volumeBtn]);
-    hud.funcs.prototype.toggle() // toggle visibility off
-    hud.funcs.prototype.move(settingBtn, game.camera.x + 100, 30);
-    hud.funcs.prototype.move(volumeBtn, game.camera.x + 900, 50);
+    //hud.funcs.prototype.push([volumeBtn]);
+    //hud.funcs.prototype.toggle() // toggle visibility off
+    //hud.funcs.prototype.move(settingBtn, game.camera.x + 100, 30);
+    //hud.funcs.prototype.move(volumeBtn, game.camera.x + 900, 50);
 
     player.movement.prototype.healthInit(250, 30, true) // enable healh bar
     player.movement.prototype.manaInit(450, 30, true) // enable healh bar
