@@ -284,12 +284,6 @@ player.movement.prototype = {
       }
     }
 
-//    if (weaponholding != 2 && Math.abs(player_slime.x - weapon2.x) <= 5 && Math.abs(player_slime.y - weapon2.y) <= 50){
-//        //weapon2.x = -100;
-//        //player.movement.prototype.addWeaponInv(2);
-//        //weaponholding = 2;
-//    }
-
 
   },
   attack: function(input) {
@@ -309,7 +303,7 @@ player.movement.prototype = {
           weapon2.y = player_slime.y;
       }
       else if (weaponholding == 3){
-      player.movement.prototype.manaChange(-4); // need to change based on weapon holding
+      player.movement.prototype.manaChange(-5); // need to change based on weapon holding
           weapon3.x = player_slime.x;
           weapon3.y = player_slime.y;
       }
@@ -681,7 +675,6 @@ enemyFunc.prototype = {
       nextSpawn = game.time.now + (15000 * (player.difficulty * Math.random()));
       var numTypeEnemies = 3 // keeps track of how many types of enemies for dynamic spawn
       var enemyType = Math.trunc(Math.random() * numTypeEnemies);
-      enemyType = 2;
       if (enemyType == 2) { // spawn stationary enemy
         var locations = currentLocations;
         randomIdx = Math.trunc(Math.random() * locations.length)
@@ -768,8 +761,8 @@ enemyFunc.prototype = {
       }
       nextLongFire = game.time.now + enemyLongFireRate;
       enemyBullet = enemyArtillery.getFirstDead();
-      game.debug.bodyInfo(enemyBullet);
-      game.debug.body(enemyBullet);
+      //game.debug.bodyInfo(enemyBullet);
+      //game.debug.body(enemyBullet);
       enemyBullet.reset(closestEnemy.x, closestEnemy.y);
       enemyBullet.rotation = game.physics.arcade.angleToXY(enemyBullet, closestEnemy.x + (1000 * direction * 1) , closestEnemy.y)
     game.physics.arcade.moveToXY(enemyBullet, closestEnemy.x + (direction * 1000 * 1), closestEnemy.y, 250);
