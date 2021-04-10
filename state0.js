@@ -24,6 +24,7 @@ var states = ['first', 'second', 'third']
 var enemyFireRate = 1000; var enemyNextFire = 0;
 var level = 0; var nextDoor;// first loop
 var backdrop, Localtext;
+var currentLocations; // array of current location of platforms
 //var shot = false; is the enemy shot?
 // attempting slime movement to be handled more nicely
 
@@ -324,6 +325,7 @@ player.movement.prototype = {
     // enemyGroup
     game.physics.arcade.overlap(bullets, enemyGroup, this.hitEnemy);
     game.physics.arcade.overlap(bullets, flyingGroup, this.hitEnemy);
+    game.physics.arcade.overlap(bullets, stationaryGroup, this.hitEnemy);
   },
   hitEnemy: function(bullet, enemy) {
     bullet.kill();
@@ -355,7 +357,7 @@ player.movement.prototype = {
     enemy.animations.play('dead',4,true);
     setTimeout(() => enemy.bar.kill(), 2000);
     setTimeout(() => enemy.kill(), 2000);
-    setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
+    //setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
     death.play();
       /*
     if (shot == numEnemies){
@@ -560,6 +562,7 @@ base_game.prototype = {
       platformGroup.create(locations[i][0], locations[i][1], 'platform');
     }
     base_game.prototype.randomPortal(locations)
+    currentLocations = locations
   },
   randomPortal: function(locations) {
     randomIdx = Math.trunc(Math.random() * locations.length)
@@ -619,7 +622,7 @@ enemyFunc.prototype = {
     flyingGroup.callAll('animations.add', 'animations', 'dead', [4]);
     }
     
-    else{
+    else if (enemyType == 'enemy') {
     enemyGroup = game.add.group();
     enemyGroup.createMultiple(50, enemyType);
     enemyGroup.setAll('anchor.y', 0.5);
@@ -628,6 +631,17 @@ enemyFunc.prototype = {
     enemyGroup.setAll('scale.y', 1.25);
     enemyGroup.callAll('animations.add', 'animations', 'enemywalk', [0, 1, 2, 3]);
     enemyGroup.callAll('animations.add', 'animations', 'dead', [4]);
+    }
+    else if (enemyType == 'stationary') {
+    stationaryGroup = game.add.group();
+    //stationaryGroup.createMultiple(50, enemyType);
+    stationaryGroup.createMultiple(50, 'enemy');
+    stationaryGroup.setAll('anchor.y', 0.5);
+    stationaryGroup.setAll('anchor.x', 0.5);
+    stationaryGroup.setAll('scale.x', 1.25);
+    stationaryGroup.setAll('scale.y', 1.25);
+    stationaryGroup.callAll('animations.add', 'animations', 'enemywalk', [0, 1, 2, 3]);
+    stationaryGroup.callAll('animations.add', 'animations', 'dead', [4]);
     }
 
   },
@@ -644,13 +658,28 @@ enemyFunc.prototype = {
   },
   dynamicSpawn: function () {
     if (nextSpawn < game.time.now) {
+
       nextSpawn = game.time.now + (15000 * (player.difficulty * Math.random()));
+      var numTypeEnemies = 3 // keeps track of how many types of enemies for dynamic spawn
+      var enemyType = Math.trunc(Math.random() * numTypeEnemies);
+      enemyType = 2;
+      if (enemyType == 2) { // spawn stationary enemy
+        var locations = currentLocations;
+        randomIdx = Math.trunc(Math.random() * locations.length)
+        var gameX = locations[randomIdx][0]+130; var gameY = locations[randomIdx][1]-80;
+        enemyLocal = stationaryGroup.getFirstDead(true, gameX, gameY);
+        game.physics.enable(enemyLocal);
+        enemyLocal.body.collideWorldBounds = true;
+        enemyLocal.body.gravity.y = player.gravity;
+        enemyLocal.animations.play('enemywalk', 8, true);
+      }
+
+
       //console.log("nextSpawn", nextSpawn);
     // Difficulty manipulates spawn frequency //
     var xX = Math.random() * game.world.bounds.width;
     var yY = Math.random() * game.world.bounds.height;
     var fixedY = 500  // so flying enemies spawn in the air
-    var numTypeEnemies = 2 // keeps track of how many types of enemies for dynamic spawn
     //console.log(xX, yY);
     var validXxLow = (player_slime.x - 1100); validXxHigh = (player_slime.x + 1100);
     var validyYLow = game.world.bounds.height - 90;
@@ -685,6 +714,7 @@ enemyFunc.prototype = {
 
   },
   chase: function (enemyLocalGroup, speed, ychase) {  //ychase will be true or false
+    if (enemyLocalGroup.children[0].name != "stationary") { // if not the stationary dude
     for (i = 0; i < enemyLocalGroup.length; i++) {
       if (enemyLocalGroup.children[i].alive) {
         var enemyLocal = enemyLocalGroup.children[i];
@@ -703,7 +733,10 @@ enemyFunc.prototype = {
         break;
       }
     }
-    setTimeout(() => enemyFunc.prototype.chase(enemyLocalGroup, speed, ychase), 100);
+    setTimeout(() => enemyFunc.prototype.chase(enemyLocalGroup, speed, ychase), 500);
+    }
+  },
+  longRangeFire: function() {
   },
   attack: function () {
     //find closest enemy to player and give that one the weapon
@@ -964,6 +997,7 @@ slime.state0.prototype = {
     // enemy group init
     enemyFunc.prototype.initialize('enemy');
     enemyFunc.prototype.initialize('flyingenemy');
+    enemyFunc.prototype.initialize('stationary');
     //enemyFunc.prototype.manualSpawn(500, 500);
     enemyFunc.prototype.chase(enemyGroup, enemySpeed, false); // Can change speed
     enemyFunc.prototype.chase(flyingGroup, enemySpeed, true)
@@ -976,18 +1010,6 @@ slime.state0.prototype = {
 
     enemyFunc.prototype.appleInit()
     enemyFunc.prototype.appleSpawn(CenterX, CenterY);
-    /*
-    //code for apples
-    apples = game.add.group();
-  //  apples.scale.setTo(0.25)
-    apples.enableBody = true;
-    //apples.physicsBodyType = Phaser.Physics.ARCADE;
-    apples.create(2000,800,'apple');
-    game.physics.enable(apples);
-    apples.body.collideWorldBounds = true;
-    apples.body.gravity.y = 1700;
-    */
-      
 
   },
   update: function() {
@@ -995,10 +1017,17 @@ slime.state0.prototype = {
     game.physics.arcade.collide(player_slime, [rockGroup]);
     game.physics.arcade.collide(player_slime, [grassGroup]);
     game.physics.arcade.collide(player_slime, [metalGroup]);
+
     game.physics.arcade.collide(enemyGroup, [rockGroup,platformGroup]);
     game.physics.arcade.collide(enemyGroup, [grassGroup,platformGroup]);
     game.physics.arcade.collide(enemyGroup, [metalGroup,platformGroup]);
-    game.physics.arcade.collide(player_slime, [enemyGroup, flyingGroup], player.movement.prototype.healthHit);
+
+    game.physics.arcade.collide(stationaryGroup, [rockGroup,platformGroup]);
+    game.physics.arcade.collide(stationaryGroup, [grassGroup,platformGroup]);
+    game.physics.arcade.collide(stationaryGroup, [metalGroup,platformGroup]);
+
+    game.physics.arcade.collide(player_slime, [enemyGroup, flyingGroup, stationaryGroup], player.movement.prototype.healthHit);
+
     //game.physics.arcade.collide(player_slime, [flyingGroup], player.movement.prototype.healthHit);
     //game.physics.arcade.collide(player_slime, enemyWeapon.bullets, player.movement.prototype.healthHit);
     game.physics.arcade.overlap(player_slime, [weapon2], player.movement.prototype.pickUpWeapon(weapon2,2));
@@ -1013,10 +1042,11 @@ slime.state0.prototype = {
     player.movement.prototype.attack(game.input.keyboard);
     player.movement.prototype.manaRegen();
 
-    //enemyFunc.prototype.chase(enemyGroup, enemySpeed, false); // Can change speed
-    //enemyFunc.prototype.chase(flyingGroup, enemySpeed, true)
+    enemyFunc.prototype.chase(enemyGroup, enemySpeed, false); // Can change speed
+    enemyFunc.prototype.chase(flyingGroup, enemySpeed, true)
     enemyFunc.prototype.dynamicSpawn();
     enemyFunc.prototype.attack();
+    enemyFunc.prototype.longRangeFire();
 
     // keeps score up to date
     scoreFunc.prototype.update();
