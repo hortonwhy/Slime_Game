@@ -1,6 +1,6 @@
 // State0 will be the titlescreen
 let player_slime, jumpSFX;
-var apples
+var apples, potions
 var slime = {};
 let bullets;
 var manaBar;
@@ -368,7 +368,10 @@ player.movement.prototype = {
     enemyFunc.prototype.healthUpdate(enemy) //update healthbar
     if (enemyDead) {
         num = Math.trunc(Math.random() * 5) // 1 in 4 chance enemy drops an apple      
-        
+    
+    if (num == 2) {
+        enemyFunc.prototype.potionSpawn(enemy.x, enemy.y);
+    }    
     if (num == 1) {
         enemyFunc.prototype.appleSpawn(enemy.x, enemy.y);
     }
@@ -399,10 +402,15 @@ player.movement.prototype = {
     }
   },
   pickUpItem: function(slime, item) {
-      player.health += 3;
-      var diff = Math.round(player.health / player.max_health * 13);
-      healthBar.frame = (diff - 13) * -1;
-      item.kill();
+    player.health += 3;
+    var diff = Math.round(player.health / player.max_health * 13);
+    healthBar.frame = (diff - 13) * -1;
+    item.kill();
+      
+  },
+  pickUpPotion: function(slime, item) {
+    player.movement.prototype.manaChange(3)
+    item.kill()
   }
 }
 enemy.pacing.prototype = {
@@ -835,6 +843,14 @@ enemyFunc.prototype = {
     player.movement.prototype.healthHit(player_slime, bullet, damage);
     bullet.kill()
   },
+  potionInit: function() {
+      potions = game.add.group();
+      potions.enableBody = true;
+      potions.physicsBodyType = Phaser.Physics.ARCADE;
+      potions.createMultiple(50, 'apple');
+      potions.setAll('checkWorldBounds', true);
+      potions.setAll('outOfBoundsKill', true);    
+  },
   appleInit: function () {
     bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
 
@@ -851,11 +867,20 @@ enemyFunc.prototype = {
     apple.scale.y = 0.25;
     apple.body.gravity.y = 50;
   },
+  potionSpawn: function(xX, yY) {
+    var potion = potions.create(xX, yY-20, 'apple');
+    potion.scale.x = 0.25;
+    potion.scale.y = 0.25;
+    potion.body.gravity.y = 50;
+  },
 
   appleBob: function(a) {
     //console.log(a.body);
     a.body.velocity.y = -20;
 
+  },
+  potionBob: function(b) {
+    b.body.velocity.y = -20;
   },
 
 }
@@ -1071,8 +1096,11 @@ slime.state0.prototype = {
 
     player.movement.prototype.weaponChangeEventListener();
 
-    enemyFunc.prototype.appleInit()
+    enemyFunc.prototype.appleInit();
+    enemyFunc.prototype.potionInit();
     enemyFunc.prototype.appleSpawn(CenterX, CenterY);
+    enemyFunc.prototype.potionSpawn(CenterX + 100, CenterY);
+    
 
   },
   update: function() {
@@ -1096,7 +1124,9 @@ slime.state0.prototype = {
     game.physics.arcade.overlap(player_slime, [weapon2], player.movement.prototype.pickUpWeapon(weapon2,2));
     game.physics.arcade.overlap(player_slime, [weapon3], player.movement.prototype.pickUpWeapon(weapon3,3));
     game.physics.arcade.overlap(player_slime, apples, player.movement.prototype.pickUpItem);
+    game.physics.arcade.overlap(player_slime, potions, player.movement.prototype.pickUpPotion);
     game.physics.arcade.collide(apples, [rockGroup, grassGroup, metalGroup, platformGroup], enemyFunc.prototype.appleBob);
+    game.physics.arcade.collide(potions, [rockGroup, grassGroup, metalGroup, platformGroup], enemyFunc.prototype.potionBob);
 
     player.movement.prototype.move(game.input.keyboard);
     game.physics.arcade.overlap(player_slime, portal_slime, this.hitPortal);
