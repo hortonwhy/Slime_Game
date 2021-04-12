@@ -368,10 +368,10 @@ player.movement.prototype = {
     enemyFunc.prototype.healthUpdate(enemy) //update healthbar
     if (enemyDead) {
         num = Math.trunc(Math.random() * 5) // 1 in 4 chance enemy drops an apple      
-    
+
     if (num == 2) {
         enemyFunc.prototype.potionSpawn(enemy.x, enemy.y);
-    }    
+    }
     if (num == 1) {
         enemyFunc.prototype.appleSpawn(enemy.x, enemy.y);
     }
@@ -713,12 +713,14 @@ enemyFunc.prototype = {
       if (enemyType == 2) { // spawn stationary enemy
         var locations = currentLocations;
         randomIdx = Math.trunc(Math.random() * locations.length)
-        var gameX = locations[randomIdx][0]+130; var gameY = locations[randomIdx][1]-80;
+        var gameX = locations[randomIdx][0]+130; var gameY = locations[randomIdx][1]-75;
         enemyLocal = stationaryGroup.getFirstDead(true, gameX, gameY);
         game.physics.enable(enemyLocal);
+        enemyLocal.body.immovable = true;
+        console.log(enemyLocal);
         enemyLocal.body.collideWorldBounds = true;
-        enemyLocal.body.gravity.y = player.gravity;
-        enemyLocal.animations.play('enemywalk', 8, true);
+        //enemyLocal.body.gravity.y = player.gravity;
+        //enemyLocal.animations.play('enemywalk', 8, true);
       }
 
 
