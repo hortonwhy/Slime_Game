@@ -342,7 +342,18 @@ player.movement.prototype = {
         
       // change the bullet the character is holding
       if (weaponholding == 1){
+          bullets.removeAll(true,false,false);
           bullets.createMultiple(50,'projectile');
+          
+          // add animation and other items
+          bullets.setAll('scale.x', 1);
+          bullets.setAll('scale.y', 1);
+          bullets.setAll('checkWorldBounds', true);
+          bullets.setAll('outOfBoundsKill', true);
+          bullets.setAll('anchor.x', 0.5);
+          bullets.setAll('anchor.y', 0.5);
+          bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
+          bullets.callAll('animations.play', 'animations', 'fire');
       }
       else if (weaponholding == 2){
           bullets.removeAll(true,false,false);
@@ -743,12 +754,12 @@ enemyFunc.prototype = {
     else if (enemyType == 'stationary') {
     stationaryGroup = game.add.group();
     //stationaryGroup.createMultiple(50, enemyType);
-    stationaryGroup.createMultiple(50, 'enemy');
+    stationaryGroup.createMultiple(50, 'stationaryenemy');
     stationaryGroup.setAll('name','stationary');
     stationaryGroup.setAll('anchor.y', 0.5);
     stationaryGroup.setAll('anchor.x', 0.5);
-    stationaryGroup.setAll('scale.x', 1.25);
-    stationaryGroup.setAll('scale.y', 1.25);
+    stationaryGroup.setAll('scale.x', 0.75);
+    stationaryGroup.setAll('scale.y', 0.75);
     stationaryGroup.callAll('animations.add', 'animations', 'enemywalk', [0, 1, 2, 3]);
     stationaryGroup.callAll('animations.add', 'animations', 'dead', [4]);
     }
@@ -781,7 +792,7 @@ enemyFunc.prototype = {
         console.log(enemyLocal);
         enemyLocal.body.collideWorldBounds = true;
         //enemyLocal.body.gravity.y = player.gravity;
-        //enemyLocal.animations.play('enemywalk', 8, true);
+        enemyLocal.animations.play('enemywalk', 8, true);
       }
 
 
@@ -1024,6 +1035,7 @@ slime.state0.prototype = {
     game.load.spritesheet('slime-new', 'assets/spritesheet/slime-new.png', 64, 64);
     game.load.spritesheet('slime-new2', 'assets/spritesheet/slime-new2.png', 64, 64);
     game.load.spritesheet('enemy', 'assets/spritesheet/enemy.png',128,128);
+    game.load.spritesheet('stationaryenemy', 'assets/spritesheet/stationaryenemy.png',256,256);
     game.load.spritesheet('flyingenemy', 'assets/spritesheet/bug.png',128,128);
     game.load.spritesheet('projectile', 'assets/spritesheet/projectile.png', 64, 64);
     game.load.spritesheet('projectile2','assets/spritesheet/projectile2.png',128,128);
