@@ -548,14 +548,14 @@ base_game.prototype = {
       enemyArtillery = game.add.group();
       enemyArtillery.enableBody = true;
       enemyArtillery.physicsBodyType = Phaser.Physics.ARCADE;
-      enemyArtillery.createMultiple(50, 'enemy_projectile'); // need a new projectile
+      enemyArtillery.createMultiple(50, 'stationary_projectile'); // need a new projectile
       enemyArtillery.setAll('checkWorldBounds', true);
       enemyArtillery.setAll('outOfBoundsKill', true);
       enemyArtillery.setAll('anchor.x', 0.5);
       enemyArtillery.setAll('anchor.y', 0.5);
       enemyArtillery.setAll('scale.x', 1.5);
       enemyArtillery.setAll('scale.y', 1.5);
-      enemyArtillery.callAll('animations.add', 'animations', 'enemy_fire', [0, 1, 2,3,4,5], 5, true);
+      enemyArtillery.callAll('animations.add', 'animations', 'enemy_fire', [0, 1, 2,3,4], 4, true);
       enemyArtillery.callAll('animations.play', 'animations', 'enemy_fire');
 
       // create a weapon sprite to move as needed
@@ -1041,6 +1041,7 @@ slime.state0.prototype = {
     game.load.spritesheet('projectile2','assets/spritesheet/projectile2.png',128,128);
     game.load.spritesheet('projectile3','assets/spritesheet/projectile3.png',256,256);
     game.load.spritesheet('enemy_projectile','assets/spritesheet/enemy_bullet.png',128,128);
+    game.load.spritesheet('stationary_projectile','assets/spritesheet/bigbullet.png',128,128);
     game.load.image('weapon1', 'assets/sprites/basic-weapon.png');
     game.load.image('weapon2', 'assets/sprites/laser_gun.png');
     game.load.image('weapon3', 'assets/sprites/gun3.png');
