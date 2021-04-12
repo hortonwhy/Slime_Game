@@ -19,6 +19,7 @@ let base_game = {}; // will provide methods for quick creation of a new state
 let platforms = {};
 var dooropen = false;
 //var shot = 0;
+//var shot = 0;
 var healthCoolDown = 500; var nextManaRegen = 0;
 var states = ['first', 'second', 'third']
 var enemyFireRate = 1000; var enemyNextFire = 0;
@@ -338,6 +339,39 @@ player.movement.prototype = {
       var direction = player_slime.scale.x
       nextFire = game.time.now + player.fireRate[weaponholding];
       var bullet;
+        
+      // change the bullet the character is holding
+      if (weaponholding == 1){
+          bullets.createMultiple(50,'projectile');
+      }
+      else if (weaponholding == 2){
+          bullets.removeAll(true,false,false);
+          bullets.createMultiple(50,'projectile2');
+          
+          // add animation and other items
+          bullets.setAll('scale.x', 0.5);
+          bullets.setAll('scale.y', 0.5);
+          bullets.setAll('checkWorldBounds', true);
+          bullets.setAll('outOfBoundsKill', true);
+          bullets.setAll('anchor.x', 0.5);
+          bullets.setAll('anchor.y', 0.5);
+          bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
+          bullets.callAll('animations.play', 'animations', 'fire');
+      }
+      else if (weaponholding == 3){
+          bullets.removeAll(true,false,false);
+          bullets.createMultiple(50,'projectile3');
+          
+          // add animation and other items
+          bullets.setAll('scale.x', 0.25);
+          bullets.setAll('scale.y', 0.25);
+          bullets.setAll('checkWorldBounds', true);
+          bullets.setAll('outOfBoundsKill', true);
+          bullets.setAll('anchor.x', 0.5);
+          bullets.setAll('anchor.y', 0.5);
+          bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
+          bullets.callAll('animations.play', 'animations', 'fire');
+      }
       bullet = bullets.getFirstDead();
       bullet.reset(player_slime.x, player_slime.y);
       bullet.rotation = game.physics.arcade.angleToXY(bullet, player_slime.x + (1000 * direction * 1) , player_slime.y)
@@ -476,13 +510,14 @@ base_game.prototype = {
       bullets = game.add.group();
       bullets.enableBody = true;
       bullets.physicsBodyType = Phaser.Physics.ARCADE;
+      
       bullets.createMultiple(50, 'projectile');
+      bullets.setAll('scale.x', 1);
+      bullets.setAll('scale.y', 1);
       bullets.setAll('checkWorldBounds', true);
       bullets.setAll('outOfBoundsKill', true);
       bullets.setAll('anchor.x', 0.5);
       bullets.setAll('anchor.y', 0.5);
-      bullets.setAll('scale.x', 1);
-      bullets.setAll('scale.y', 1);
       bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
       bullets.callAll('animations.play', 'animations', 'fire');
 
@@ -685,6 +720,7 @@ enemyFunc.prototype = {
     if (enemyType == 'flyingenemy'){
     flyingGroup = game.add.group();
     flyingGroup.createMultiple(50, enemyType);
+    flyingGroup.setAll('name','flyingenemy');
     flyingGroup.setAll('anchor.y', 0.5);
     flyingGroup.setAll('anchor.x', 0.5);
     flyingGroup.setAll('scale.x', 1.25);
@@ -696,6 +732,7 @@ enemyFunc.prototype = {
     else if (enemyType == 'enemy') {
     enemyGroup = game.add.group();
     enemyGroup.createMultiple(50, enemyType);
+    enemyGroup.setAll('name','enemy');
     enemyGroup.setAll('anchor.y', 0.5);
     enemyGroup.setAll('anchor.x', 0.5);
     enemyGroup.setAll('scale.x', 1.25);
@@ -707,6 +744,7 @@ enemyFunc.prototype = {
     stationaryGroup = game.add.group();
     //stationaryGroup.createMultiple(50, enemyType);
     stationaryGroup.createMultiple(50, 'enemy');
+    stationaryGroup.setAll('name','stationary');
     stationaryGroup.setAll('anchor.y', 0.5);
     stationaryGroup.setAll('anchor.x', 0.5);
     stationaryGroup.setAll('scale.x', 1.25);
@@ -988,6 +1026,8 @@ slime.state0.prototype = {
     game.load.spritesheet('enemy', 'assets/spritesheet/enemy.png',128,128);
     game.load.spritesheet('flyingenemy', 'assets/spritesheet/bug.png',128,128);
     game.load.spritesheet('projectile', 'assets/spritesheet/projectile.png', 64, 64);
+    game.load.spritesheet('projectile2','assets/spritesheet/projectile2.png',128,128);
+    game.load.spritesheet('projectile3','assets/spritesheet/projectile3.png',256,256);
     game.load.spritesheet('enemy_projectile','assets/spritesheet/enemy_bullet.png',128,128);
     game.load.image('weapon1', 'assets/sprites/basic-weapon.png');
     game.load.image('weapon2', 'assets/sprites/laser_gun.png');
