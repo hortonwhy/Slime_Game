@@ -1112,11 +1112,13 @@ slime.state0.prototype = {
     player_slime = game.add.sprite(game.world.bounds.width / 2, game.height - (game.height / 4), "slime-new");
     player_slime.scale.setTo(0.7, 0.7);
 
+    /*
     portal_slime = game.add.sprite(gameX - 500, 745, "door");
     portal_slime.scale.setTo(1.5, 1.5);
     game.physics.enable(portal_slime);
     portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
     //base_game.prototype.randomPortal(statesIdx)
+//*/
 
 
     // add the platforms
