@@ -76,20 +76,31 @@ player.prototype = {
 }
 
 player.movement.prototype = {
-  displayWeapon: function() {
-    //currentWeapon
-    if (game.state.current == 'state0' || game.state.current == 'state1'){
-    backdrop = game.add.sprite(CenterX - 200, CenterY/8 - 20, 'blankBtn');
-    backdrop.scale.x = 10;
-    backdrop.scale.y = 4;
-    Localtext = game.add.text(CenterX -200, CenterY/8 -35, "Curr. Weapon", {font: "30px Monospace"});
-    Localtext.anchor.x = 0.5; Localtext.anchor.y = 0.5;
-    Localtext.fixedToCamera = true;
-    backdrop.anchor.x = 0.5; backdrop.anchor.y = 0.5;
-    backdrop.fixedToCamera = true;
+  displayWeaponInit: function() {
+    scoreTime.weaponBack = game.add.sprite(CenterX - 200, CenterY/8 - 20, 'blankBtn');
+    scoreTime.weaponBack.scale.x = 10;
+    scoreTime.weaponBack.scale.y = 4;
+    scoreTime.weaponText = game.add.text(CenterX -200, CenterY/8 -35, "Curr. Weapon", {font: "30px Monospace"});
+    scoreTime.weaponText.anchor.x = 0.5;
+    scoreTime.weaponText.anchor.y = 0.5;
+    scoreTime.weaponBack.anchor.x = 0.5;
+    scoreTime.weaponBack.anchor.y = 0.5;
+    scoreTime.weaponText.fixedToCamera = true;
+    scoreTime.weaponBack.fixedToCamera = true;
 
+    // save weapon keys in an array
+    scoreTime.weapons = ['weapon1', 'weapon2', 'weapon3']
+    for (i = 0; i < scoreTime.weapons.length; i++) {
+      scoreTime.weapons[i] = game.add.sprite(CenterX - 200, CenterY/8, scoreTime.weapons[i])
+      scoreTime.weapons[i].anchor.x = 0.5; scoreTime.weapons[i].anchor.y = 0.5;
+      scoreTime.weapons[i].fixedToCamera = true;
+      scoreTime.weapons[i].visible = false;
+    }
+
+  },
+  displayWeaponUpdate: function() {
     if (currentWeapon != null) {
-      var displayWep = game.add.sprite(CenterX -200, CenterY/8, currentWeapon.key)
+      //var displayWep = game.add.sprite(CenterX -200, CenterY/8, currentWeapon.key)
       displayWep.anchor.x = 0.5; displayWep.anchor.y = 0.5;
       displayWep.fixedToCamera = true;
       if (currentWeapon.key == 'weapon1') {
@@ -101,7 +112,7 @@ player.movement.prototype = {
         displayWep.scale.x = 0.8; displayWep.scale.y = 0.8;  
       }
     }
-    }
+    //}
     setTimeout(() => player.movement.prototype.displayWeapon(), 100);
   },
   pickUpWeapon: function(weapon,num) {
@@ -1009,16 +1020,14 @@ slime.state0.prototype = {
         base_game.prototype.parallax('background3', 'foreground3'); break;
     }
       
-    //player.weapons = [1];
-    //weaponholding = 1;
+    player.weapons = [1];
+    weaponholding = 1;
 
     /* END WORLD BUILDING */
-    /*
     if (weaponholding == null) { weaponholding = 1; var i;
       player.movement.prototype.changeWeapon(i, weaponholding);
     }
     player.movement.prototype.weaponChangeEventListener();
-    */
     
     // add game sounds
     // Add them to array so mute works too
@@ -1038,12 +1047,10 @@ slime.state0.prototype = {
     player_slime = game.add.sprite(game.world.bounds.width / 2, game.height - (game.height / 4), "slime-new");
     player_slime.scale.setTo(0.7, 0.7);
 
-    /*
     portal_slime = game.add.sprite(gameX - 500, 745, "door");
     portal_slime.scale.setTo(1.5, 1.5);
     game.physics.enable(portal_slime);
     portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
-    */
     //base_game.prototype.randomPortal(statesIdx)
 
 
@@ -1082,7 +1089,7 @@ slime.state0.prototype = {
     scoreFunc.prototype.nextDoorSet();
 
     //set displayweapon on hud
-    player.movement.prototype.displayWeapon()
+    player.movement.prototype.displayWeaponInit()
 
     // enemy group init
     enemyFunc.prototype.initialize('enemy');
