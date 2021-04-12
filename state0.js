@@ -93,27 +93,39 @@ player.movement.prototype = {
     for (i = 0; i < scoreTime.weapons.length; i++) {
       scoreTime.weapons[i] = game.add.sprite(CenterX - 200, CenterY/8, scoreTime.weapons[i])
       scoreTime.weapons[i].anchor.x = 0.5; scoreTime.weapons[i].anchor.y = 0.5;
-      scoreTime.weapons[i].fixedToCamera = true;
+      //scoreTime.weapons[i].fixedToCamera = true;
       scoreTime.weapons[i].visible = false;
+      if (scoreTime.weapons[i].key == 'weapon1') {
+        scoreTime.weapons[0].scale.x = 3;
+        scoreTime.weapons[0].scale.y = 3;
+        scoreTime.weapons[i].fixedToCamera = true;
+      } else if (scoreTime.weapons[i].key == 'weapon2'){
+        scoreTime.weapons[1].scale.x = 0.8;
+        scoreTime.weapons[1].scale.y = 0.8;
+        scoreTime.weapons[1].y += 7;
+        scoreTime.weapons[i].fixedToCamera = true;
+      }
+      else{
+        scoreTime.weapons[2].scale.x = 0.8;
+        scoreTime.weapons[2].scale.y = 0.8;
+        console.log(scoreTime.weapons[2].y);
+        scoreTime.weapons[2].y += 20;
+        scoreTime.weapons[i].fixedToCamera = true;
+      }
     }
 
   },
   displayWeaponUpdate: function() {
     if (currentWeapon != null) {
-      //var displayWep = game.add.sprite(CenterX -200, CenterY/8, currentWeapon.key)
-      displayWep.anchor.x = 0.5; displayWep.anchor.y = 0.5;
-      displayWep.fixedToCamera = true;
-      if (currentWeapon.key == 'weapon1') {
-        displayWep.scale.x = 3; displayWep.scale.y = 3;
-      } else if (currentWeapon.key == 'weapon2'){
-        displayWep.scale.x = 0.8; displayWep.scale.y = 0.8;
-      }
-      else{
-        displayWep.scale.x = 0.8; displayWep.scale.y = 0.8;  
+      for (i = 0; i < scoreTime.weapons.length; i++) {
+        if (currentWeapon.key == scoreTime.weapons[i].key) {
+          scoreTime.weapons[i].visible = true;
+        } else {
+          scoreTime.weapons[i].visible = false;
+        }
       }
     }
-    //}
-    setTimeout(() => player.movement.prototype.displayWeapon(), 100);
+    setTimeout(() => player.movement.prototype.displayWeaponUpdate(), 100);
   },
   pickUpWeapon: function(weapon,num) {
     if (weaponholding != num && Math.abs(player_slime.x - weapon.x) <= 5 && Math.abs(player_slime.y - weapon.y) <= 50){
@@ -1090,6 +1102,7 @@ slime.state0.prototype = {
 
     //set displayweapon on hud
     player.movement.prototype.displayWeaponInit()
+    player.movement.prototype.displayWeaponUpdate()
 
     // enemy group init
     enemyFunc.prototype.initialize('enemy');
