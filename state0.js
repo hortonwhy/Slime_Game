@@ -14,7 +14,7 @@ var background, foreground, backgroundGroup, foregroundGroup;
 let player = {}, falling, scoreTime = {};
 let enemy = {};
 var numEnemies = 2; // number of enemies until group problem is fixed
-var enemyGroup, flyingGroup, nextSpawn = 0, enemySpeed = 1.0; //higher is faster
+var enemyGroup, flyingGroup, stationaryGroup, nextSpawn = 0, enemySpeed = 1.0; //higher is faster
 let base_game = {}; // will provide methods for quick creation of a new state
 let platforms = {};
 var dooropen = false;
@@ -338,7 +338,7 @@ player.movement.prototype = {
       nextIdle = game.time.now + idleTimer;
       var direction = player_slime.scale.x
       nextFire = game.time.now + player.fireRate[weaponholding];
-      var bullet;
+      var bullet
         
       // change the bullet the character is holding
       if (weaponholding == 1){
