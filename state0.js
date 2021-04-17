@@ -304,12 +304,12 @@ player.movement.prototype = {
       }
     }
     if (input.isDown(Phaser.Keyboard.UP)) {
-      if (player_slime.body.velocity.y == 0) {
+      //if (player_slime.body.velocity.y == 0) {
         nextIdle = game.time.now + idleTimer;
         player_slime.body.velocity.y = -player.jump_height;
         secondElapsed = game.time.now + 1000;
         hasJumped = true;
-      }
+      //}
     }
 
 
@@ -923,6 +923,9 @@ enemyFunc.prototype = {
     damage = bullet.scale.x
     player.movement.prototype.healthHit(player_slime, bullet, damage);
     bullet.kill()
+    if (bullet.bar != null) {
+      bullet.bar.kill()
+    }
   },
   potionInit: function() {
       potions = game.add.group();
@@ -971,25 +974,27 @@ scoreFunc.prototype = {
   start: function() {
     scoreTime.time = 0;
 
-    scoreTime.background1 = game.add.sprite(CenterX + (CenterX / 2) - 15, CenterY / 4 - 120, 'blankBtn');
+    //scoreTime.background1 = game.add.sprite(CenterX + (CenterX / 2) - 15, CenterY / 4 - 120, 'blankBtn');
+    scoreTime.background1 = game.add.sprite(game.camera.x + (CenterX / 2) - 15, game.camera.y + 20, 'blankBtn');
     scoreTime.background1.scale.x = 16.5;
     scoreTime.background1.scale.y = 2;
 
-    scoreTime.background2 = game.add.sprite(CenterX - 15, CenterY / 4 - 120, 'blankBtn');
+    scoreTime.background2 = game.add.sprite(game.camera.x + (CenterX / 3)+175, game.camera.y + 20, 'blankBtn');
     scoreTime.background2.scale.x = 6.6;
     scoreTime.background2.scale.y = 2;
 
-    scoreTime.background3 = game.add.sprite(CenterX + (CenterX / 4) - 15, CenterY / 4 - 120, 'blankBtn');
-    scoreTime.background3.scale.x = 7.5;
+    scoreTime.background3 = game.add.sprite(game.camera.x + (CenterX - 730), game.camera.y + 20, 'blankBtn');
+    scoreTime.background3.scale.x = 7.0;
     scoreTime.background3.scale.y = 2;
 
 
-    scoreTime.level = game.add.text(CenterX, CenterY / 4 -100, "Level: [" + level + "]", {font: "30px Monospace"});
+    scoreTime.level = game.add.text(game.camera.x + (CenterX/3) + 190, game.camera.y + 35, "Level: [" + level + "]", {font: "30px Monospace"});
+    scoreTime.nextDoor = game.add.text(game.camera.x + (CenterX / 2) + 20, game.camera.y + 35, 'blankBtn', {font: "30px Monospace"});
 
-    scoreTime.text = game.add.text(CenterX + (CenterX / 4), CenterY / 4 - 100, "Score: [" + scoreTime.time + "]", {font: "30px Monospace"});
+    scoreTime.text = game.add.text(game.camera.x + (CenterX - 720), game.camera.y+35, "Score: [" + scoreTime.time + "]", {font: "30px Monospace"});
 
-    scoreTime.nextDoor = game.add.text(CenterX + (CenterX / 2), CenterY / 4 - 100, "Door: [" + nextDoor + "]", 
-      {font: "30px Monospace"});
+    //scoreTime.nextDoor = game.add.text(CenterX + (CenterX / 2), CenterY / 4 - 100, "Door: [" + nextDoor + "]", 
+     // {font: "30px Monospace"});
 
     scoreTime.text.fixedToCamera = true;
     scoreTime.level.fixedToCamera = true;
@@ -1076,7 +1081,8 @@ slime.state0.prototype = {
 
   create: function() {
 
-    game.world.setBounds(0, 0, 5000, 1000); // important to be called early if not first
+    game.world.setBounds(0, 0, 5000, 3000); // important to be called early if not first
+    CenterX = game.world.bounds.width / 2, CenterY = game.world.bounds.height / 2;
     var gameX = game.world.bounds.width; gameY = game.world.bounds.height;
     /* WORLD BUILDING HERE, BASED ON statesIdx */
     // 0 === first level
