@@ -46,7 +46,7 @@ player.weapons = [1];
 
 
 // enemy attributes
-enemy.speed = 400
+enemy.speed = 400;
 
 player.movement = function() {};
 enemy.pacing = function() {};
@@ -478,6 +478,7 @@ base_game.prototype = {
     settingBtn = game.add.button(-900, 20, 'slime-idle', function() {
       hud.funcs.prototype.toggle();
     });
+        
     b1_tutorial = game.add.button(-1000, 20, 'exit', function() {
       //changeState('title');
       player.movement.prototype.removeWeaponInv();
@@ -593,23 +594,25 @@ base_game.prototype = {
     foreground = game.add.sprite(0, 0, foregroundVar);
     backgroundGroup = game.add.group()
     foregroundGroup = game.add.group()
-    var width = game.world.width; var height = game.world.height;
+    var width =3000; var height = 5000;
     //var currentX = background.width
     var currentX = 0
     var currentY = background.height // assuming back and foreground are same
-    backgroundGroup.setAll('scale.setTo', width / background.width, height / background.height);
+    backgroundGroup.setAll('scale.setTo', 3000, 5000);
     foregroundGroup.setAll('scale.setTo', width / foreground.width, height / foreground.height);
     while (currentX < width) {
       backgroundGroup.create(currentX, 0, backgroundVar);
       foregroundGroup.create(currentX, 0, foregroundVar);
       currentX += background.width
       currentY = 0;
+      if (game.state.current == 'state0'){
       while (currentY < height) {
         console.log("currentY: ",currentY)
         console.log("currentX: ",currentX)
         backgroundGroup.create(currentX-2000, currentY, backgroundVar);
         foregroundGroup.create(currentX-2000, currentY, foregroundVar);
         currentY += background.height
+      }
       }
     }
   },
@@ -986,23 +989,44 @@ scoreFunc.prototype = {
     scoreTime.time = 0;
 
     //scoreTime.background1 = game.add.sprite(CenterX + (CenterX / 2) - 15, CenterY / 4 - 120, 'blankBtn');
-    scoreTime.background1 = game.add.sprite(game.camera.x + (CenterX / 2) - 15, game.camera.y + 20, 'blankBtn');
-    scoreTime.background1.scale.x = 16.5;
-    scoreTime.background1.scale.y = 2;
+    if (game.state.current == 'state0'){
+        scoreTime.background1 = game.add.sprite(game.camera.x + (CenterX / 2) - 15, game.camera.y + 20, 'blankBtn');
+        scoreTime.background1.scale.x = 16.5;
+        scoreTime.background1.scale.y = 2;
 
-    scoreTime.background2 = game.add.sprite(game.camera.x + (CenterX / 3)+175, game.camera.y + 20, 'blankBtn');
-    scoreTime.background2.scale.x = 6.6;
-    scoreTime.background2.scale.y = 2;
+        scoreTime.background2 = game.add.sprite(game.camera.x + (CenterX / 3)+175, game.camera.y + 20, 'blankBtn');
+        scoreTime.background2.scale.x = 6.6;
+        scoreTime.background2.scale.y = 2;
 
-    scoreTime.background3 = game.add.sprite(game.camera.x + (CenterX - 730), game.camera.y + 20, 'blankBtn');
-    scoreTime.background3.scale.x = 7.0;
-    scoreTime.background3.scale.y = 2;
+        scoreTime.background3 = game.add.sprite(game.camera.x + (CenterX - 730), game.camera.y + 20, 'blankBtn');
+        scoreTime.background3.scale.x = 7.0;
+        scoreTime.background3.scale.y = 2;
+    }
+    else{
+        scoreTime.background1 = game.add.sprite(game.camera.x + 1050, game.camera.y + 25, 'blankBtn');
+        scoreTime.background1.scale.x = 16.5;
+        scoreTime.background1.scale.y = 2.3;
 
+        scoreTime.background2 = game.add.sprite(game.camera.x + 830, game.camera.y + 25, 'blankBtn');
+        scoreTime.background2.scale.x = 6.6;
+        scoreTime.background2.scale.y = 2.3;
 
-    scoreTime.level = game.add.text(game.camera.x + (CenterX/3) + 190, game.camera.y + 35, "Level: [" + level + "]", {font: "30px Monospace"});
-    scoreTime.nextDoor = game.add.text(game.camera.x + (CenterX / 2) + 20, game.camera.y + 35, 'blankBtn', {font: "30px Monospace"});
-
-    scoreTime.text = game.add.text(game.camera.x + (CenterX - 720), game.camera.y+35, "Score: [" + scoreTime.time + "]", {font: "30px Monospace"});
+        scoreTime.background3 = game.add.sprite(game.camera.x + 600, game.camera.y + 25, 'blankBtn');
+        scoreTime.background3.scale.x = 7.0;
+        scoreTime.background3.scale.y = 2.3;
+    }
+    
+    // change positioning based on tutorial/state0
+    if (game.state.current == 'state0'){
+        scoreTime.text = game.add.text(game.camera.x + (CenterX - 720), game.camera.y+35, "Score: [" + scoreTime.time + "]", {font: "30px Monospace"});
+        scoreTime.level = game.add.text(game.camera.x + (CenterX/3) + 190, game.camera.y + 35, "Level: [" + level + "]", {font: "30px Monospace"});
+        scoreTime.nextDoor = game.add.text(game.camera.x + (CenterX / 2) + 20, game.camera.y + 35, 'blankBtn', {font: "30px Monospace"});
+    }
+    else{
+        scoreTime.text = game.add.text(game.camera.x + 620, game.camera.y+37, "Score: [" + scoreTime.time + "]", {font: "30px Monospace"});
+        scoreTime.level = game.add.text(game.camera.x + 850, game.camera.y + 37, "Level: [" + level + "]", {font: "30px Monospace"});
+        scoreTime.nextDoor = game.add.text(game.camera.x + 1100, game.camera.y + 37, 'blankBtn', {font: "30px Monospace"});
+    }
 
     //scoreTime.nextDoor = game.add.text(CenterX + (CenterX / 2), CenterY / 4 - 100, "Door: [" + nextDoor + "]", 
      // {font: "30px Monospace"});
