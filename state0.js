@@ -110,7 +110,7 @@ player.movement.prototype = {
       else{
         scoreTime.weapons[2].scale.x = 0.8;
         scoreTime.weapons[2].scale.y = 0.8;
-        console.log(scoreTime.weapons[2].y);
+        //console.log(scoreTime.weapons[2].y);
         scoreTime.weapons[2].y += 20;
         scoreTime.weapons[i].fixedToCamera = true;
       }
@@ -594,13 +594,23 @@ base_game.prototype = {
     backgroundGroup = game.add.group()
     foregroundGroup = game.add.group()
     var width = game.world.width; var height = game.world.height;
-    var currentX = background.width, currentY = background.height; // assuming back and foreground are same
+    //var currentX = background.width
+    var currentX = 0
+    var currentY = background.height // assuming back and foreground are same
     backgroundGroup.setAll('scale.setTo', width / background.width, height / background.height);
     foregroundGroup.setAll('scale.setTo', width / foreground.width, height / foreground.height);
     while (currentX < width) {
       backgroundGroup.create(currentX, 0, backgroundVar);
       foregroundGroup.create(currentX, 0, foregroundVar);
       currentX += background.width
+      currentY = 0;
+      while (currentY < height) {
+        console.log("currentY: ",currentY)
+        console.log("currentX: ",currentX)
+        backgroundGroup.create(currentX-2000, currentY, backgroundVar);
+        foregroundGroup.create(currentX-2000, currentY, foregroundVar);
+        currentY += background.height
+      }
     }
   },
   parallaxMove : function () {
@@ -691,7 +701,7 @@ base_game.prototype = {
     var gameX = locations[randomIdx][0]+70; var gameY = locations[randomIdx][1];
 
     randomInt = Math.trunc(Math.random() * 2 ) +2 ;
-    console.log(randomInt);
+   // console.log(randomInt);
     if (randomInt == 2) {
       weapon2.x = gameX; weapon2.y = gameY;
     }
