@@ -54,6 +54,7 @@ enemy.pacing = function() {};
 player.prototype = {
   deathPlay: function() {
     var CenterX = game.camera.view.x + (game.camera.width / 2);
+    var CenterY = game.camera.view.y + (game.camera.height / 2);
     deathScreen = game.add.sprite(CenterX, CenterY, "blankBtn");
     deathScreen.anchor.x = 0.5; deathScreen.anchor.y = 0.5;
     deathScreen.scale.x = 25; deathScreen.scale.y = 15;
