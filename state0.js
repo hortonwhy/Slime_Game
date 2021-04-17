@@ -942,7 +942,7 @@ enemyFunc.prototype = {
       potions = game.add.group();
       potions.enableBody = true;
       potions.physicsBodyType = Phaser.Physics.ARCADE;
-      potions.createMultiple(50, 'apple');
+      potions.createMultiple(50, 'potion');
       potions.setAll('checkWorldBounds', true);
       potions.setAll('outOfBoundsKill', true);    
   },
@@ -963,9 +963,9 @@ enemyFunc.prototype = {
     apple.body.gravity.y = 50;
   },
   potionSpawn: function(xX, yY) {
-    var potion = potions.create(xX, yY-20, 'apple');
-    potion.scale.x = 0.25;
-    potion.scale.y = 0.25;
+    var potion = potions.create(xX, yY-20, 'potion');
+    potion.scale.x = 0.3;
+    potion.scale.y = 0.3;
     potion.body.gravity.y = 50;
   },
 
@@ -1069,6 +1069,7 @@ slime.state0.prototype = {
     game.load.image('weapon2', 'assets/sprites/laser_gun.png');
     game.load.image('weapon3', 'assets/sprites/gun3.png');
     game.load.image('apple','assets/sprites/apple.png');
+    game.load.image('potion','assets/sprites/potion.png');
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('platform', 'assets/sprites/platform.png');
