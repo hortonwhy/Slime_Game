@@ -342,48 +342,15 @@ player.movement.prototype = {
         
       // change the bullet the character is holding
       if (weaponholding == 1){
-          bullets.removeAll(true,false,false);
-          bullets.createMultiple(50,'projectile');
-          
-          // add animation and other items
-          bullets.setAll('scale.x', 1);
-          bullets.setAll('scale.y', 1);
-          bullets.setAll('checkWorldBounds', true);
-          bullets.setAll('outOfBoundsKill', true);
-          bullets.setAll('anchor.x', 0.5);
-          bullets.setAll('anchor.y', 0.5);
-          bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
-          bullets.callAll('animations.play', 'animations', 'fire');
+        bullet = bullets.getFirstDead();
       }
       else if (weaponholding == 2){
-          bullets.removeAll(true,false,false);
-          bullets.createMultiple(50,'projectile2');
-          
-          // add animation and other items
-          bullets.setAll('scale.x', 0.5);
-          bullets.setAll('scale.y', 0.5);
-          bullets.setAll('checkWorldBounds', true);
-          bullets.setAll('outOfBoundsKill', true);
-          bullets.setAll('anchor.x', 0.5);
-          bullets.setAll('anchor.y', 0.5);
-          bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
-          bullets.callAll('animations.play', 'animations', 'fire');
+        bullet = bullets2.getFirstDead();
       }
       else if (weaponholding == 3){
-          bullets.removeAll(true,false,false);
-          bullets.createMultiple(50,'projectile3');
-          
-          // add animation and other items
-          bullets.setAll('scale.x', 0.25);
-          bullets.setAll('scale.y', 0.25);
-          bullets.setAll('checkWorldBounds', true);
-          bullets.setAll('outOfBoundsKill', true);
-          bullets.setAll('anchor.x', 0.5);
-          bullets.setAll('anchor.y', 0.5);
-          bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
-          bullets.callAll('animations.play', 'animations', 'fire');
+        bullet = bullets3.getFirstDead();
       }
-      bullet = bullets.getFirstDead();
+      //bullet = bullets.getFirstDead();
       bullet.reset(player_slime.x, player_slime.y);
       bullet.rotation = game.physics.arcade.angleToXY(bullet, player_slime.x + (1000 * direction * 1) , player_slime.y)
       game.physics.arcade.moveToXY(bullet, player_slime.x + (direction * 1000 * 1), player_slime.y, 1000);
@@ -531,6 +498,34 @@ base_game.prototype = {
       bullets.setAll('anchor.y', 0.5);
       bullets.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
       bullets.callAll('animations.play', 'animations', 'fire');
+
+      // projectile 2
+      bullets2 = game.add.group();
+      bullets2.enableBody = true;
+      bullets2.physicsBodyType = Phaser.Physics.ARCADE;
+      bullets2.createMultiple(50,'projectile2');
+      bullets2.setAll('scale.x', 0.5);
+      bullets2.setAll('scale.y', 0.5);
+      bullets2.setAll('checkWorldBounds', true);
+      bullets2.setAll('outOfBoundsKill', true);
+      bullets2.setAll('anchor.x', 0.5);
+      bullets2.setAll('anchor.y', 0.5);
+      bullets2.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
+      bullets2.callAll('animations.play', 'animations', 'fire');
+
+      // projectile 3
+      bullets3 = game.add.group();
+      bullets3.enableBody = true;
+      bullets3.physicsBodyType = Phaser.Physics.ARCADE;
+      bullets3.createMultiple(50,'projectile3');
+      bullets3.setAll('scale.x', 0.25);
+      bullets3.setAll('scale.y', 0.25);
+      bullets3.setAll('checkWorldBounds', true);
+      bullets3.setAll('outOfBoundsKill', true);
+      bullets3.setAll('anchor.x', 0.5);
+      bullets3.setAll('anchor.y', 0.5);
+      bullets3.callAll('animations.add', 'animations', 'fire', [0, 1, 2, 3], 3, true);
+      bullets3.callAll('animations.play', 'animations', 'fire');
 
       enemyBullets = game.add.group();
       enemyBullets.enableBody = true;
