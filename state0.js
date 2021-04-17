@@ -554,18 +554,18 @@ base_game.prototype = {
       enemyArtillery.callAll('animations.play', 'animations', 'enemy_fire');
 
       // create a weapon sprite to move as needed
-      weapon1 = game.add.sprite(500, -100, 'weapon1');
+      weapon1 = game.add.sprite(-500, -100, 'weapon1');
       weapon1.scale.setTo(3);
       weapon1.anchor.x = 0.5;
       weapon1.anchor.y = 0.5;
       
-      weapon2 = game.add.sprite(1300, 920, 'weapon2');
+      weapon2 = game.add.sprite(-1300, 920, 'weapon2');
       weapon2.anchor.x = 0.5;
       weapon2.anchor.y = 0.5;
       game.physics.enable(weapon2);
       
       if (game.state.current == 'state0'){
-          weapon3 = game.add.sprite(800, 920, 'weapon3');
+          weapon3 = game.add.sprite(-800, 920, 'weapon3');
           weapon3.anchor.x = 0.5;
           weapon3.anchor.y = 0.5;
           game.physics.enable(weapon3);
@@ -684,8 +684,20 @@ base_game.prototype = {
     portal_slime.scale.setTo(1.5, 1.5);
     game.physics.enable(portal_slime);
     portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
-
   },
+  randomWeapon: function(locations) {
+    randomIdx = Math.trunc(Math.random() * locations.length)
+    var gameX = locations[randomIdx][0]+70; var gameY = locations[randomIdx][1];
+
+    randomInt = Math.trunc(Math.random() * 2 ) +2 ;
+    console.log(randomInt);
+    if (randomInt == 2) {
+      weapon2.x = gameX; weapon2.y = gameY;
+    }
+    else if (randomInt == 3) {
+      weapon3.x = gameX; weapon3.y = gameY;
+    }
+  }
 }
 
 
@@ -1172,7 +1184,8 @@ slime.state0.prototype = {
     enemyFunc.prototype.potionInit();
     enemyFunc.prototype.appleSpawn(CenterX, CenterY);
     enemyFunc.prototype.potionSpawn(CenterX + 100, CenterY);
-    
+
+    base_game.prototype.randomWeapon(currentLocations)
 
   },
   update: function() {
