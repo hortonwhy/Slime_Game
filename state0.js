@@ -357,10 +357,10 @@ player.movement.prototype = {
       bullet.animations.play('fire', 3, true);
     }
     // enemyGroup
-    game.physics.arcade.overlap(bullets, enemyGroup, this.hitEnemy);
-    game.physics.arcade.overlap(bullets, flyingGroup, this.hitEnemy);
-    game.physics.arcade.overlap(bullets, stationaryGroup, this.hitEnemy);
-    game.physics.arcade.overlap(bullets, enemyArtillery, this.hitBullet);
+    game.physics.arcade.overlap([bullets, bullets2, bullets3], enemyGroup, this.hitEnemy);
+    game.physics.arcade.overlap([bullets, bullets2, bullets3], flyingGroup, this.hitEnemy);
+    game.physics.arcade.overlap([bullets, bullets2, bullets3], stationaryGroup, this.hitEnemy);
+    game.physics.arcade.overlap([bullets, bullets2, bullets3], enemyArtillery, this.hitBullet);
   },
   hitBullet: function(bullet, enemyBullet) {
     bullet.kill();
