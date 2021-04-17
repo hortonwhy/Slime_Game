@@ -85,6 +85,8 @@ slime.title.prototype = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.world.setBounds(0, 0, 600, 800);
     sound = game.add.audio('op-music');
+    var CenterX = 2000 / 2;
+    var CenterY = 1000 / 2;
     if (!sound.isPlaying){
     sound.autoplay = true;
     sound.loop = true;
