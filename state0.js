@@ -78,10 +78,10 @@ player.prototype = {
 
 player.movement.prototype = {
   displayWeaponInit: function() {
-    scoreTime.weaponBack = game.add.sprite(CenterX - 200, CenterY/8 - 20, 'blankBtn');
+    scoreTime.weaponBack = game.add.sprite(game.camera.x + 825, game.camera.y + 20, 'blankBtn');
     scoreTime.weaponBack.scale.x = 10;
     scoreTime.weaponBack.scale.y = 4;
-    scoreTime.weaponText = game.add.text(CenterX -200, CenterY/8 -35, "Curr. Weapon", {font: "30px Monospace"});
+    scoreTime.weaponText = game.add.text(game.camera.x + 835, game.camera.y + 15, "Curr. Weapon", {font: "30px Monospace"});
     scoreTime.weaponText.anchor.x = 0.5;
     scoreTime.weaponText.anchor.y = 0.5;
     scoreTime.weaponBack.anchor.x = 0.5;
@@ -92,7 +92,7 @@ player.movement.prototype = {
     // save weapon keys in an array
     scoreTime.weapons = ['weapon1', 'weapon2', 'weapon3']
     for (i = 0; i < scoreTime.weapons.length; i++) {
-      scoreTime.weapons[i] = game.add.sprite(CenterX - 200, CenterY/8, scoreTime.weapons[i])
+      scoreTime.weapons[i] = game.add.sprite(game.camera.x + 780, game.camera.y + 49, scoreTime.weapons[i])
       scoreTime.weapons[i].anchor.x = 0.5; scoreTime.weapons[i].anchor.y = 0.5;
       //scoreTime.weapons[i].fixedToCamera = true;
       scoreTime.weapons[i].visible = false;
