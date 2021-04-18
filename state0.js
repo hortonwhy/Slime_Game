@@ -641,10 +641,19 @@ base_game.prototype = {
       rockGroup.setAll('anchor.x', 0.5);
       rockGroup.setAll('scale.x', 2.5);
       rockGroup.setAll('scale.y', 2.5);
-      var locations = [
+      var locations = []
+      for (i = 0; i < 100; i++) {
+        for (j = 0; j < 15; j++) {
+          var loc = [i* 250, j * 225];
+          if (Math.random() * 100 > 30){
+          locations.push(loc);
+          }
+        }
+      }
+      /*var locations = [
         [0, 900], [500, 800], [960, 720], [1500, 800], [2000, 720], [2500, 640], [2750, 800], [3000, 640],
           [3500, 720], [4000, 800]
-      ];
+      ]*/
     }else if (worldType == "1"){
       for (i = 0; i < worldX / 32; i++) {
         grassGroup.create(i * 32, worldY - 32, 'background2_ground');
