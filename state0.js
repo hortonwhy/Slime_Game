@@ -445,7 +445,7 @@ player.movement.prototype = {
       
   },
   pickUpPotion: function(slime, item) {
-    player.movement.prototype.manaChange(3)
+    player.movement.prototype.manaChange(30)
     item.kill()
   }
 }
@@ -607,8 +607,6 @@ base_game.prototype = {
       currentY = 0;
       if (game.state.current == 'state0'){
       while (currentY < height) {
-        console.log("currentY: ",currentY)
-        console.log("currentX: ",currentX)
         backgroundGroup.create(currentX-2000, currentY, backgroundVar);
         foregroundGroup.create(currentX-2000, currentY, foregroundVar);
         currentY += background.height
@@ -633,7 +631,8 @@ base_game.prototype = {
     rockGroup = game.add.group();
     grassGroup = game.add.group();
     metalGroup = game.add.group();
-    if (worldType == "0") {
+    if (worldType != "tut") {
+    //if (worldType == "0") {
       for (i = 0; i < worldX / 32; i++) {
         rockGroup.create(i * 32, worldY - 32, 'rock-ground');
 
@@ -642,18 +641,22 @@ base_game.prototype = {
       rockGroup.setAll('scale.x', 2.5);
       rockGroup.setAll('scale.y', 2.5);
       var locations = []
-      for (i = 0; i < 100; i++) {
-        for (j = 0; j < 15; j++) {
-          var loc = [i* 250, j * 225];
-          if (Math.random() * 100 > 30){
+      var xLimit = game.world.bounds.width;
+      var yLimit = game.world.bounds.height;
+      for (i = 0; i*256 < xLimit; i++) {
+        for (j = 1; j*210 < yLimit; j++) {
+          var loc = [i* 250, j * 210];
+          if (Math.random() * 100 > 40){
           locations.push(loc);
           }
         }
       }
+    }
       /*var locations = [
         [0, 900], [500, 800], [960, 720], [1500, 800], [2000, 720], [2500, 640], [2750, 800], [3000, 640],
           [3500, 720], [4000, 800]
       ]*/
+      /*
     }else if (worldType == "1"){
       for (i = 0; i < worldX / 32; i++) {
         grassGroup.create(i * 32, worldY - 32, 'background2_ground');
@@ -678,6 +681,7 @@ base_game.prototype = {
         [0, 900], [500, 800], [960, 720], [1400, 640], [2000, 850], [2500, 720], [3000, 640], [3500, 520], [4000, 520]
       ];
     } 
+    */
     else if (worldType == "tut"){
       for (i = 0; i < worldX / 32; i++) {
         rockGroup.create(i * 32, worldY - 32, 'rock-ground');
@@ -692,7 +696,7 @@ base_game.prototype = {
     }
 
     for (i = 0; i < locations.length; i++) {
-      platformGroup.create(locations[i][0], locations[i][1], 'platform');
+      var plat = platformGroup.create(locations[i][0], locations[i][1], 'platform');
     }
     base_game.prototype.randomPortal(locations)
     currentLocations = locations
@@ -809,12 +813,18 @@ enemyFunc.prototype = {
   dynamicSpawn: function () {
     if (nextSpawn < game.time.now) {
 
-      nextSpawn = game.time.now + (15000 * (player.difficulty * Math.random()));
+      nextSpawn = game.time.now + (10000 * (player.difficulty * Math.random()));
       var numTypeEnemies = 3 // keeps track of how many types of enemies for dynamic spawn
       var enemyType = Math.trunc(Math.random() * numTypeEnemies);
       if (enemyType == 2) { // spawn stationary enemy
         var locations = currentLocations;
         randomIdx = Math.trunc(Math.random() * locations.length)
+
+        // check if on portal x, so it doesn't spawn on it
+        while  (Math.abs(portal_slime.x - locations[randomIdx][0] > 100)) {
+          randomIdx = Math.trunc(Math.random() * locations.length)
+        }
+
         var gameX = locations[randomIdx][0]+130; var gameY = locations[randomIdx][1]-75;
         enemyLocal = stationaryGroup.getFirstDead(true, gameX, gameY);
         game.physics.enable(enemyLocal);
@@ -847,8 +857,7 @@ enemyFunc.prototype = {
     var enemyType = Math.trunc(Math.random() * numTypeEnemies);
     if (enemyType == 0) {
     var enemyLocal = enemyGroup.getFirstDead(true, xX, yY);
-        game.physics.enable(enemyLocal);
-        enemyLocal.body.collideWorldBounds = true;
+        game.physics.enable(enemyLocal); enemyLocal.body.collideWorldBounds = true;
         enemyLocal.body.gravity.y = player.gravity;
         enemyLocal.animations.play('enemywalk', 8, true);
     }else if (enemyType == 1){
@@ -888,8 +897,8 @@ enemyFunc.prototype = {
     }
   },
   longRangeFire: function() {
-    //var closestEnemy = stationaryGroup.getClosestTo(player_slime);
-    var closestEnemy = stationaryGroup.getFurthestFrom(player_slime);
+    var closestEnemy = stationaryGroup.getClosestTo(player_slime);
+    //var closestEnemy = stationaryGroup.getFurthestFrom(player_slime);
     if (game.time.now > nextLongFire) {
        if (closestEnemy != null && closestEnemy.body.enable) {
       if (closestEnemy.x < player_slime.x) {
