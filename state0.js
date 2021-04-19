@@ -600,7 +600,7 @@ base_game.prototype = {
     var currentY = background.height // assuming back and foreground are same
     backgroundGroup.setAll('scale.setTo', 3000, 5000);
     foregroundGroup.setAll('scale.setTo', width / foreground.width, height / foreground.height);
-    while (currentX < width) {
+    while (currentX < width*2) {
       backgroundGroup.create(currentX, 0, backgroundVar);
       foregroundGroup.create(currentX, 0, foregroundVar);
       currentX += background.width
