@@ -1183,8 +1183,8 @@ slime.state0.prototype = {
         break;
     }
       
-    player.weapons = [1];
-    weaponholding = 1;
+    //player.weapons = [1];
+    //weaponholding = 1;
 
     /* END WORLD BUILDING */
     if (weaponholding == null) { weaponholding = 1; var i;
