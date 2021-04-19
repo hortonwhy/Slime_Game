@@ -704,12 +704,14 @@ base_game.prototype = {
       ];
     }
 
+    window.alert('genplatforms');
     if (currentBackground == 0){
         for (i = 0; i < locations.length; i++) {
             var plat = platformGroup.create(locations[i][0], locations[i][1], 'platform');
         }
     }
     else if (currentBackground == 1){
+        window.alert('here');
         for (i = 0; i < locations.length; i++) {
             var plat = platformGroup.create(locations[i][0], locations[i][1], 'platform2');
         }
@@ -1167,11 +1169,17 @@ slime.state0.prototype = {
     // *****  NEED ART FOR LEVELS 2 AND THREE ****
     switch (statesIdx) {
       case 0:
-        base_game.prototype.parallax('background', 'foreground'); break;
+        base_game.prototype.parallax('background', 'foreground');
+        currentBackground = 0;
+        break;
       case 1:
-        base_game.prototype.parallax('background2', 'foreground2'); break;
+        base_game.prototype.parallax('background2', 'foreground2');
+        currentBackground = 1;
+        break;
       case 2:
-        base_game.prototype.parallax('background3', 'foreground3'); break;
+        base_game.prototype.parallax('background3', 'foreground3');
+        currentBackground = 2;
+        break;
     }
       
     player.weapons = [1];
