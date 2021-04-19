@@ -27,6 +27,7 @@ var enemyLongFireRate = 6000; var nextLongFire = 0;
 var level = 0; var nextDoor;// first loop
 var backdrop, Localtext;
 var currentLocations; // array of current location of platforms
+var canJump = true;
 //var shot = false; is the enemy shot?
 // attempting slime movement to be handled more nicely
 
@@ -43,6 +44,7 @@ player.mana = 100;
 player.manaRegenRate = 3000;
 player.knockback = 20; // velocity
 player.weapons = [1];
+player.jumpsLeft = 2;
 
 
 // enemy attributes
@@ -224,6 +226,9 @@ player.movement.prototype = {
   },
   manaChange: function (mana) {
     player.mana += mana;
+    if (player.mana > player.max_mana) {
+      player.mana = player.max_mana;
+    }
     var diff = Math.round(player.mana / player.max_mana * 13);
     //console.log("Player Mana: ", player.mana);
     manaBar.frame = (diff - 13) * -1;
@@ -305,14 +310,14 @@ player.movement.prototype = {
       }
     }
     if (input.isDown(Phaser.Keyboard.UP)) {
-      if (player_slime.body.velocity.y == 0) {
+      if (player_slime.body.velocity.y == 0) { canJump = true};
+      if (canJump) {
         nextIdle = game.time.now + idleTimer;
         player_slime.body.velocity.y = -player.jump_height;
         secondElapsed = game.time.now + 1000;
-        hasJumped = true;
+        canJump = false;
       }
     }
-
 
   },
   attack: function(input) {
@@ -1249,6 +1254,7 @@ slime.state0.prototype = {
     enemyFunc.prototype.potionSpawn(CenterX + 100, CenterY);
 
     base_game.prototype.randomWeapon(currentLocations)
+    player.movement.prototype.doubleJumpCheck();
 
   },
   update: function() {
