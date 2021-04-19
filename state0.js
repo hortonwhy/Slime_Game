@@ -28,6 +28,7 @@ var level = 0; var nextDoor;// first loop
 var backdrop, Localtext;
 var currentLocations; // array of current location of platforms
 var canJump = true;
+var currentBackground = 0;
 //var shot = false; is the enemy shot?
 // attempting slime movement to be handled more nicely
 
@@ -703,8 +704,20 @@ base_game.prototype = {
       ];
     }
 
-    for (i = 0; i < locations.length; i++) {
-      var plat = platformGroup.create(locations[i][0], locations[i][1], 'platform');
+    if (currentBackground == 0){
+        for (i = 0; i < locations.length; i++) {
+            var plat = platformGroup.create(locations[i][0], locations[i][1], 'platform');
+        }
+    }
+    else if (currentBackground == 1){
+        for (i = 0; i < locations.length; i++) {
+            var plat = platformGroup.create(locations[i][0], locations[i][1], 'platform2');
+        }
+    }
+    else if (currentBackground == 2){
+        for (i = 0; i < locations.length; i++) {
+            var plat = platformGroup.create(locations[i][0], locations[i][1], 'platform');
+        }
     }
     base_game.prototype.randomPortal(locations)
     currentLocations = locations
@@ -1123,6 +1136,7 @@ slime.state0.prototype = {
     game.load.image('slime_static', 'assets/sprites/slime_static.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('platform', 'assets/sprites/platform.png');
+    game.load.image('platform2', 'assets/sprites/platform2.png');
     game.load.image('background', 'assets/sprites/background.png');
     game.load.image('foreground', 'assets/sprites/foreground.png');
     game.load.image('background2', 'assets/sprites/background2.png');
