@@ -704,21 +704,21 @@ base_game.prototype = {
       ];
     }
 
-    window.alert('genplatforms');
+    
     if (currentBackground == 0){
         for (i = 0; i < locations.length; i++) {
             var plat = platformGroup.create(locations[i][0], locations[i][1], 'platform');
         }
     }
     else if (currentBackground == 1){
-        window.alert('here');
+        
         for (i = 0; i < locations.length; i++) {
             var plat = platformGroup.create(locations[i][0], locations[i][1], 'platform2');
         }
     }
     else if (currentBackground == 2){
         for (i = 0; i < locations.length; i++) {
-            var plat = platformGroup.create(locations[i][0], locations[i][1], 'platform');
+            var plat = platformGroup.create(locations[i][0], locations[i][1], 'platform3');
         }
     }
     base_game.prototype.randomPortal(locations)
@@ -1139,6 +1139,7 @@ slime.state0.prototype = {
     game.load.image('bullet', 'assets/sprites/bullet.png');
     game.load.image('platform', 'assets/sprites/platform.png');
     game.load.image('platform2', 'assets/sprites/platform2.png');
+    game.load.image('platform3', 'assets/sprites/platform3.png');
     game.load.image('background', 'assets/sprites/background.png');
     game.load.image('foreground', 'assets/sprites/foreground.png');
     game.load.image('background2', 'assets/sprites/background2.png');
