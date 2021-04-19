@@ -31,7 +31,7 @@ var currentLocations; // array of current location of platforms
 // attempting slime movement to be handled more nicely
 
 player.accel = 400
-player.jump_height = 750;
+player.jump_height = 900;
 player.gravity = 1700;
 player.drag = 100
 player.fireRate = ["", 200, 400, 600];
@@ -40,7 +40,7 @@ player.max_health = 10;
 player.health = 10;
 player.max_mana = 100;
 player.mana = 100;
-player.manaRegenRate = 5000;
+player.manaRegenRate = 3000;
 player.knockback = 20; // velocity
 player.weapons = [1];
 
@@ -305,12 +305,12 @@ player.movement.prototype = {
       }
     }
     if (input.isDown(Phaser.Keyboard.UP)) {
-      //if (player_slime.body.velocity.y == 0) {
+      if (player_slime.body.velocity.y == 0) {
         nextIdle = game.time.now + idleTimer;
         player_slime.body.velocity.y = -player.jump_height;
         secondElapsed = game.time.now + 1000;
         hasJumped = true;
-      //}
+      }
     }
 
 
@@ -438,7 +438,10 @@ player.movement.prototype = {
     }
   },
   pickUpItem: function(slime, item) {
-    player.health += 3;
+    player.health += 4;
+    if (player.health > player.max_health) {
+      player.health = player.max_health;
+    }
     var diff = Math.round(player.health / player.max_health * 13);
     healthBar.frame = (diff - 13) * -1;
     item.kill();
@@ -1301,7 +1304,8 @@ slime.state0.prototype = {
           changeStateReal(0, 2);
           break;
         case 2:
-          changeStateReal(0, 0); break;
+          changeStateReal(0, 0);
+          break;
       }
     }
   },
@@ -1312,6 +1316,8 @@ function changeStateReal (stateNum, statesIndex) {
   level++;
   player.difficulty *= 0.70 // lowers when you change levels
   game.state.start("state" + stateNum);
+  player.health = player.max_health;
+  player.mana = player.max_mana;
   console.log(player.difficulty);
 }
 
