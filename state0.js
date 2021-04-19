@@ -71,6 +71,8 @@ player.prototype = {
       player.mana = player.max_mana;
       player.weapons = [1];
       game.state.start('title');
+      location.reload();
+
     });
     returnToMenu.anchor.x = 0.5; returnToMenu.anchor.y = 0.5;
     returnToMenu.scale.x = 10; returnToMenu.scale.y = 3;
@@ -643,7 +645,7 @@ base_game.prototype = {
     if (worldType != "tut") {
     //if (worldType == "0") {
       for (i = 0; i < worldX / 32; i++) {
-        rockGroup.create(i * 32, worldY - 20, 'rock-ground');
+        rockGroup.create(i * 32, worldY - 32, 'rock-ground');
 
       } rockGroup.setAll('anchor.y', 0.5);
       rockGroup.setAll('anchor.x', 0.5);
@@ -1183,8 +1185,8 @@ slime.state0.prototype = {
         break;
     }
       
-    //player.weapons = [1];
-    //weaponholding = 1;
+    player.weapons = [1];
+    weaponholding = 1;
 
     /* END WORLD BUILDING */
     if (weaponholding == null) { weaponholding = 1; var i;
