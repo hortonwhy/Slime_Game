@@ -643,7 +643,7 @@ base_game.prototype = {
     if (worldType != "tut") {
     //if (worldType == "0") {
       for (i = 0; i < worldX / 32; i++) {
-        rockGroup.create(i * 32, worldY - 32, 'rock-ground');
+        rockGroup.create(i * 32, worldY - 20, 'rock-ground');
 
       } rockGroup.setAll('anchor.y', 0.5);
       rockGroup.setAll('anchor.x', 0.5);
