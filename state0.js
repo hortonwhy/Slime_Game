@@ -55,6 +55,14 @@ player.movement = function() {};
 enemy.pacing = function() {};
 
 player.prototype = {
+  playerSpawn: function(locations) {
+    console.log(locations);
+    randomIdx = Math.trunc(Math.random() * locations.length)
+    var gameX = locations[randomIdx][0]+130; var gameY = locations[randomIdx][1]-80;
+
+    player_slime = game.add.sprite(gameX, gameY, "slime-new");
+    player_slime.scale.setTo(0.7, 0.7);
+  },
   deathPlay: function() {
     var CenterX = game.camera.view.x + (game.camera.width / 2);
     var CenterY = game.camera.view.y + (game.camera.height / 2);
@@ -1208,8 +1216,8 @@ slime.state0.prototype = {
    // game.physics.arcade.gravity.y = 1700; 
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-    player_slime = game.add.sprite(game.world.bounds.width / 2, game.height - (game.height / 4), "slime-new");
-    player_slime.scale.setTo(0.7, 0.7);
+    //player_slime = game.add.sprite(game.world.bounds.width / 2, game.height - (game.height / 4), "slime-new");
+    //player_slime.scale.setTo(0.7, 0.7);
 
     /*
     portal_slime = game.add.sprite(gameX - 500, 745, "door");
@@ -1222,7 +1230,8 @@ slime.state0.prototype = {
 
     // add the platforms
     var platArray = base_game.prototype.genPlatforms(game.world.bounds.width, game.world.bounds.height, statesIdx)
-  
+    ///////// currentLocations defined after platforms generated
+    player.prototype.playerSpawn(currentLocations);
 
     // add collide with the platforms
     game.physics.enable([player_slime, platformGroup, rockGroup]);
@@ -1278,7 +1287,6 @@ slime.state0.prototype = {
     enemyFunc.prototype.potionSpawn(CenterX + 100, CenterY);
 
     base_game.prototype.randomWeapon(currentLocations)
-    player.movement.prototype.doubleJumpCheck();
 
   },
   update: function() {
