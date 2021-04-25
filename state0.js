@@ -509,6 +509,7 @@ base_game.prototype = {
       //changeState('title');
       player.movement.prototype.removeWeaponInv();
       game.state.start("title");
+      location.reload();
       //hud.funcs.prototype.toggle();
     });
   },
@@ -1045,6 +1046,7 @@ scoreFunc = function() {};
 scoreFunc.prototype = {
   start: function() {
     scoreTime.time = 0;
+      
 
     //scoreTime.background1 = game.add.sprite(CenterX + (CenterX / 2) - 15, CenterY / 4 - 120, 'blankBtn');
     if (game.state.current == 'state0'){
@@ -1059,6 +1061,15 @@ scoreFunc.prototype = {
         scoreTime.background3 = game.add.sprite(game.camera.x + (CenterX - 730), game.camera.y + 20, 'blankBtn');
         scoreTime.background3.scale.x = 7.0;
         scoreTime.background3.scale.y = 2;
+        
+        scoreTime.b1_tutorial = game.add.button(game.camera.x +25, game.camera.y+25, 'exit', function() {
+            player.movement.prototype.removeWeaponInv();
+            game.state.start("title");
+            location.reload();
+            //hud.funcs.prototype.toggle();
+        });
+        
+        scoreTime.b1_tutorial.fixedToCamera = true;
     }
     else{
         scoreTime.background1 = game.add.sprite(game.camera.x + 1050, game.camera.y + 25, 'blankBtn');
@@ -1101,7 +1112,7 @@ scoreFunc.prototype = {
     scoreTime.text.text = "Score: [" + scoreTime.time + "]";
     scoreTime.level.text = "Level: [" + level + "]";
     scoreTime.nextDoor.text = "Time until next Door: [" + nextDoor + "]";
-    scoreFunc.prototype.nextDoorCheck()
+    scoreFunc.prototype.nextDoorCheck();
   },
   nextDoorSet: function() {
     scoreFunc.prototype.update()
@@ -1163,10 +1174,10 @@ slime.state0.prototype = {
     game.load.image('foreground2', 'assets/sprites/foreground2.png');
     game.load.image('background3', 'assets/sprites/background3.png');
     game.load.image('foreground3', 'assets/sprites/foreground3.png');
-    game.load.image('exit', 'assets/sprites/exit1.png');
     game.load.image('rock-ground', 'assets/sprites/rock_ground.png');
     game.load.image('background2_ground', 'assets/sprites/background2_ground.png');
     game.load.image('background3_ground', 'assets/sprites/background3_ground.png');
+    game.load.image('exit', 'assets/sprites/exit1.png');
     game.load.audio('laser','assets/sounds/laser.wav');
     game.load.audio('jump', 'assets/sounds/jump-sfx.mp3');
     game.load.audio('enemy_death','assets/sounds/enemy_dies.m4a');
@@ -1208,12 +1219,14 @@ slime.state0.prototype = {
       player.movement.prototype.changeWeapon(i, weaponholding);
     }
     player.movement.prototype.weaponChangeEventListener();
+      
+    //hud.funcs.prototype.move(b1_tutorial,game.camera.x+20,30);
     
     // add game sounds
     // Add them to array so mute works too
     // I'd like to make this into a separate function. like base_game.prototye.sounds()
     laser = game.add.audio("laser");
-    jumpSFX = game.add.audio('jump')
+    jumpSFX = game.add.audio('jump');
     jumpSFX.volume = 0.3
     death = game.add.audio("enemy_death");
     thud = game.add.audio('playerLand');
@@ -1254,6 +1267,8 @@ slime.state0.prototype = {
     // custom call, shortens work and declutters the code. 
     base_game.prototype.physics(player_slime);
     base_game.prototype.projectile();
+
+    //hud.funcs.prototype.move(b1_tutorial,game.camera.x+20,30);
 
     //camera
     game.camera.follow(player_slime);

@@ -234,7 +234,8 @@ slime.state1.prototype = {
     // keeps score up to date
     scoreFunc.prototype.update();
     
-        tutorial.prototype.displaymessage(player_slime.x, message);
+    tutorial.prototype.displaymessage(player_slime.x, message);
+    resetJumps();
   },
 
   hitPortal: function() {
