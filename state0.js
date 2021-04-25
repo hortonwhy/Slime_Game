@@ -28,12 +28,13 @@ var level = 0; var nextDoor;// first loop
 var backdrop, Localtext;
 var currentLocations; // array of current location of platforms
 var canJump = true;
+var jumpsLeft = 2;
 var currentBackground = 0;
 //var shot = false; is the enemy shot?
 // attempting slime movement to be handled more nicely
 
 player.accel = 400
-player.jump_height = 900;
+player.jump_height = 550;
 player.gravity = 1700;
 player.drag = 100
 player.fireRate = ["", 200, 400, 600];
@@ -320,7 +321,7 @@ player.movement.prototype = {
       }
     }
     if (input.isDown(Phaser.Keyboard.UP)) {
-      if (player_slime.body.velocity.y == 0) { canJump = true};
+      if (jumpsLeft > 0) { canJump = true};
       if (canJump) {
         nextIdle = game.time.now + idleTimer;
         player_slime.body.velocity.y = -player.jump_height;
@@ -433,7 +434,7 @@ player.movement.prototype = {
     enemy.animations.play('dead',4,true);
     setTimeout(() => enemy.bar.kill(), 2000);
     setTimeout(() => enemy.kill(), 2000);
-    //setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
+    setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
     death.play();
       /*
     if (shot == numEnemies){
@@ -1329,6 +1330,10 @@ slime.state0.prototype = {
 
     // keeps score up to date
     scoreFunc.prototype.update();
+
+    // potential double jumping
+    game.input.keyboard.addCallbacks(Phaser.Keyboard.UP, null, clicked, null);
+    resetJumps();
   },
 
   hitPortal: function() {
@@ -1347,6 +1352,16 @@ slime.state0.prototype = {
       }
     }
   },
+}
+function clicked() {
+  console.log("UP key was up");
+  jumpsLeft--;
+}
+
+function resetJumps () {
+  if (player_slime.body.touching.down) {
+  jumpsLeft = 2
+  }
 }
 
 function changeStateReal (stateNum, statesIndex) {
