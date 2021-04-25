@@ -28,6 +28,7 @@ var level = 0; var nextDoor;// first loop
 var backdrop, Localtext;
 var currentLocations; // array of current location of platforms
 var canJump = true;
+var notCheckingJump = true;
 var jumpsLeft = 2;
 var currentBackground = 0;
 //var shot = false; is the enemy shot?
@@ -320,6 +321,11 @@ player.movement.prototype = {
       player_slime.frame = 2; // this is for animations to return to first frame
       }
     }
+
+    if (input.isDown(Phaser.Keyboard.UP)) {
+      jump()
+    }
+    /*
     if (input.isDown(Phaser.Keyboard.UP)) {
       if (jumpsLeft > 0) { canJump = true};
       if (canJump) {
@@ -329,6 +335,7 @@ player.movement.prototype = {
         canJump = false;
       }
     }
+    */
 
   },
   attack: function(input) {
@@ -1332,7 +1339,6 @@ slime.state0.prototype = {
     scoreFunc.prototype.update();
 
     // potential double jumping
-    game.input.keyboard.addCallbacks(Phaser.Keyboard.UP, null, clicked, null);
     resetJumps();
   },
 
@@ -1353,12 +1359,25 @@ slime.state0.prototype = {
     }
   },
 }
-function clicked() {
-  console.log("UP key was up");
-  jumpsLeft--;
+
+function jump () {
+  var upKeyisDown = game.input.keyboard.isDown(Phaser.Keyboard.UP);
+  if (jumpsLeft > 0) {
+    player_slime.body.velocity.y = -player.jump_height;
+    if (notCheckingJump) {
+      setTimeout(decrementJumps, 150);
+      notCheckingJump = false;
+    }
+  }
+}
+
+function decrementJumps() {
+    jumpsLeft--;
+    notCheckingJump = true;
 }
 
 function resetJumps () {
+  console.log("Jumpsleft: ", jumpsLeft);
   if (player_slime.body.touching.down) {
   jumpsLeft = 2
   }
