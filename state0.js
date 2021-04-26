@@ -415,6 +415,7 @@ player.movement.prototype = {
     if (enemyDead) {
       enemyBullet.kill();
       enemyBullet.bar.kill();
+      bulletdeath.play()
     }
   },
   hitEnemy: function(bullet, enemy) {
@@ -1289,6 +1290,7 @@ slime.state0.prototype = {
     game.load.audio('stationarykill', 'assets/sounds/stationarykill.wav');
     game.load.audio('gun2', 'assets/sounds/gun2.wav');
     game.load.audio('gun3', 'assets/sounds/gun3.wav');
+    game.load.audio('bulletdeath', 'assets/sounds/bulletdeath.wav');
 
 
   },
@@ -1341,6 +1343,7 @@ slime.state0.prototype = {
     stationarykill = game.add.audio('stationarykill');
     gun2 = game.add.audio('gun2');
     gun3 = game.add.audio('gun3');
+    bulletdeath = game.add.audio('bulletdeath');
  //   soundsArray = [laser, jumpSFX, death, thud];
 
     game.stage.backgroundColor = "#dddddd";
