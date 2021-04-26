@@ -454,7 +454,7 @@ player.movement.prototype = {
     enemy.animations.play('dead',4,true);
     setTimeout(() => enemy.bar.kill(), 2000);
     setTimeout(() => enemy.kill(), 2000);
-    setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
+    //setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
     //code to try and have different enemies play different sounds, not sure why not working
     death.play()
  //   if (enemy == enemyGroup) {
@@ -1515,7 +1515,7 @@ function resetJumps () {
   jumpsLeft = 2
   }
   if (!game.input.keyboard.isDown(Phaser.Keyboard.UP)) { 
-    console.log("not pressing up");
+    //console.log("not pressing up");
     jumpReset = true;
   }
 }
