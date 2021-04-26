@@ -3,6 +3,7 @@ var b1, sound;
 var vol_state = 1;
 let volume = {}, soundsArray = [];
 var timeInTitle = 0;
+var title_words;
 
 // define all HUD elements below here
 let hud = {};
@@ -74,6 +75,8 @@ slime.title.prototype = {
     game.load.image('startBtn', 'assets/sprites/start_button.jpg');
     game.load.image('startBtn', 'assets/sprites/tutorial_button.jpg');
     game.load.image('blankBtn', 'assets/sprites/blankBtn.png');
+    game.load.image('title_background', 'assets/sprites/title_screen.png');
+    game.load.image('title_words', 'assets/sprites/slime_title2.png');
     //game.load.audio('op-music', 'assets/audio/op.mp3');
     game.load.spritesheet('volume', 'assets/spritesheet/volume.png', 32, 32);
     game.load.audio('op-music','assets/sounds/song.wav');
@@ -81,7 +84,12 @@ slime.title.prototype = {
   },
   create: function() {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    game.stage.backgroundColor = "#ff00ff";
+    game.stage.backgroundColor = "#ffffff";
+    background = game.add.sprite(0, 0, 'title_background');
+    title_words = game.add.sprite(260,90,'title_words');
+    title_words.scale.x= 0.75;
+      title_words.scale.y= 0.75;
+    
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.world.setBounds(0, 0, 600, 800);
     sound = game.add.audio('op-music');
