@@ -1182,6 +1182,10 @@ slime.state0.prototype = {
     game.load.audio('jump', 'assets/sounds/jump-sfx.mp3');
     game.load.audio('enemy_death','assets/sounds/enemy_dies.m4a');
     game.load.audio('playerLand', 'assets/sounds/thud.wav');
+    game.load.audio('bugkill', 'assets/sounds/bugkill.wav');
+    game.load.audio('stationarykill', 'assets/sounds/stationarykill.wav');
+    game.load.audio('gun2', 'assets/sounds/gun2.wav');
+    game.load.audio('gun3', 'assets/sounds/gun3.wav');
 
 
   },
@@ -1230,6 +1234,10 @@ slime.state0.prototype = {
     jumpSFX.volume = 0.3
     death = game.add.audio("enemy_death");
     thud = game.add.audio('playerLand');
+    bugkill = game.add.audio('bugkill');
+    stationarykill = game.add.audio('stationarykill');
+    gun2 = game.add.audio('gun2');
+    gun3 = game.add.audio('gun3');
     soundsArray = [laser, jumpSFX, death, thud];
 
     game.stage.backgroundColor = "#dddddd";
