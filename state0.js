@@ -56,6 +56,8 @@ enemy.speed = 400;
 player.movement = function() {};
 enemy.pacing = function() {};
 
+
+
 player.prototype = {
   playerSpawn: function(locations) {
     console.log(locations);
@@ -416,15 +418,6 @@ player.movement.prototype = {
     }
   },
   hitEnemy: function(bullet, enemy) {
-    if (enemy == enemyGroup) {
-        var x = 0
-    }
-    if (enemy == flyingGroup) {
-        x = 1
-    }
-    if (enemy == stationaryGroup) {
-        x = 2
-    }
     bullet.kill();
     // make healthbar above enemy
     if (enemy.health == 1) {
@@ -458,13 +451,16 @@ player.movement.prototype = {
     setTimeout(() => enemy.bar.kill(), 2000);
     setTimeout(() => enemy.kill(), 2000);
     setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
-    if (x == 0) {
-        death.play()
-    }else if (x == 1) {
-        bugkill.play()
-    }else if (x == 2) {
-        stationarykill.play()
-    }
+    //code to try and have different enemies play different sounds, not sure why not working
+ 
+ //   if (enemy == enemyGroup) {
+//        death.play()
+//    }else if (enemy == flyingGroup) {
+//        bugkill.play()
+//    }else if (enemy == stationaryGroup) {
+//        stationarykill.play()
+//    }
+    death.play()
  
       /*
     if (shot == numEnemies){
