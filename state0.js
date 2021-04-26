@@ -391,8 +391,8 @@ player.movement.prototype = {
     }
     // enemyGroup
     game.physics.arcade.overlap([bullets, bullets2, bullets3], enemyGroup, this.hitEnemy);
-    game.physics.arcade.overlap([bullets, bullets2, bullets3], flyingGroup, this.hitEnemy);
-    game.physics.arcade.overlap([bullets, bullets2, bullets3], stationaryGroup, this.hitEnemy);
+    game.physics.arcade.overlap([bullets, bullets2, bullets3], flyingGroup, this.hitFlyingEnemy);
+    game.physics.arcade.overlap([bullets, bullets2, bullets3], stationaryGroup, this.hitStationaryEnemy);
     game.physics.arcade.overlap([bullets, bullets2, bullets3], enemyArtillery, this.hitBullet);
   },
   hitBullet: function(bullet, enemyBullet) {
@@ -418,6 +418,7 @@ player.movement.prototype = {
     }
   },
   hitEnemy: function(bullet, enemy) {
+
     bullet.kill();
     // make healthbar above enemy
     if (enemy.health == 1) {
@@ -435,7 +436,8 @@ player.movement.prototype = {
     enemyDead = enemyFunc.prototype.damaged(enemy, damage); // if dead will disable body here and health bar
     enemyFunc.prototype.healthUpdate(enemy) //update healthbar
     if (enemyDead) {
-        num = Math.trunc(Math.random() * 5) // 1 in 4 chance enemy drops an apple      
+    // code to play correct sound for specific enemy
+    num = Math.trunc(Math.random() * 5) // 1 in 4 chance enemy drops an apple      
 
     if (num == 2) {
         enemyFunc.prototype.potionSpawn(enemy.x, enemy.y);
@@ -443,6 +445,7 @@ player.movement.prototype = {
     if (num == 1) {
         enemyFunc.prototype.appleSpawn(enemy.x, enemy.y);
     }
+
     enemy.body.enable = false //this was causing some weird bugs ???
     //shot += 1
     //console.log('enemy hit');
@@ -452,7 +455,7 @@ player.movement.prototype = {
     setTimeout(() => enemy.kill(), 2000);
     setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
     //code to try and have different enemies play different sounds, not sure why not working
- 
+    death.play()
  //   if (enemy == enemyGroup) {
 //        death.play()
 //    }else if (enemy == flyingGroup) {
@@ -460,8 +463,8 @@ player.movement.prototype = {
 //    }else if (enemy == stationaryGroup) {
 //        stationarykill.play()
 //    }
-    death.play()
- 
+ //   death.play()
+
       /*
     if (shot == numEnemies){
         portal_slime.animations.play('dooropen', 8, false);
@@ -470,6 +473,86 @@ player.movement.prototype = {
     }
     */
     }
+  },
+  hitFlyingEnemy: function(bullet, enemy) {
+    bullet.kill();
+    // make healthbar above enemy
+    if (enemy.health == 1) {
+       enemy.bar = enemyFunc.prototype.healthInit(enemy)
+    }
+    if (weaponholding == 1){
+        var damage = 0.25;
+    }
+    else if (weaponholding == 2){
+        var damage = 0.5;
+    }
+    else if (weaponholding == 3){
+        var damage = 0.6;
+    }
+    enemyDead = enemyFunc.prototype.damaged(enemy, damage); // if dead will disable body here and health bar
+    enemyFunc.prototype.healthUpdate(enemy) //update healthbar
+    if (enemyDead) {
+    // code to play correct sound for specific enemy
+    num = Math.trunc(Math.random() * 5) // 1 in 4 chance enemy drops an apple      
+
+    if (num == 2) {
+        enemyFunc.prototype.potionSpawn(enemy.x, enemy.y);
+    }
+    if (num == 1) {
+        enemyFunc.prototype.appleSpawn(enemy.x, enemy.y);
+    }
+
+    enemy.body.enable = false //this was causing some weird bugs ???
+    //shot += 1
+    //console.log('enemy hit');
+    //enemy.bar;
+    enemy.animations.play('dead',4,true);
+    setTimeout(() => enemy.bar.kill(), 2000);
+    setTimeout(() => enemy.kill(), 2000);
+    setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
+    //code to try and have different enemies play different sounds, not sure why not working
+    bugkill.play()
+  }
+  },
+  hitStationaryEnemy: function(bullet, enemy) {
+    bullet.kill();
+    // make healthbar above enemy
+    if (enemy.health == 1) {
+       enemy.bar = enemyFunc.prototype.healthInit(enemy)
+    }
+    if (weaponholding == 1){
+        var damage = 0.25;
+    }
+    else if (weaponholding == 2){
+        var damage = 0.5;
+    }
+    else if (weaponholding == 3){
+        var damage = 0.6;
+    }
+    enemyDead = enemyFunc.prototype.damaged(enemy, damage); // if dead will disable body here and health bar
+    enemyFunc.prototype.healthUpdate(enemy) //update healthbar
+    if (enemyDead) {
+    // code to play correct sound for specific enemy
+    num = Math.trunc(Math.random() * 5) // 1 in 4 chance enemy drops an apple      
+
+    if (num == 2) {
+        enemyFunc.prototype.potionSpawn(enemy.x, enemy.y);
+    }
+    if (num == 1) {
+        enemyFunc.prototype.appleSpawn(enemy.x, enemy.y);
+    }
+
+    enemy.body.enable = false //this was causing some weird bugs ???
+    //shot += 1
+    //console.log('enemy hit');
+    //enemy.bar;
+    enemy.animations.play('dead',4,true);
+    setTimeout(() => enemy.bar.kill(), 2000);
+    setTimeout(() => enemy.kill(), 2000);
+    setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
+    //code to try and have different enemies play different sounds, not sure why not working
+    stationarykill.play()    
+  }
   },
   hitPlatform: function() {
     // figure out how to play sound only on intial hit and nothing else
@@ -1258,7 +1341,7 @@ slime.state0.prototype = {
     stationarykill = game.add.audio('stationarykill');
     gun2 = game.add.audio('gun2');
     gun3 = game.add.audio('gun3');
-    soundsArray = [laser, jumpSFX, death, thud];
+ //   soundsArray = [laser, jumpSFX, death, thud];
 
     game.stage.backgroundColor = "#dddddd";
     game.physics.startSystem(Phaser.Physics.ARCADE);
