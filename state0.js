@@ -342,7 +342,14 @@ player.movement.prototype = {
     if (player.mana > 0 && input.isDown(Phaser.Keyboard.F) && game.time.now > nextFire) {
       // Fire projectile in direction of slime
       if (vol_state == 1){
-          laser.play();
+          if (weaponholding == 1){
+              laser.play()
+          }else if (weaponholding == 2) {
+              gun2.play()
+          }else if (weaponholding == 3) {
+              gun3.play()
+          }
+          
       }
       if (weaponholding == 1){
       player.movement.prototype.manaChange(-2); // need to change based on weapon holding
@@ -409,6 +416,15 @@ player.movement.prototype = {
     }
   },
   hitEnemy: function(bullet, enemy) {
+    if (enemy == enemyGroup) {
+        var x = 0
+    }
+    if (enemy == flyingGroup) {
+        x = 1
+    }
+    if (enemy == stationaryGroup) {
+        x = 2
+    }
     bullet.kill();
     // make healthbar above enemy
     if (enemy.health == 1) {
@@ -442,7 +458,14 @@ player.movement.prototype = {
     setTimeout(() => enemy.bar.kill(), 2000);
     setTimeout(() => enemy.kill(), 2000);
     setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
-    death.play();
+    if (x == 0) {
+        death.play()
+    }else if (x == 1) {
+        bugkill.play()
+    }else if (x == 2) {
+        stationarykill.play()
+    }
+ 
       /*
     if (shot == numEnemies){
         portal_slime.animations.play('dooropen', 8, false);
