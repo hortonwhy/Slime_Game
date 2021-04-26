@@ -956,10 +956,11 @@ enemyFunc.prototype = {
     setTimeout(() => enemyFunc.prototype.chase(enemyLocalGroup, speed, ychase), 500);
     }
   },
-  longRangeFire: function() {
-    var closestEnemy = stationaryGroup.getClosestTo(player_slime);
+  longRangeFire: function(closestEnemy) {
+    //var closestEnemy = stationaryGroup.getClosestTo(player_slime);
     //var closestEnemy = stationaryGroup.getFurthestFrom(player_slime);
-    if (game.time.now > nextLongFire) {
+    //if (game.time.now > nextLongFire) {
+      //stationaryGroup.forEachAlive(enemyFunc.prototype.longRangeFire);
        if (closestEnemy != null && closestEnemy.body.enable) {
       if (closestEnemy.x < player_slime.x) {
         direction = 1;
@@ -976,7 +977,7 @@ enemyFunc.prototype = {
       enemyBullet.rotation = game.physics.arcade.angleToXY(enemyBullet, closestEnemy.x + (1000 * direction * 1) , closestEnemy.y)
     game.physics.arcade.moveToXY(enemyBullet, closestEnemy.x + (direction * 1000 * 1), closestEnemy.y, 250);
     enemyBullet.animations.play('enemy_fire', 3, true);
-       }
+      // }
 
     }
     game.physics.arcade.overlap(enemyArtillery, player_slime, this.hitPlayer);
@@ -1382,6 +1383,7 @@ slime.state0.prototype = {
 
     // potential double jumping
     resetJumps();
+    fireLong();
   },
 
   hitPortal: function() {
@@ -1407,7 +1409,7 @@ function jump () {
   if (jumpsLeft > 0) {
     player_slime.body.velocity.y = -player.jump_height;
     if (notCheckingJump) {
-      setTimeout(decrementJumps, 150);
+      setTimeout(decrementJumps, 250);
       notCheckingJump = false;
     }
   }
@@ -1419,10 +1421,16 @@ function decrementJumps() {
 }
 
 function resetJumps () {
-  //console.log("Jumpsleft: ", jumpsLeft);
+  console.log("Jumpsleft: ", jumpsLeft);
   if (player_slime.body.touching.down) {
   jumpsLeft = 2
   }
+}
+
+function fireLong() {
+    if (game.time.now > nextLongFire) {
+      stationaryGroup.forEachAlive(enemyFunc.prototype.longRangeFire);
+    }
 }
 
 function changeStateReal (stateNum, statesIndex) {
