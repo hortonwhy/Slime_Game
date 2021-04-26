@@ -889,7 +889,7 @@ enemyFunc.prototype = {
         enemyLocal = stationaryGroup.getFirstDead(true, gameX, gameY);
         game.physics.enable(enemyLocal);
         enemyLocal.body.immovable = true;
-        console.log(enemyLocal);
+        //console.log(enemyLocal);
         enemyLocal.body.collideWorldBounds = true;
         //enemyLocal.body.gravity.y = player.gravity;
         enemyLocal.animations.play('enemywalk', 8, true);
@@ -906,11 +906,11 @@ enemyFunc.prototype = {
     var validyYLow = game.world.bounds.height - 90;
     //console.log(xX, validXxLow, validXxHigh);
       while (validXxLow < xX && validXxHigh > xX) {
-        console.log("invalid spawn, rerolling...");
+        //console.log("invalid spawn, rerolling...");
         xX = Math.random() * game.world.bounds.width;
       }
       while (validyYLow < yY) {
-        console.log("invalid y coord, rerolling...");
+        //console.log("invalid y coord, rerolling...");
         yY = Math.random() * game.world.bounds.height;
       }
 
