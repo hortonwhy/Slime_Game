@@ -60,7 +60,7 @@ enemy.pacing = function() {};
 
 player.prototype = {
   playerSpawn: function(locations) {
-    console.log(locations);
+    //console.log(locations);
     randomIdx = Math.trunc(Math.random() * locations.length)
     var gameX = locations[randomIdx][0]+130; var gameY = locations[randomIdx][1]-80;
 
@@ -1419,7 +1419,7 @@ function decrementJumps() {
 }
 
 function resetJumps () {
-  console.log("Jumpsleft: ", jumpsLeft);
+  //console.log("Jumpsleft: ", jumpsLeft);
   if (player_slime.body.touching.down) {
   jumpsLeft = 2
   }
