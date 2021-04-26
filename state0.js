@@ -35,7 +35,7 @@ var currentBackground = 0;
 // attempting slime movement to be handled more nicely
 
 player.accel = 400
-player.jump_height = 550;
+player.jump_height = 650;
 player.gravity = 1700;
 player.drag = 100
 player.fireRate = ["", 200, 400, 600];
@@ -1493,7 +1493,10 @@ slime.state0.prototype = {
 function jump () {
   var upKeyisDown = game.input.keyboard.isDown(Phaser.Keyboard.UP);
   if (jumpsLeft > 0) {
-    player_slime.body.velocity.y = -player.jump_height;
+    if (jumpReset) {
+      player_slime.body.velocity.y = -player.jump_height;
+      jumpReset = false;
+    }
     if (notCheckingJump) {
       setTimeout(decrementJumps, 250);
       notCheckingJump = false;
@@ -1507,9 +1510,13 @@ function decrementJumps() {
 }
 
 function resetJumps () {
-  console.log("Jumpsleft: ", jumpsLeft);
+  //console.log("Jumpsleft: ", jumpsLeft);
   if (player_slime.body.touching.down) {
   jumpsLeft = 2
+  }
+  if (!game.input.keyboard.isDown(Phaser.Keyboard.UP)) { 
+    console.log("not pressing up");
+    jumpReset = true;
   }
 }
 
