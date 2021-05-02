@@ -1,5 +1,5 @@
 var CenterX = 2000 / 2, CenterY = 1000 / 2;
-var b1, sound;
+var b1, sound = -1;
 var vol_state = 1;
 let volume = {}, soundsArray = [];
 var timeInTitle = 0;
@@ -92,12 +92,18 @@ slime.title.prototype = {
     
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.world.setBounds(0, 0, 600, 800);
-    sound = game.add.audio('op-music');
+    //sound = game.add.audio('op-music');
     var CenterX = 2000 / 2;
     var CenterY = 1000 / 2;
-    if (!sound.isPlaying){
+    if (sound == -1) {
+      sound = game.add.audio('op-music');
+    }
+    if (sound.isPlaying != undefined && !sound.isPlaying){
     sound.autoplay = true;
     sound.loop = true;
+    sound.volume = .2;
+    console.log (sound);
+
     sound.play();
     }
 
