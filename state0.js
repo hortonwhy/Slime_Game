@@ -457,22 +457,6 @@ player.movement.prototype = {
     //setTimeout(() => enemy.body.enable = true, 2000); // have reenable body for when they respawn
     //code to try and have different enemies play different sounds, not sure why not working
     death.play()
- //   if (enemy == enemyGroup) {
-//        death.play()
-//    }else if (enemy == flyingGroup) {
-//        bugkill.play()
-//    }else if (enemy == stationaryGroup) {
-//        stationarykill.play()
-//    }
- //   death.play()
-
-      /*
-    if (shot == numEnemies){
-        portal_slime.animations.play('dooropen', 8, false);
-        shot = 0;
-        dooropen = true;
-    }
-    */
     }
   },
   hitFlyingEnemy: function(bullet, enemy) {
@@ -852,9 +836,10 @@ base_game.prototype = {
 
     portal_slime = game.add.sprite(gameX, gameY, "door");
     portal_slime.anchor.x = 0.5; portal_slime.anchor.y = 0.5;
-    portal_slime.scale.setTo(1.5, 1.5);
+    portal_slime.scale.setTo(0.75, 0.75);
     game.physics.enable(portal_slime);
-    portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
+    portal_slime.animations.add('dooropen',[1,2,3,4,5]);
+    portal_slime.animations.add('doorspin',[6,7,8,9])
   },
   randomWeapon: function(locations) {
     randomIdx = Math.trunc(Math.random() * locations.length)
@@ -1237,7 +1222,10 @@ scoreFunc.prototype = {
     if (scoreTime.time >= nextDoor && dooropen != true) {
       console.log("score is greater than requirement");
       dooropen = true;
-      portal_slime.animations.play('dooropen', 8, false);
+      var doortime = 0;
+    
+      portal_slime.animations.play('dooropen', 5, true);
+      
       if (game.state.current == 'state0'){
         scoreTime.alertText = game.add.text(CenterX, CenterY, "The Door has opened...", {font: "80px"});
       }
@@ -1247,7 +1235,9 @@ scoreFunc.prototype = {
       scoreTime.alertText.scale.x = 0.5; scoreTime.alertText.scale.y = 0.5;
       scoreTime.alertText.fixedToCamera = true;
       setTimeout(() => scoreTime.alertText.visible = false, 4000);
-
+    }
+    if (game.time.now > game.time.now -(doortime + 2000)){
+        portal_slime.animations.play('doorspin',4,true);
     }
   },
 }
@@ -1257,7 +1247,7 @@ slime.state0.prototype = {
   preload: function() {
     game.load.spritesheet('manaBar', 'assets/spritesheet/manaBar.png', 32, 32);
     game.load.spritesheet('healthBar', 'assets/spritesheet/healthBar.png', 32, 32);
-    game.load.spritesheet('door', 'assets/spritesheet/door.png', 128, 128);
+    game.load.spritesheet('door', 'assets/spritesheet/portal.png', 256, 256);
     game.load.spritesheet('slime-idle', 'assets/spritesheet/slime_idle.png', 64, 64);
     game.load.spritesheet('slime-new', 'assets/spritesheet/slime-new.png', 64, 64);
     game.load.spritesheet('slime-new2', 'assets/spritesheet/slime-new2.png', 64, 64);
