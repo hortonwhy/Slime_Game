@@ -8,6 +8,7 @@ var dooropen = false;
 var nextDoor = 25;
 //let player = {}, falling, scoreTime = {};
 var level = 0;
+//var tutGroup;
 //let player = {}, falling, scoreTime = {};
 
 tutorial = function () {};
@@ -83,6 +84,26 @@ tutorial.prototype = {
     tutorial.prototype.continueBtn(locx-40,locy + 80);
     message ++;
     contBtn = false;
+  },
+  enemyDefine: function () {
+    tutGroup = game.add.group();
+    //stationaryGroup.createMultiple(50, enemyType);
+    tutGroup.createMultiple(50, 'stationaryenemy');
+    tutGroup.setAll('name','stationary');
+    tutGroup.setAll('anchor.y', 0.5);
+    tutGroup.setAll('anchor.x', 0.5);
+    tutGroup.setAll('scale.x', 0.75);
+    tutGroup.setAll('scale.y', 0.75);
+    tutGroup.callAll('animations.add', 'animations', 'enemywalk', [0, 1, 2, 3]);
+    tutGroup.callAll('animations.add', 'animations', 'dead', [4]);
+  },
+  enemySpawn: function ( x, y, enemyGroup) {
+    var enemyLocal;
+    enemyLocal = enemyGroup.getFirstDead(true, x, y)
+    game.physics.enable(enemyLocal);
+    enemyLocal.body.collideWorldBounds = true;
+    enemyLocal.body.gravity.y = player.gravity;
+    enemyLocal.animations.play('enemywalk', 8, true);
   },
 }
 
@@ -212,12 +233,18 @@ slime.state1.prototype = {
     scoreFunc.prototype.start();
     scoreFunc.prototype.nextDoorSet();
 
+    tutorial.prototype.enemyDefine();
+    tutorial.prototype.enemySpawn(1200, 500, tutGroup);
+
+
   },
   update: function() {
     game.physics.arcade.collide(player_slime, [platformGroup], player.movement.prototype.hitPlatform);
     game.physics.arcade.collide(player_slime, [rockGroup]);
     game.physics.arcade.collide(player_slime, [grassGroup]);
     game.physics.arcade.collide(player_slime, [metalGroup]);
+
+    game.physics.arcade.collide(tutGroup, [platformGroup, rockGroup]);
       
     game.physics.arcade.overlap(player_slime, apples, player.movement.prototype.pickUpItem);
     game.physics.arcade.overlap(player_slime, potions, player.movement.prototype.pickUpPotion);
@@ -255,6 +282,4 @@ function changeState (stateNum) {
   currentWeapon = null;
   weaponholding = null;
   player.movement.prototype.removeWeaponInv();
-  //player.weapons = [1];
-  game.state.start("title");
 }
