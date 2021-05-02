@@ -1222,9 +1222,8 @@ scoreFunc.prototype = {
     if (scoreTime.time >= nextDoor && dooropen != true) {
       console.log("score is greater than requirement");
       dooropen = true;
-      var doortime = 0;
     
-      portal_slime.animations.play('dooropen', 5, true);
+      portal_slime.animations.play('dooropen', 5, false);
       
       if (game.state.current == 'state0'){
         scoreTime.alertText = game.add.text(CenterX, CenterY, "The Door has opened...", {font: "80px"});
@@ -1236,7 +1235,7 @@ scoreFunc.prototype = {
       scoreTime.alertText.fixedToCamera = true;
       setTimeout(() => scoreTime.alertText.visible = false, 4000);
     }
-    if (game.time.now > game.time.now -(doortime + 2000)){
+    if (scoreTime.time > nextDoor + 1){
         portal_slime.animations.play('doorspin',4,true);
     }
   },
