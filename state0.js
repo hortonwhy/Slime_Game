@@ -1211,6 +1211,13 @@ scoreFunc.prototype = {
     scoreTime.background2.fixedToCamera = true;
     scoreTime.background3.fixedToCamera = true;
   },
+  missionStatement: function() {
+    if (scoreTime.time < 10) { // print mission statement
+        scoreTime.mission = game.add.text(game.camera.x + 600, game.camera.y + 300, "Stay alive for as long as possible and find the door", {font: "30px Monospace", fill: "red", backgroundColor: "black"});
+      scoreTime.mission.fixedToCamera = true;
+      setTimeout(() => scoreTime.mission.visible = false, 5000);
+    }
+  },
   update: function() {
     scoreTime.time = Math.round((game.time.now - timeInTitle) / 1000);
     scoreTime.text.text = "Score: [" + scoreTime.time + "]";
@@ -1399,6 +1406,7 @@ slime.state0.prototype = {
     //score time set the intial text location
     scoreFunc.prototype.start();
     scoreFunc.prototype.nextDoorSet();
+    scoreFunc.prototype.missionStatement();
 
     //set displayweapon on hud
     player.movement.prototype.displayWeaponInit()
