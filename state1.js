@@ -1,7 +1,7 @@
 let tutorial = {};
 var contBtn = false;
 var message = 0;
-var messages = ["Use the arrow keys to move left and right, and jump up and down","Use the 'f' key to fire weapon", "^ Here is your health bar. Get shot too much, \n and you lose the game.","^ Here is your mana bar. Shoot enemies too much, \n and you'll lose ammo.","^ Here is your score. \n When the score reaches the 'Time until next Door' \n you may continue to the next level.","Pick up more powerful weapons by walking towards them.", "^ New weapons will show up in your inventory. \n Toggle between weapons with the number keys." ,"Pick up food to increase health."];
+var messages = ["Use the arrow keys to move left and right, and jump up and down","Use the 'f' key to fire weapon", "^ Here is your health bar. Get shot too much, \n and you lose the game.","^ Here is your mana bar. Shoot enemies too much, \n and you'll lose ammo.","^ Here is your score. \n When the score reaches the 'Time until next Door' \n you may continue to the next level.","Pick up more powerful weapons by walking towards them.", "^ New weapons will show up in your inventory. \n Toggle between weapons with the number keys." ,"Pick up food to increase health.", "This kind of enemy shoots large missles that do a lot of damage, \n but move slowly and can be destroyed. Be Careful of these ones"];
 var weapon1, weapon2, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0, currentWeapon;
 var weaponholding = 1;
 var dooropen = false;
@@ -55,6 +55,12 @@ tutorial.prototype = {
            game.paused = true;
            tutorial.prototype.controls(message,CenterX+1000,CenterY);
         }
+    }
+    if (xval > 1000) {
+      if (message == 8) { // enemy message
+        game.paused = true;
+        tutorial.prototype.controls(message, CenterX+ 1000, CenterY);
+      }
     }
   },
   continueBtn: function(xloc,yloc) {
