@@ -1,7 +1,7 @@
 let tutorial = {};
 var contBtn = false;
 var message = 0;
-var messages = ["Use the arrow keys to move left and right, and jump up and down","Use the 'f' key to fire weapon", "^ Here is your health bar. Get shot too much, \n and you lose the game.","^ Here is your mana bar. Shoot enemies too much, \n and you'll lose ammo.","^ Here is your score. \n When the score reaches the 'Time until next Door' \n you may continue to the next level.","Pick up more powerful weapons by walking towards them.", "^ New weapons will show up in your inventory. \n Toggle between weapons with the number keys." ,"Pick up food to increase health.", "This kind of enemy shoots large missles that do a lot of damage, \n but move slowly and can be destroyed. Be Careful of these ones"];
+var messages = ["Use the arrow keys to move left and right, and jump up and down","Use the 'f' key to fire weapon", "^ Here is your health bar. Get shot too much, \n and you lose the game.","^ Here is your mana bar. Shoot enemies too much, \n and you'll lose ammo.","^ Here is your score. \n When the score reaches the 'Time until next Door' \n you may continue to the next level.","Pick up more powerful weapons by walking towards them.", "^ New weapons will show up \n in your inventory. \n Toggle between weapons \n with the number keys." ,"This kind of enemy shoots large missles that do a lot of damage, \n but move slowly and can be destroyed. Be Careful of these ones","Pick up food to increase health.","Try double jumping by pressing up twice.", ];
 var weapon1, weapon2, fireRate = 200, nextFire = 0, idleTimer = 10000, nextIdle = 0, currentWeapon;
 var weaponholding = 1;
 var dooropen = false;
@@ -40,28 +40,33 @@ tutorial.prototype = {
            tutorial.prototype.controls(message,CenterX-50,CenterY-340);
        }
     }
-    if (xval > 1200){
+    if (xval > 700){
         if (message == 5){
            game.paused = true;
-           tutorial.prototype.controls(message,CenterX+300,CenterY);
+           tutorial.prototype.controls(message,CenterX+200,CenterY);
         }
-        if (message == 6 && player.weapons.length > 1){
+        if (message == 6){
            game.paused = true;
-           tutorial.prototype.controls(message,CenterX+260,CenterY-360);
+           tutorial.prototype.controls(message,CenterX+800,CenterY-300);
         }
     }
-    if (xval > 2320){
-        if (message == 7){
-           game.paused = true;
-           tutorial.prototype.controls(message,CenterX+1000,CenterY);
-        }
-    }
-    if (xval > 1000) {
-      if (message == 8) { // enemy message
+    if (xval > 800) {
+      if (message == 7) { // enemy message
         game.paused = true;
-        tutorial.prototype.controls(message, CenterX+ 1000, CenterY);
+        tutorial.prototype.controls(message, CenterX+220, CenterY+100);
       }
     }
+    if (xval > 1200){
+        if (message == 8){
+           game.paused = true;
+           tutorial.prototype.controls(message,CenterX+400,CenterY);
+        }
+        else if (message == 9){
+           game.paused = true;
+           tutorial.prototype.controls(message,CenterX+400,CenterY);
+        }
+    }
+    
   },
   continueBtn: function(xloc,yloc) {
     if (contBtn) {
@@ -120,7 +125,7 @@ slime.state1.prototype = {
   preload: function() {
     game.load.spritesheet('manaBar', 'assets/spritesheet/manaBar.png', 32, 32);
     game.load.spritesheet('healthBar', 'assets/spritesheet/healthBar.png', 32, 32);
-    game.load.spritesheet('door', 'assets/spritesheet/door.png', 128, 128);
+    game.load.spritesheet('door', 'assets/spritesheet/portal.png', 256, 256);
     game.load.spritesheet('slime-idle', 'assets/spritesheet/slime_idle.png', 64, 64);
     game.load.spritesheet('slime-new', 'assets/spritesheet/slime-new.png', 64, 64);
     game.load.spritesheet('slime-new2', 'assets/spritesheet/slime-new2.png', 64, 64);
