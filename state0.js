@@ -149,7 +149,9 @@ player.movement.prototype = {
     if (weaponholding != num && Math.abs(player_slime.x - weapon.x) <= 5 && Math.abs(player_slime.y - weapon.y) <= 50){
         weapon.x = -100;
         player.movement.prototype.addWeaponInv(num);
+        weaponpickup.play()
     }
+    
   },
   alertWeapon: function(weapon) {
     var backdrop = game.add.sprite(CenterX, CenterY, 'blankBtn');
@@ -555,11 +557,13 @@ player.movement.prototype = {
     var diff = Math.round(player.health / player.max_health * 13);
     healthBar.frame = (diff - 13) * -1;
     item.kill();
+    applesound.play()
       
   },
   pickUpPotion: function(slime, item) {
     player.movement.prototype.manaChange(30)
     item.kill()
+    manasound.play()
   }
 }
 enemy.pacing.prototype = {
@@ -1287,6 +1291,9 @@ slime.state0.prototype = {
     game.load.audio('gun2', 'assets/sounds/gun2.wav');
     game.load.audio('gun3', 'assets/sounds/gun3.wav');
     game.load.audio('bulletdeath', 'assets/sounds/bulletdeath.wav');
+    game.load.audio('applesound', 'assets/sounds/applesound.wav');
+    game.load.audio('manasound', 'assets/sounds/manasound.wav');
+    game.load.audio('weaponpickup', 'assets/sounds/weaponpickup.wav');
 
 
   },
@@ -1340,6 +1347,9 @@ slime.state0.prototype = {
     gun2 = game.add.audio('gun2');
     gun3 = game.add.audio('gun3');
     bulletdeath = game.add.audio('bulletdeath');
+    applesound = game.add.audio('applesound');
+    manasound = game.add.audio('manasound');
+    weaponpickup = game.add.audio('weaponpickup');
  //   soundsArray = [laser, jumpSFX, death, thud];
 
     game.stage.backgroundColor = "#dddddd";
