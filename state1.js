@@ -284,6 +284,7 @@ slime.state1.prototype = {
         //player.weapons = [1];
         player.movement.prototype.removeWeaponInv();
         game.state.start('title');
+        location.reload();
     }
   },
 }
