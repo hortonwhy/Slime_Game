@@ -843,7 +843,8 @@ base_game.prototype = {
     portal_slime.scale.setTo(0.75, 0.75);
     game.physics.enable(portal_slime);
     portal_slime.animations.add('dooropen',[1,2,3,4,5]);
-    portal_slime.animations.add('doorspin',[6,7,8,9])
+    portal_slime.animations.add('doorspin',[6,7,8,9]);
+    portal_slime.frame = 0;
   },
   randomWeapon: function(locations) {
     randomIdx = Math.trunc(Math.random() * locations.length)
@@ -979,11 +980,11 @@ enemyFunc.prototype = {
     var validyYLow = game.world.bounds.height - 90;
     //console.log(xX, validXxLow, validXxHigh);
       while (validXxLow < xX && validXxHigh > xX) {
-        //console.log("invalid spawn, rerolling...");
+        console.log("invalid spawn, rerolling...");
         xX = Math.random() * game.world.bounds.width;
       }
       while (validyYLow < yY) {
-        //console.log("invalid y coord, rerolling...");
+        console.log("invalid y coord, rerolling...");
         yY = Math.random() * game.world.bounds.height;
       }
 
@@ -1046,11 +1047,13 @@ enemyFunc.prototype = {
       enemyBullet = enemyArtillery.getFirstDead();
       //game.debug.bodyInfo(enemyBullet);
       //game.debug.body(enemyBullet);
+         if (enemyBullet != null) {
       enemyBullet.reset(closestEnemy.x, closestEnemy.y);
       enemyBullet.rotation = game.physics.arcade.angleToXY(enemyBullet, closestEnemy.x + (1000 * direction * 1) , closestEnemy.y)
     game.physics.arcade.moveToXY(enemyBullet, closestEnemy.x + (direction * 1000 * 1), closestEnemy.y, 250);
     enemyBullet.animations.play('enemy_fire', 3, true);
       // }
+         }
 
     }
     game.physics.arcade.overlap(enemyArtillery, player_slime, this.hitPlayer);
