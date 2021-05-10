@@ -1008,7 +1008,7 @@ enemyFunc.prototype = {
 
   },
   chase: function (enemyLocalGroup, speed, ychase) {  //ychase will be true or false
-    if (enemyLocalGroup.children[0].name != "stationary") { // if not the stationary dude
+    //if (enemyLocalGroup.children[0].name != "stationary") { // if not the stationary dude
     for (i = 0; i < enemyLocalGroup.length; i++) {
       if (enemyLocalGroup.children[i].alive) {
         var enemyLocal = enemyLocalGroup.children[i];
@@ -1028,7 +1028,7 @@ enemyFunc.prototype = {
       }
     }
     setTimeout(() => enemyFunc.prototype.chase(enemyLocalGroup, speed, ychase), 500);
-    }
+    //}
   },
   longRangeFire: function(closestEnemy) {
     //var closestEnemy = stationaryGroup.getClosestTo(player_slime);
@@ -1229,6 +1229,7 @@ scoreFunc.prototype = {
     if (scoreTime.time >= nextDoor && dooropen != true) {
       console.log("score is greater than requirement");
       dooropen = true;
+      setTimeout("portal_slime.animations.play('doorspin',4,true);", 1000);
     
       portal_slime.animations.play('dooropen', 5, false);
       
@@ -1242,9 +1243,9 @@ scoreFunc.prototype = {
       scoreTime.alertText.fixedToCamera = true;
       setTimeout(() => scoreTime.alertText.visible = false, 4000);
     }
-    if (scoreTime.time > nextDoor + 1){
-        portal_slime.animations.play('doorspin',4,true);
-    }
+    //if (scoreTime.time > nextDoor + 1 && dooropen != true){
+    //    portal_slime.animations.play('doorspin',4,true);
+    //}
   },
 }
 
@@ -1363,13 +1364,6 @@ slime.state0.prototype = {
     //player_slime = game.add.sprite(game.world.bounds.width / 2, game.height - (game.height / 4), "slime-new");
     //player_slime.scale.setTo(0.7, 0.7);
 
-    /*
-    portal_slime = game.add.sprite(gameX - 500, 745, "door");
-    portal_slime.scale.setTo(1.5, 1.5);
-    game.physics.enable(portal_slime);
-    portal_slime.animations.add('dooropen',[1,2,3,4,5,6,7,8]);
-    //base_game.prototype.randomPortal(statesIdx)
-//*/
 
 
     // add the platforms
